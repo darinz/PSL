@@ -1,12 +1,12 @@
 # Statistical Learning
 
-
 A comprehensive resource for learning Practical Statistical Learning, bridging the gap between statistical theory and modern machine learning practice. This repository provides structured notes, visual aids, and reference materials to support both self-study and formal coursework.
 
 ## Table of Contents
 
 - [Introduction](#introduction)
 - [Curriculum Topics](#curriculum-topics)
+- [Module Structure](#module-structure)
 - [Development Environment Setup](#development-environment-setup)
 - [How to Use](#how-to-use)
 - [Contributing](#contributing)
@@ -18,18 +18,72 @@ A comprehensive resource for learning Practical Statistical Learning, bridging t
 This repository is designed to facilitate a deep understanding of statistical learning, with a focus on both theoretical foundations and practical applications. It includes:
 
 - Well-organized markdown notes summarizing key concepts and mathematical derivations
-- HTML reference materials for in-depth reading
-- High-quality images and diagrams to illustrate statistical learning problems, bias-variance tradeoff, and more
+- Comprehensive code examples in both Python and R
+- High-quality images and diagrams to illustrate statistical learning concepts
+- PDF reference materials for in-depth reading
+- Structured learning modules with clear progression paths
 
 ## Curriculum Topics
 
-- Introduction to Statistical Learning
-- Types of Statistical Learning Problems
-- Supervised vs. Unsupervised Learning
-- Curse of Dimensionality
-- Bias-Variance Tradeoff
-- Model Complexity and Regularization
-- Modern Topics: Double Descent, Ensemble Methods, and more
+### Module 1: Introduction to Statistical Learning
+- **Types of Statistical Learning Problems**: Supervised vs. Unsupervised Learning
+- **Learning Theory**: Mathematical foundations and statistical decision theory
+- **Bias-Variance Tradeoff**: The fundamental tension in model complexity
+- **Fundamental Algorithms**: Linear regression, k-Nearest Neighbors, Bayes classifier
+- **Model Selection**: Cross-validation and regularization techniques
+
+### Module 2: Linear Regression
+- **Multiple Linear Regression**: Matrix formulation and least squares estimation
+- **Geometric Interpretation**: Vector spaces, projections, and orthogonality
+- **Practical Implementation**: Data analysis, diagnostics, and model validation
+- **Advanced Concepts**: Partial effects, hypothesis testing, and model comparison
+
+### Upcoming Modules
+- **Regularization Methods**: Ridge, Lasso, Elastic Net
+- **Classification Methods**: Logistic regression, LDA, QDA
+- **Resampling Methods**: Cross-validation, bootstrap
+- **Model Selection**: Information criteria and validation strategies
+- **Tree-Based Methods**: Decision trees, bagging, random forests
+- **Support Vector Machines**: Linear and non-linear classification
+- **Unsupervised Learning**: Clustering and dimensionality reduction
+
+## Module Structure
+
+### 📁 01_introduction/
+Comprehensive introduction to statistical learning fundamentals:
+
+**Core Theory:**
+- `01_introduction.md` - Problem types and learning paradigms
+- `02_learning_theory.md` - Mathematical foundations and decision theory
+- `03_bias_variance.md` - Deep dive into the bias-variance tradeoff
+- `04_ls_and_knn.md` - Linear regression and k-Nearest Neighbors
+- `05_bayes_rule.md` - Bayes classification rule and optimality
+
+**Practical Implementation:**
+- `Python_W1_SimulationStudy.py` - Python simulation studies
+- `Rcode_W1_SimulationStudy.R` - R simulation studies
+- `img/` - Supporting visualizations and diagrams
+
+### 📁 02_linear_regression/
+Advanced treatment of linear regression methods:
+
+**Theoretical Foundations:**
+- `01_mulitple_linear_regression.md` - Matrix formulation and estimation
+- `02_geometric_interpretation.md` - Vector space interpretation
+- `03_practical_issues.md` - Implementation and diagnostics
+
+**Code Examples:**
+- `Python_W2_LinearRegression_1.py` - Basic regression analysis
+- `Python_W2_LinearRegression_2.py` - Advanced concepts and diagnostics
+- `Rcode_W2_LinearRegression.R` - Comprehensive R implementation
+- `img/` - Geometric and diagnostic visualizations
+
+### 📁 reference/
+Essential reference materials:
+- `ESLII.pdf` - The Elements of Statistical Learning (2nd Edition)
+- `ISLRv2.pdf` - An Introduction to Statistical Learning (2nd Edition)
+- `ISLP.pdf` - Introduction to Statistical Learning with Python
+- `R_for_Statistical_Learning.pdf` - R-specific learning materials
 
 ## Development Environment Setup
 
@@ -38,8 +92,8 @@ This repository is designed to facilitate a deep understanding of statistical le
 Before running the example code, ensure you have the following installed:
 
 - **Git**: For cloning the repository
-- **Python 3.8+**: For Python simulations
-- **R 4.0+**: For R simulations
+- **Python 3.8+**: For Python simulations and analysis
+- **R 4.0+**: For R simulations and statistical analysis
 - **RStudio**: Recommended IDE for R development
 
 ### Installation Instructions
@@ -104,7 +158,7 @@ Navigate to the repository directory and install dependencies:
 
 ```bash
 cd Statistical-Learning
-pip3 install numpy pandas matplotlib seaborn scikit-learn jupyter
+pip3 install numpy pandas matplotlib seaborn scikit-learn jupyter statsmodels
 ```
 
 #### 5. Install Required R Packages
@@ -115,41 +169,46 @@ Open R or RStudio and install the necessary packages:
 # Core statistical packages
 install.packages(c("ggplot2", "dplyr", "tidyr", "caret", "randomForest"))
 
-# Additional packages for simulations
-install.packages(c("MASS", "mvtnorm", "class", "e1071"))
+# Additional packages for simulations and analysis
+install.packages(c("MASS", "mvtnorm", "class", "e1071", "car"))
 ```
 
 ### Running Example Code
 
 #### Python Simulations
 
-1. **Navigate to the introduction module:**
+1. **Introduction Module:**
    ```bash
    cd 01_introduction
+   python3 Python_W1_SimulationStudy.py
    ```
 
-2. **Run the Python simulation study:**
+2. **Linear Regression Module:**
    ```bash
-   python3 Python_W1_SimulationStudy.py
+   cd 02_linear_regression
+   python3 Python_W2_LinearRegression_1.py
+   python3 Python_W2_LinearRegression_2.py
    ```
 
 3. **For interactive exploration, use Jupyter:**
    ```bash
    jupyter notebook
    ```
-   Then open and run the Python simulation file in the notebook interface.
 
 #### R Simulations
 
 1. **Using RStudio:**
    - Open RStudio
-   - Open the `Rcode_W1_SimulationStudy.R` file
+   - Open the respective R files in each module
    - Run the entire script or execute sections individually
 
 2. **Using R console:**
    ```bash
    cd 01_introduction
    Rscript Rcode_W1_SimulationStudy.R
+   
+   cd ../02_linear_regression
+   Rscript Rcode_W2_LinearRegression.R
    ```
 
 3. **For interactive R sessions:**
@@ -161,9 +220,9 @@ install.packages(c("MASS", "mvtnorm", "class", "e1071"))
 ### Expected Outputs
 
 The simulation scripts will generate:
-- **Plots**: Bias-variance tradeoff visualizations, model complexity curves
-- **Statistical summaries**: Performance metrics and comparisons
-- **Console output**: Analysis results and parameter estimates
+- **Plots**: Bias-variance tradeoff visualizations, model complexity curves, diagnostic plots
+- **Statistical summaries**: Performance metrics, coefficient estimates, hypothesis tests
+- **Console output**: Analysis results, model diagnostics, and parameter estimates
 
 ### Troubleshooting
 
@@ -192,19 +251,20 @@ The simulation scripts will generate:
 
 2. **Set up your development environment** (see instructions above)
 
-3. **Browse the notes**
-   - Start with `01_introduction/01_introduction.md` for foundational concepts
-   - Explore topic-specific markdown files and HTML references for details
-   - Review images in `img/` for visual explanations
+3. **Follow the structured learning path**
+   - Start with `01_introduction/` for foundational concepts
+   - Progress to `02_linear_regression/` for advanced regression methods
+   - Use the PDF references in `reference/` for additional reading
 
-4. **Run example code**
-   - Execute Python simulations for bias-variance analysis
-   - Run R simulations for statistical modeling
-   - Experiment with parameters to observe effects
+4. **Study the materials systematically**
+   - Read the markdown notes for theoretical understanding
+   - Run the code examples to reinforce concepts
+   - Review visualizations in `img/` directories for intuitive understanding
 
-5. **Supplement your study**
-   - Use the PDF in `reference/` for additional reading
-   - Integrate these notes with your curriculum work or self-study
+5. **Practice and experiment**
+   - Modify parameters in simulation scripts
+   - Apply concepts to your own datasets
+   - Compare Python and R implementations
 
 ## Contributing
 
@@ -213,12 +273,15 @@ Contributions are welcome to improve the clarity, accuracy, and breadth of this 
 - Report issues or suggest improvements via the [Issues](https://github.com/darinz/Statistical-Learning/issues) page
 - Submit pull requests for corrections, new notes, or additional resources
 - Help enhance documentation and add new visualizations
+- Contribute new modules or expand existing ones
 
 ### Guidelines
 
 - Fork the repository and create a feature branch
 - Make your changes with clear, descriptive commit messages
 - Open a pull request with a summary of your contribution
+- Ensure code examples run successfully
+- Update documentation to reflect any changes
 
 ## Acknowledgements
 
