@@ -111,7 +111,7 @@ Supervised learning appears deceptively simple: collect data, build a model, and
 
 ### The Learning Process
 
-<img src="./img/supervised_learning.png" width="500"/>
+<img src="./img/supervised_learning.png" width="500px"/>
 
 **Step 1: Data Collection**
 We start with a collection of $`n`$ training examples $`\mathcal{D} = \{(x_1, y_1), \ldots, (x_n, y_n)\}`$. Each $`x_i \in \mathbb{R}^p`$ is a feature vector, and $`y_i`$ is the corresponding target value.
