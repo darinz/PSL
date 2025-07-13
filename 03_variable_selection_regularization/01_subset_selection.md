@@ -116,8 +116,8 @@ The nature of greedy algorithms, given their specific path of search, means they
 
 ## 3.1.5. R/Python Code for Subset Selection
 
-- Rcode: [Rcode_W3_VarSel_SubsetSelection](https://liangfgithub.github.io/Rcode_W3_VarSel_SubsetSelection.html)
-- Python: [Python_W3_VarSel_SubsetSelection](https://liangfgithub.github.io/Python_W3_VarSel_SubsetSelection.html)
+- Rcode: [R_W3_VarSel_SubsetSelection](./R_W3_VarSel_SubsetSelection.R)
+- Python: [Python_W3_VarSel_SubsetSelection](./Python_W3_VarSel_SubsetSelection.py)
 
 ## 3.1.6. Variable Screening
 
