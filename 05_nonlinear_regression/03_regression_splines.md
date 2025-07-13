@@ -1,0 +1,50 @@
+# 5.3. Regression Splines
+
+## 5.3.1. Introduction
+
+Given data points $(x_i, y_i)_{i=1}^n$ where x is one-dimensional, one might consider fitting cubic splines or natural cubic splines to predict y. This can be achieved using the basis expansion approach. In essence, this means representing y as a linear combination of chosen basis functions evaluated at x, plus some error. If we're considering cubic splines, we'd have m+4 basis functions, and for natural cubic splines, there are m basis functions.
+
+$$y = \textcolor{red}{\beta_1} h_1(x) + \textcolor{red}{\beta_2} h_2(x) + \dots + \textcolor{red}{\beta_{p}} h_{p}(x) + \text{err}$$
+
+To express this in matrix form, consider the following:
+
+$$\left ( \begin{array}{c} y_1 \\ y_2 \\ \cdots \\ y_n \end{array} \right )_{n \times 1} =
+\left ( \begin{array}{cccc} h_1(x_1) & h_2(x_1) & \cdots & h_p(x_1) \\ h_1(x_2) & h_2(x_2) & \cdots & h_p(x_2) \\ & & & \\ h_1(x_n) & h_2(x_n) & \cdots & h_p(x_n)
+\end{array} \right )_{n \times p} \ \left ( \begin{array}{c} \beta_1 \\ \cdots \\ \beta_p \end{array} \right )_{p \times 1} + \text{err}$$
+
+The aim is to minimize the squared error between the response vector $\mathbf{y}$ and the product of the design matrix $\mathbf{F}$ and coefficient vector $\boldsymbol{\beta}$.
+
+$$\hat{\boldsymbol{\beta}} = \arg\min_{\boldsymbol{\beta}} \| \mathbf{y} - \mathbf{F} \boldsymbol{\beta} \|^2$$
+
+With R/Python, you don't need to manually construct the design matrix $\mathbf{F}$. Next, let's explore how to fit a regression spline model using R/Python.
+
+## 5.3.2. Regression Splines in R/Python
+
+- **Rcode**: [Rcode_W5_RegressionSpline](./Rcode_W5_RegressionSpline.R)
+- **Python**: [Python_W5_RegressionSpline](./Python_W5_RegressionSpline.py)
+
+## 5.3.3. Choice of Knots
+
+For regression splines, once the location of the knots is specified, the process closely resembles fitting a multiple linear regression model. However, an important question arises: where should these knots be placed?
+
+In the first approach, we sidestep the intricate task of knot location selection, primarily due to its computational demands. Instead, we opt for positioning the knots at quantiles of the predictor variable, x. This then narrows our focus to deciding the optimal number of knots. This is analogous to model selection but is simpler because we're considering only p models. We can consider a predetermined range for the number of knots and evaluate each using criteria such as AIC/BIC or by employing cross-validation.
+
+In the second approach, we can set a significant number of knots and then employ techniques like Lasso or Ridge regression select a subset of the generated basis functions. This resembles feature engineering: generating a multitude of new features based on B-spline functions and then selecting a subset.
+
+It's important to highlight a nuance in the first approach: when increasing the number of knots from K to K+1, even though it appears that we are expanding our function space, the spaces corresponding to K and K+1 aren't nested. This is because the knot locations differ as we adjust the knot count. Therefore, though we can employ model selection criteria such as AIC/BIC to evaluate them, a nested F-test or t-test would be inappropriate.
+
+On our code page, we delve into an example where we use 10-fold CV to select the ideal number of knots, or equivalently, the degrees of freedom (df), using the birthrate data.
+
+## 5.3.4. Summary
+
+### Fitting with Regression Splines:
+
+- To model data with regression splines, we begin by determining the degrees of freedom (DF).
+- **Note**: in this context, DF isn't indicative of the polynomial degree. Instead, it relates to the degrees of freedom in the spline system and is associated with the number of knots.
+- Using specific commands in R/Python, one can obtain the appropriate design matrix. Afterward, the process mirrors fitting a multiple linear regression model.
+
+### Knot Selection:
+
+- The choice of knot location can greatly influence the performance of the spline.
+- One method we've explored is to sidestep the intricacy of knot location selection. Instead, we focus solely on determining the number of knots. After deciding on the number, the procedure involves positioning the knots at corresponding quantiles of the x values.
+- Tools such as cross-validation, AIC, or BIC can assist in choosing the ideal number of knots.
