@@ -115,7 +115,7 @@ By working through this material, you will:
 
 ### Mathematical Foundations
 - Multiple linear regression model: `y = Xβ + ε`
-- Least squares estimation: `β̂ = (X^T X)^(-1) X^T y`
+- Least squares estimation: `β̂` = $`(X^T X)^{-1} X^T y`$
 - Normal equations and matrix algebra
 - Degrees of freedom and variance estimation
 
