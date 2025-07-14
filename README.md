@@ -241,10 +241,6 @@ We welcome contributions to improve the course materials:
 - Update README files when adding new modules
 - Verify that all mathematical notation is correctly formatted
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## References
 
 ### Textbooks
@@ -261,14 +257,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Original papers for algorithms covered in the course
 - Recent developments in statistical learning
 - Applications in various domains
-
-## Acknowledgments
-
-- Course instructors and teaching assistants
-- Open-source community contributors
-- Students who provided feedback and suggestions
-
----
-
-**Note**: This repository is designed for educational purposes. The materials are based on established statistical learning principles and are intended to supplement formal coursework or self-study in machine learning and statistics.
-
