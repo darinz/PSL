@@ -1,5 +1,10 @@
 # Statistical Learning
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
+
 A comprehensive resource for learning Practical Statistical Learning, bridging the gap between statistical theory and modern machine learning practice. This repository provides structured notes, visual aids, and reference materials to support both self-study and formal coursework.
 
 ## Table of Contents
@@ -38,18 +43,33 @@ This repository is designed to facilitate a deep understanding of statistical le
 - **Practical Implementation**: Data analysis, diagnostics, and model validation
 - **Advanced Concepts**: Partial effects, hypothesis testing, and model comparison
 
-### Upcoming Modules
-- **Regularization Methods**: Ridge, Lasso, Elastic Net
-- **Classification Methods**: Logistic regression, LDA, QDA
-- **Resampling Methods**: Cross-validation, bootstrap
-- **Model Selection**: Information criteria and validation strategies
-- **Tree-Based Methods**: Decision trees, bagging, random forests
-- **Support Vector Machines**: Linear and non-linear classification
-- **Unsupervised Learning**: Clustering and dimensionality reduction
+### Module 3: Variable Selection and Regularization
+- **Subset Selection**: Best subset, forward/backward stepwise selection
+- **Regularization Methods**: Ridge regression, Lasso, Elastic Net
+- **Model Selection**: Cross-validation, information criteria
+- **Practical Considerations**: Multicollinearity, variable importance
+
+### Module 4: Regression Trees and Ensemble Methods
+- **Decision Trees**: CART algorithm, tree construction and pruning
+- **Random Forests**: Bagging, feature importance, out-of-bag estimation
+- **Gradient Boosting**: Boosting algorithms, parameter tuning
+- **Ensemble Methods**: Combining multiple models for improved performance
+
+### Module 5: Nonlinear Regression
+- **Polynomial Regression**: Higher-order terms and polynomial basis functions
+- **Cubic Splines**: Basis functions and knot placement
+- **Regression Splines**: Natural splines and smoothing splines
+- **Local Regression**: LOESS and kernel smoothing methods
+
+### Module 6: Clustering Analysis (Coming Soon)
+- **K-Means Clustering**: Partitioning methods and centroid-based clustering
+- **Hierarchical Clustering**: Agglomerative and divisive methods
+- **Density-Based Clustering**: DBSCAN and density estimation
+- **Model-Based Clustering**: Gaussian mixture models and expectation-maximization
 
 ## Module Structure
 
-### 📁 01_introduction/
+### 01_introduction/
 Comprehensive introduction to statistical learning fundamentals:
 
 **Core Theory:**
@@ -64,7 +84,7 @@ Comprehensive introduction to statistical learning fundamentals:
 - `Rcode_W1_SimulationStudy.R` - R simulation studies
 - `img/` - Supporting visualizations and diagrams
 
-### 📁 02_linear_regression/
+### 02_linear_regression/
 Advanced treatment of linear regression methods:
 
 **Theoretical Foundations:**
@@ -78,7 +98,68 @@ Advanced treatment of linear regression methods:
 - `Rcode_W2_LinearRegression.R` - Comprehensive R implementation
 - `img/` - Geometric and diagnostic visualizations
 
-### 📁 reference/
+### 03_variable_selection_regularization/
+Variable selection and regularization techniques:
+
+**Theoretical Foundations:**
+- `01_subset_selection.md` - Best subset, forward/backward stepwise selection
+- `02_regularization.md` - Regularization principles and methods
+- `03_ridge_regression.md` - Ridge regression theory and implementation
+- `04_lasso_regression.md` - Lasso regression and variable selection
+- `05_discussion.md` - Comparison and practical considerations
+
+**Code Examples:**
+- `Python_W3_VarSel_SubsetSelection.py` - Subset selection in Python
+- `Python_W3_VarSel_RidgeLasso.py` - Ridge and Lasso implementation
+- `R_W3_VarSel_SubsetSelection.R` - Subset selection in R
+- `Rcode_W3_VarSel_RidgeLasso.R` - Ridge and Lasso in R
+
+### 04_regression_trees/
+Tree-based methods and ensemble learning:
+
+**Theoretical Foundations:**
+- `01_regression_trees.md` - Decision tree construction and CART algorithm
+- `02_random_forest.md` - Random forests and bagging methods
+- `03_gbm.md` - Gradient boosting machines and boosting algorithms
+
+**Code Examples:**
+- `Python_W4_RegressionTree.py` - Decision tree implementation
+- `Python_W4_Regression_RandomForest.py` - Random forest in Python
+- `Python_W4_Regression_GBM.py` - Gradient boosting in Python
+- `Rcode_W4_RegressionTree.R` - Decision tree in R
+- `Rcode_W4_Regression_RandomForest.R` - Random forest in R
+- `Rcode_W4_Regression_GBM.R` - Gradient boosting in R
+
+### 05_nonlinear_regression/
+Nonlinear regression and smoothing methods:
+
+**Theoretical Foundations:**
+- `01_polynomial_regression.md` - Polynomial basis functions and higher-order terms
+- `02_cubic_splines.md` - Cubic spline basis functions and knot placement
+- `03_regression_splines.md` - Natural splines and regression splines
+- `04_smoothing_splines.md` - Smoothing splines and regularization
+- `05_local_regression.md` - Local regression and kernel smoothing
+
+**Code Examples:**
+- `Python_W5_PolynomialRegression.py` - Polynomial regression implementation
+- `Python_W5_RegressionSpline.py` - Regression splines in Python
+- `Python_W5_SmoothingSpline.html` - Interactive smoothing spline examples
+- `Python_W5_LocalSmoother.html` - Interactive local regression examples
+- `Rcode_W5_PolynomialRegression.R` - Polynomial regression in R
+- `Rcode_W5_RegressionSpline.R` - Regression splines in R
+- `Rcode_W5_SmoothingSpline.html` - Interactive R smoothing spline examples
+- `Rcode_W5_LocalSmoother.html` - Interactive R local regression examples
+
+### 06_clustering_analysis/
+Clustering and unsupervised learning methods (Coming Soon)
+
+### _images/
+Global image repository containing visualizations from all modules:
+- Week 3: Variable selection and regularization diagrams
+- Week 4: Tree-based methods and ensemble learning visualizations
+- Week 5: Nonlinear regression and smoothing spline illustrations
+
+### reference/
 Essential reference materials:
 - `ESLII.pdf` - The Elements of Statistical Learning (2nd Edition)
 - `ISLRv2.pdf` - An Introduction to Statistical Learning (2nd Edition)
@@ -158,7 +239,7 @@ Navigate to the repository directory and install dependencies:
 
 ```bash
 cd Statistical-Learning
-pip3 install numpy pandas matplotlib seaborn scikit-learn jupyter statsmodels
+pip3 install numpy pandas matplotlib seaborn scikit-learn jupyter statsmodels plotly
 ```
 
 #### 5. Install Required R Packages
@@ -170,7 +251,7 @@ Open R or RStudio and install the necessary packages:
 install.packages(c("ggplot2", "dplyr", "tidyr", "caret", "randomForest"))
 
 # Additional packages for simulations and analysis
-install.packages(c("MASS", "mvtnorm", "class", "e1071", "car"))
+install.packages(c("MASS", "mvtnorm", "class", "e1071", "car", "gbm", "splines"))
 ```
 
 ### Running Example Code
@@ -190,7 +271,29 @@ install.packages(c("MASS", "mvtnorm", "class", "e1071", "car"))
    python3 Python_W2_LinearRegression_2.py
    ```
 
-3. **For interactive exploration, use Jupyter:**
+3. **Variable Selection and Regularization:**
+   ```bash
+   cd 03_variable_selection_regularization
+   python3 Python_W3_VarSel_SubsetSelection.py
+   python3 Python_W3_VarSel_RidgeLasso.py
+   ```
+
+4. **Regression Trees and Ensemble Methods:**
+   ```bash
+   cd 04_regression_trees
+   python3 Python_W4_RegressionTree.py
+   python3 Python_W4_Regression_RandomForest.py
+   python3 Python_W4_Regression_GBM.py
+   ```
+
+5. **Nonlinear Regression:**
+   ```bash
+   cd 05_nonlinear_regression
+   python3 Python_W5_PolynomialRegression.py
+   python3 Python_W5_RegressionSpline.py
+   ```
+
+6. **For interactive exploration, use Jupyter:**
    ```bash
    jupyter notebook
    ```
@@ -209,6 +312,18 @@ install.packages(c("MASS", "mvtnorm", "class", "e1071", "car"))
    
    cd ../02_linear_regression
    Rscript Rcode_W2_LinearRegression.R
+   
+   cd ../03_variable_selection_regularization
+   Rscript Rcode_W3_VarSel_RidgeLasso.R
+   
+   cd ../04_regression_trees
+   Rscript Rcode_W4_RegressionTree.R
+   Rscript Rcode_W4_Regression_RandomForest.R
+   Rscript Rcode_W4_Regression_GBM.R
+   
+   cd ../05_nonlinear_regression
+   Rscript Rcode_W5_PolynomialRegression.R
+   Rscript Rcode_W5_RegressionSpline.R
    ```
 
 3. **For interactive R sessions:**
@@ -223,6 +338,7 @@ The simulation scripts will generate:
 - **Plots**: Bias-variance tradeoff visualizations, model complexity curves, diagnostic plots
 - **Statistical summaries**: Performance metrics, coefficient estimates, hypothesis tests
 - **Console output**: Analysis results, model diagnostics, and parameter estimates
+- **Interactive visualizations**: HTML files for exploring nonlinear regression methods
 
 ### Troubleshooting
 
@@ -254,17 +370,21 @@ The simulation scripts will generate:
 3. **Follow the structured learning path**
    - Start with `01_introduction/` for foundational concepts
    - Progress to `02_linear_regression/` for advanced regression methods
+   - Continue with `03_variable_selection_regularization/` for regularization techniques
+   - Explore `04_regression_trees/` for tree-based methods
+   - Study `05_nonlinear_regression/` for nonlinear modeling approaches
    - Use the PDF references in `reference/` for additional reading
 
 4. **Study the materials systematically**
    - Read the markdown notes for theoretical understanding
    - Run the code examples to reinforce concepts
-   - Review visualizations in `img/` directories for intuitive understanding
+   - Review visualizations in `img/` directories and `_images/` for intuitive understanding
 
 5. **Practice and experiment**
    - Modify parameters in simulation scripts
    - Apply concepts to your own datasets
    - Compare Python and R implementations
+   - Explore interactive visualizations for nonlinear methods
 
 ## Contributing
 
