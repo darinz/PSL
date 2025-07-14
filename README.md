@@ -94,6 +94,22 @@ The course is organized into the following modules:
 - Fisher Discriminant Analysis
 - Naive Bayes classifiers
 
+### 9. Logistic Regression
+- Binary and multinomial logistic regression
+- Maximum likelihood estimation
+- Separable and non-separable data
+- Retrospective sampling
+
+### 10. Support Vector Machines (SVM)
+- Linear SVMs (separable and non-separable cases)
+- Max-margin principle and duality
+- KKT conditions
+- Soft margin SVM and slack variables
+- Nonlinear SVMs and the kernel trick
+- RKHS and kernel machines
+- Practical considerations and applications
+- [See module: `11_support_vector_machine/`](./11_support_vector_machine/)
+
 ## Topics Covered
 
 ### Core Concepts
@@ -103,12 +119,12 @@ The course is organized into the following modules:
 - **Statistical Inference**: Hypothesis testing, confidence intervals, and p-values
 
 ### Algorithms and Methods
-- **Linear Methods**: Linear regression, logistic regression, LDA
+- **Linear Methods**: Linear regression, logistic regression, LDA, SVM
 - **Tree-Based Methods**: Decision trees, random forests, boosting
 - **Regularization**: Ridge, Lasso, elastic net
 - **Clustering**: K-means, hierarchical clustering, model-based clustering
 - **Dimensionality Reduction**: PCA, factor analysis
-- **Advanced Models**: HMM, LDA, mixture models
+- **Advanced Models**: HMM, LDA, mixture models, SVMs with kernels
 
 ### Programming Languages
 - **Python**: NumPy, Pandas, Scikit-learn, Matplotlib, Seaborn
