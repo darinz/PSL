@@ -28,6 +28,22 @@ This repository is designed to facilitate a deep understanding of statistical le
 - PDF reference materials for in-depth reading
 - Structured learning modules with clear progression paths
 
+## Complementary Learning Resources
+
+For a comprehensive introduction to machine learning that complements this statistical learning material, see:
+
+- **[Machine Learning Repository](https://github.com/darinz/Machine-Learning)**: A comprehensive resource covering supervised and unsupervised learning, learning theory, reinforcement learning, and modern applications including deep learning, transformers, and foundation models. This repository provides:
+  - Linear models and generative learning algorithms
+  - Advanced classification techniques
+  - Deep learning fundamentals and neural networks
+  - Clustering and EM algorithms with variational methods
+  - Dimensionality reduction techniques (PCA, ICA)
+  - Self-supervised learning and foundation models
+  - Reinforcement learning and control systems
+  - Modern applications in NLP, computer vision, and robotics
+
+The Machine Learning repository offers a broader perspective on algorithmic approaches and modern machine learning techniques, while this Statistical Learning repository focuses on the statistical foundations and classical methods. Together, they provide a complete learning path from statistical theory to modern machine learning practice.
+
 ## Curriculum Topics
 
 ### Module 1: Introduction to Statistical Learning
