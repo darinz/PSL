@@ -12,18 +12,34 @@ This module covers fundamental and modernized clustering analysis techniques and
 
 ### 1. Distance Measures
 - **Euclidean Distance**: Standard L2 distance for numerical data
+
+  ![Euclidean distance between two points in 2D space.](../_images/w6_euclidean_dist.png)
+  *Figure: Euclidean distance between two points in 2D space.*
+
 - **L-infinity Distance**: Maximum absolute difference across dimensions
 - **Jaccard Distance**: For set-based similarity and text data
 - **Hamming Distance**: For strings of equal length
 - **Edit Distance**: For string transformations
 - **Cosine Distance**: Angle-based similarity between vectors
 - **Multidimensional Scaling (MDS)**: Converting distance matrices to coordinate representations
+
+  ![Multidimensional scaling (MDS) double centering.](../_images/w6_mds_double_centering.png)
+  *Figure: Multidimensional scaling (MDS) double centering.*
+
 - **Expanded mathematical derivations and LaTeX formatting**
 
 ### 2. K-means and K-medoids
 - **K-means Algorithm**: Iterative partitioning with mean-based centers
+
+  ![K-means clustering process.](../_images/w6_kmeans.png)
+  *Figure: K-means clustering process.*
+
 - **Objective Function**: Within-cluster sum of squares optimization
 - **Convergence Properties**: Local minima and initialization sensitivity
+
+  ![K-means can converge to local minima depending on initialization.](../_images/w6_kmeans_local_minimal.png)
+  *Figure: K-means can converge to local minima depending on initialization.*
+
 - **Dimension Reduction**: PCA and Random Projection techniques
 - **K-medoids (PAM)**: Medoid-based clustering using actual data points
 - **Alternative Distance Measures**: Extending beyond Euclidean distance
@@ -32,6 +48,10 @@ This module covers fundamental and modernized clustering analysis techniques and
 ### 3. Choice of K
 - **Gap Statistics**: Comparing observed vs. reference clustering
 - **Silhouette Statistics**: Measuring cluster cohesion and separation
+
+  ![Silhouette definition for cluster validation.](../_images/w6_sil_def.png)
+  *Figure: Silhouette definition for cluster validation.*
+
 - **Prediction Strength**: Cross-validation approach for cluster validation
 - **Elbow Method**: Visual inspection of within-cluster variation
 - **Enhanced visual and LaTeX math explanations**
@@ -42,9 +62,19 @@ This module covers fundamental and modernized clustering analysis techniques and
   - Single-linkage: Minimum distance between clusters
   - Complete-linkage: Maximum distance between clusters
   - Average-linkage: Mean distance between clusters
+
+  ![Single linkage and complete linkage in hierarchical clustering.](../_images/w6_hist_single.png)
+  *Figure: Single linkage in hierarchical clustering.*
+
+  ![Complete linkage in hierarchical clustering.](../_images/w6_hist_complete.png)
+  *Figure: Complete linkage in hierarchical clustering.*
+
 - **Dendrogram Visualization**: Tree representation of clustering hierarchy
 - **Flexible K Selection**: Post-clustering choice of number of clusters
 - **Expanded code and math explanations**
+
+  ![Dendrogram example for hierarchical clustering.](../_images/w6_kmeans.png)
+  *Figure: Dendrogram example for hierarchical clustering.*
 
 ## Recent Enhancements
 
