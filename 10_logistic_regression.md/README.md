@@ -49,13 +49,6 @@ This module provides a comprehensive, modernized introduction to logistic regres
   ![Diagram illustrating retrospective sampling.](../_images/w10_sampling.png)
   *Figure: Diagram illustrating retrospective sampling.*
 
-## Recent Enhancements
-
-- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
-- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
-- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
-- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
-
 ## Prerequisites
 
 - Basic understanding of linear algebra and calculus
