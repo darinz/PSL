@@ -4,6 +4,10 @@
 
 Lasso (Least Absolute Shrinkage and Selection Operator), introduced by Tibshirani in 1996, is a powerful regularization technique that combines variable selection with coefficient shrinkage. Unlike ridge regression, lasso can produce exactly zero coefficients, making it particularly valuable for sparse modeling and automatic feature selection.
 
+![Lasso Regression Solution Paths](../_images/w4_solution_path.png)
+
+*Figure: Solution paths for lasso regression. Shows how coefficients change as the regularization parameter varies.*
+
 ## 3.4.1 Mathematical Foundation
 
 ### The Lasso Objective Function
@@ -116,6 +120,10 @@ The soft-thresholding operator can be understood geometrically:
 1. **Shrinkage**: Coefficients are shrunk toward zero by $\lambda/2$
 2. **Thresholding**: Coefficients smaller than $\lambda/2$ in magnitude are set to zero
 3. **Sign preservation**: The sign of non-zero coefficients is preserved
+
+![Lasso Duality and Geometry](../_images/w3_lasso_duality.png)
+
+*Figure: Geometric interpretation of the lasso constraint and solution. The diamond-shaped constraint region leads to sparse solutions.*
 
 ## 3.4.3 Lasso vs Ridge: Geometric Comparison
 
