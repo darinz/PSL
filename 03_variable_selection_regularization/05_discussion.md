@@ -8,6 +8,10 @@ Having explored various techniques for variable selection and regularization—i
 
 ### The Bias-Variance Tradeoff Revisited
 
+![Bias-Variance Trade-off and Model Complexity](../_images/w3_fig_3_11.png)
+
+*Figure: The relationship between model complexity, training error, and test error. Illustrates the bias-variance trade-off central to variable selection and regularization.*
+
 All variable selection and regularization methods can be understood through the bias-variance decomposition of prediction error:
 
 ```math
