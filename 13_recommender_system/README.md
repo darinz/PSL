@@ -121,14 +121,6 @@ $`R_{m \times n} \approx U_{m \times d} V^t_{d \times n}`$
 ### Loss Function with Regularization
 $`\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda_2 \text{Pen}(V)`$
 
-## Recent Enhancements
-
-- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
-- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
-- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
-- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
-- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
-
 ## Practical Considerations
 
 ### When to Use Different Methods
