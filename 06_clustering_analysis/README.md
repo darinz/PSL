@@ -6,7 +6,7 @@
 
 ## Overview
 
-This module covers fundamental and modernized clustering analysis techniques and algorithms used in unsupervised learning. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This module covers fundamental and modernized clustering analysis techniques and algorithms used in unsupervised learning.
 
 ## Topics Covered
 
