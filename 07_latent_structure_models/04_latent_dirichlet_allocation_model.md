@@ -4,6 +4,9 @@
 
 Latent Dirichlet Allocation (LDA) is a powerful probabilistic model for discovering the underlying topics in a collection of documents. It was introduced by Blei, Ng, and Jordan in 2003 and has become one of the most widely used topic modeling techniques in natural language processing and text mining.
 
+![Graphical model of Latent Dirichlet Allocation (LDA).](../_images/w7_LDA.png)
+*Figure: Graphical model of Latent Dirichlet Allocation (LDA).*
+
 ### Problem Setup
 
 Consider a collection of $`n`$ documents, where each document is represented as a "bag of words" (ignoring word order). Let $`V`$ be the vocabulary size (number of unique words), then:
@@ -27,6 +30,10 @@ LDA addresses these issues by introducing the concept of **topics**:
 ## 7.4.2. Mathematical Foundation
 
 ### Generative Process
+
+![Plate diagram of the LDA generative process (Blei et al., 2003).](../_images/w7_Blei_2012.png)
+
+*Figure: Plate diagram of the LDA generative process (Blei et al., 2003).* 
 
 LDA assumes the following generative process for creating documents:
 
