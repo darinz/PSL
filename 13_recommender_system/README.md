@@ -5,9 +5,10 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This section covers modern, expanded recommender systems, from fundamental approaches to cutting-edge deep learning methods.
+This section covers modern recommender systems, from fundamental approaches to cutting-edge deep learning methods.
 
   ![General recommender system architecture.](../_images/w13_RS_wiki.png)
+  
   *Figure: General recommender system architecture.*
 
 ## Example Implementations
@@ -38,6 +39,7 @@ This section covers modern, expanded recommender systems, from fundamental appro
   - Enhanced code and math explanations
 
   ![User and item profile construction in content-based recommenders.](../_images/w13_user_item_profile.png)
+
   *Figure: User and item profile construction in content-based recommenders.*
 
 ### 13.3. Collaborative Filtering
@@ -51,9 +53,11 @@ This section covers modern, expanded recommender systems, from fundamental appro
   - Expanded code and math explanations
 
   ![User-Based Collaborative Filtering (UBCF) diagram.](../_images/w13_UBCF.png)
+  
   *Figure: User-Based Collaborative Filtering (UBCF) diagram.*
 
   ![Item-Based Collaborative Filtering (IBCF) diagram.](../_images/w13_IBCF.png)
+  
   *Figure: Item-Based Collaborative Filtering (IBCF) diagram.*
 
 ### 13.4. UBCF and IBCF
@@ -77,9 +81,11 @@ This section covers modern, expanded recommender systems, from fundamental appro
   - Expanded code and math explanations
 
   ![SVD-based matrix factorization for recommender systems.](../_images/w13_SVD.png)
+  
   *Figure: SVD-based matrix factorization for recommender systems.*
 
   ![User and item embedding profiles in latent factor models.](../_images/w13_SVD_profile.png)
+  
   *Figure: User and item embedding profiles in latent factor models.*
 
 ### 13.6. Challenges and Strategies
