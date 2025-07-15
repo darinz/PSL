@@ -4,7 +4,7 @@
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This module covers essential, modernized techniques for variable selection and regularization in statistical learning, focusing on methods to handle high-dimensional data and improve model performance through feature selection and coefficient shrinkage. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This module covers essential, modernized techniques for variable selection and regularization in statistical learning, focusing on methods to handle high-dimensional data and improve model performance through feature selection and coefficient shrinkage.
 
 ## Learning Objectives
 
