@@ -76,14 +76,6 @@ This module covers fundamental and modernized clustering analysis techniques and
   ![Dendrogram example for hierarchical clustering.](../_images/w6_kmeans.png)
   *Figure: Dendrogram example for hierarchical clustering.*
 
-## Recent Enhancements
-
-- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
-- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
-- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
-- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
-- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
-
 ## Files
 
 ### Documentation
