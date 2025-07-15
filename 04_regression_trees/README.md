@@ -1,6 +1,11 @@
 # Regression Trees
 
-This module covers tree-based methods for regression, from single decision trees to ensemble methods including Random Forests and Gradient Boosting Machines (GBM). These methods are powerful tools for both prediction and understanding variable importance in regression problems.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
+
+This module covers tree-based methods for regression, from single decision trees to ensemble methods including Random Forests and Gradient Boosting Machines (GBM). The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Learning Objectives
 
@@ -25,6 +30,7 @@ By the end of this module, you will be able to:
 - **Missing Value Strategies**: Surrogate splits and other approaches
 - **Pruning Techniques**: Cost complexity pruning and the Weakest Link Algorithm
 - **Cross-Validation**: Selecting optimal complexity parameters
+- **Expanded mathematical derivations and LaTeX formatting**
 
 **Key Concepts:**
 - Recursive binary partitioning
@@ -40,6 +46,7 @@ By the end of this module, you will be able to:
 - **Random Forest Constraints**: Feature subsetting to decorrelate trees
 - **Variable Importance**: RSS gain and permutation-based importance measures
 - **Performance Evaluation**: OOB error estimation and model assessment
+- **Expanded code and math explanations**
 
 **Key Concepts:**
 - Bootstrap sampling with replacement
@@ -55,6 +62,7 @@ By the end of this module, you will be able to:
 - **Regularization**: Subsampling and shrinkage to prevent overfitting
 - **Performance Monitoring**: Cross-validation and early stopping
 - **Comparison with Random Forest**: When to use each method
+- **Expanded code and LaTeX math explanations**
 
 **Key Concepts:**
 - Forward stagewise optimization
@@ -62,6 +70,14 @@ By the end of this module, you will be able to:
 - Learning rate and shrinkage
 - Subsampling for regularization
 - Overfitting prevention strategies
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Code Examples
 
@@ -144,20 +160,20 @@ model2 = GradientBoostingRegressor(
 ## Key Mathematical Concepts
 
 ### Tree Building
-- **Splitting Criterion**: Minimize RSS = Σ(y_i - ȳ_L)² + Σ(y_i - ȳ_R)²
-- **Prediction at Leaf**: ȳ_leaf = average of responses in leaf node
-- **Cost Complexity**: R_α(T) = RSS(T) + α|T|
+- **Splitting Criterion**: $`\text{RSS} = \sum (y_i - \bar{y}_L)^2 + \sum (y_i - \bar{y}_R)^2`$
+- **Prediction at Leaf**: $`\bar{y}_{\text{leaf}} =`$ average of responses in leaf node
+- **Cost Complexity**: $`R_\alpha(T) = \text{RSS}(T) + \alpha|T|`$
 
 ### Random Forest
 - **Bootstrap Sample**: Sample n observations with replacement
 - **OOB Sample**: Observations not in bootstrap sample
-- **Feature Subsetting**: Consider m = p/3 features at each split
+- **Feature Subsetting**: Consider $`m = p/3`$ features at each split
 - **Final Prediction**: Average predictions from all trees
 
 ### Gradient Boosting
-- **Additive Model**: F(x) = f₁(x) + f₂(x) + ... + f_T(x)
-- **Residual Fitting**: Fit tree to residuals r_i = y_i - F_{t-1}(x_i)
-- **Shrinkage**: F_t(x) = F_{t-1}(x) + η·f_t(x)
+- **Additive Model**: $`F(x) = f_1(x) + f_2(x) + ... + f_T(x)`$
+- **Residual Fitting**: Fit tree to residuals $`r_i = y_i - F_{t-1}(x_i)`$
+- **Shrinkage**: $`F_t(x) = F_{t-1}(x) + \eta \cdot f_t(x)`$
 - **Subsampling**: Use fraction of training data for each tree
 
 ## Practical Applications
@@ -217,6 +233,8 @@ The code examples include comprehensive visualizations:
 - **Variable Importance**: Feature ranking and importance scores
 - **OOB Error Plots**: Random Forest performance vs number of trees
 
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
+
 ## Getting Started
 
 1. **Review the theoretical foundations** in the markdown files
@@ -225,6 +243,7 @@ The code examples include comprehensive visualizations:
 4. **Try Gradient Boosting** for maximum performance
 5. **Compare methods** on your own datasets
 6. **Practice parameter tuning** and model selection
+7. **Reference expanded math/code explanations and LaTeX formatting throughout**
 
 ## Additional Resources
 
