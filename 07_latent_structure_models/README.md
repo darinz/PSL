@@ -7,7 +7,7 @@
 
 ## Overview
 
-This module explores advanced, modernized unsupervised learning techniques that model latent (hidden) structures in data. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This module explores advanced, modernized unsupervised learning techniques that model latent (hidden) structures in data.
 
 ## Topics Covered
 
@@ -88,70 +88,4 @@ $`f(x) = \sum_{k=1}^K \pi_k f_k(x \mid \theta_k)`$
 - `02_mixture_models.md` – Mathematical foundations and estimation
 - `03_em_algorithm.md` – Expectation-Maximization algorithm details
 - `04_latent_dirichlet_allocation_model.md` – LDA for document modeling
-- `05_hidden_markov_models.md` – HMM for sequential data analysis
-
-## Applications
-
-### Model-based Clustering
-- Customer segmentation with uncertainty
-- Image segmentation with probabilistic assignments
-- Anomaly detection in complex systems
-
-### Mixture Models
-- Financial data modeling
-- Biological data analysis
-- Sensor data clustering
-
-### LDA Applications
-- Document classification and clustering
-- Topic modeling in social media
-- Information retrieval systems
-- Content recommendation
-
-### HMM Applications
-- Speech recognition and synthesis
-- Bioinformatics (gene finding, protein structure)
-- Financial time series analysis
-- Natural language processing
-- Computer vision (gesture recognition)
-
-## Algorithmic Complexity
-
-### EM Algorithm
-- **Time Complexity**: $`O(n \times K \times d \times \text{iterations})`$ for $`n`$ samples, $`K`$ components, $`d`$ dimensions
-- **Space Complexity**: $`O(n \times K)`$ for storing responsibilities
-- **Convergence**: Guaranteed to improve likelihood monotonically
-
-### LDA
-- **Time Complexity**: $`O(n \times K \times V \times \text{iterations})`$ for $`n`$ documents, $`K`$ topics, $`V`$ vocabulary
-- **Space Complexity**: $`O(K \times V + n \times K)`$ for topic and document matrices
-- **Variational Inference**: Approximate but scalable
-
-### HMM
-- **Forward-Backward**: $`O(n \times m^2)`$ for $`n`$ observations, $`m`$ states
-- **Viterbi**: $`O(n \times m^2)`$ for most likely path
-- **Baum-Welch**: $`O(n \times m^2 \times \text{iterations})`$ for parameter estimation
-
-## Prerequisites
-
-- Understanding of probability theory and statistics
-- Familiarity with clustering algorithms (K-means)
-- Knowledge of optimization techniques
-- Basic linear algebra and calculus
-- Experience with Python or R programming
-
-## Related Modules
-
-- [Clustering Analysis](../06_clustering_analysis/) – Foundation clustering methods
-- [Variable Selection](../03_variable_selection_regularization/) – Feature selection techniques
-- [Nonlinear Regression](../05_nonlinear_regression/) – Advanced modeling approaches
-
-## References
-
-- Dempster, Laird, and Rubin (1977) – EM Algorithm
-- Blei, Ng, and Jordan (2003) – Latent Dirichlet Allocation
-- Rabiner (1989) – Hidden Markov Models Tutorial
-- McLachlan and Peel (2000) – Finite Mixture Models
-- Bishop (2006) – Pattern Recognition and Machine Learning
-
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations. 
+- `
