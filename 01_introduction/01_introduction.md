@@ -6,6 +6,9 @@ Statistical learning is a fundamental framework for understanding how to extract
 
 Statistical learning problems can be broadly categorized based on the nature of the data and the learning objectives. Understanding these categories is crucial for selecting appropriate methods and interpreting results correctly.
 
+![Overview of Supervised vs Unsupervised Learning](img/supervised_learning.png)
+*Figure: Supervised vs Unsupervised Learning*
+
 ### Supervised Learning: Predicting Numerical Values (Regression)
 
 Supervised learning addresses problems where we have a target variable, denoted as $`Y`$, and a set of features or covariates, represented as $`X`$, which is typically a multidimensional vector. Our goal is to build a predictive model $`f: \mathcal{X} \rightarrow \mathcal{Y}`$ that maps input features to target values.
@@ -421,6 +424,9 @@ w_{t+1} = w_t - \eta \nabla R_n(w_t)
 ```
 
 where $`\eta`$ is the learning rate and $`\nabla R_n(w_t) = -\frac{2}{n} \sum_{i=1}^n (y_i - w_t^T x_i) x_i`$.
+
+![Linear Function Example](img/linear_function.png)
+*Figure: Example of a Linear Function*
 
 ## 1.1.3. The Curse of Dimensionality
 
