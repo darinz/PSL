@@ -4,6 +4,10 @@
 
 Ridge regression, introduced by Hoerl and Kennard in 1970, is one of the most fundamental regularization techniques in statistical learning. It addresses the bias-variance tradeoff by introducing an L2 penalty on the regression coefficients, leading to more stable and often more accurate predictions than ordinary least squares (OLS).
 
+![Ridge Regression Solution Paths](../_images/w4_solution_path.png)
+
+*Figure: Solution paths for ridge regression. Shows how coefficients change as the regularization parameter varies.*
+
 ## 3.3.1 Mathematical Foundation
 
 ### The Ridge Regression Objective Function
