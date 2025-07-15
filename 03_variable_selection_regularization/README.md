@@ -1,6 +1,11 @@
 # Variable Selection and Regularization
 
-This module covers essential techniques for variable selection and regularization in statistical learning, focusing on methods to handle high-dimensional data and improve model performance through feature selection and coefficient shrinkage.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
+
+This module covers essential, modernized techniques for variable selection and regularization in statistical learning, focusing on methods to handle high-dimensional data and improve model performance through feature selection and coefficient shrinkage. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Learning Objectives
 
@@ -22,34 +27,21 @@ By the end of this module, you will be able to:
 - **AIC vs BIC**: Philosophical differences and practical implications
 - **Search Algorithms**: Level-wise search, greedy algorithms (forward, backward, stepwise)
 - **Variable Screening**: Handling cases where p > n
-
-**Key Concepts:**
-- Training vs test error decomposition
-- Model complexity penalties
-- Computational efficiency considerations
-- Variable screening for high-dimensional data
+- **Expanded mathematical derivations and LaTeX formatting**
 
 ### 3.2 Regularization Framework
 - **Unified Objective Function**: Framing variable selection as optimization problems
 - **L0, L1, and L2 Penalties**: Understanding different regularization approaches
 - **Data Preprocessing**: Centering and scaling for consistent results
 - **Scale Invariance**: Ensuring methods work regardless of variable scaling
-
-**Key Concepts:**
-- Regularization as constrained optimization
-- Importance of data standardization
-- Geometric interpretation of penalties
+- **Enhanced geometric and optimization explanations**
 
 ### 3.3 Ridge Regression
 - **Introduction**: L2 penalty and quadratic optimization
 - **Shrinkage Effect**: Understanding coefficient shrinkage in orthogonal and non-orthogonal cases
 - **SVD Perspective**: Using singular value decomposition to understand ridge behavior
 - **Degree of Freedom**: Effective degrees of freedom and model complexity
-
-**Key Concepts:**
-- Ridge regression as shrinkage method
-- Relationship between λ and effective degrees of freedom
-- Bias-variance trade-off in ridge regression
+- **Expanded code and math explanations**
 
 ### 3.4 Lasso Regression
 - **Introduction**: L1 penalty and sparse solutions
@@ -57,17 +49,21 @@ By the end of this module, you will be able to:
 - **Lasso vs Ridge**: Geometric and optimization perspectives
 - **Coordinate Descent**: Algorithm for solving lasso problems
 - **Uniqueness**: Conditions for unique lasso solutions
-
-**Key Concepts:**
-- Variable selection through coefficient sparsity
-- Soft thresholding operator
-- Geometric interpretation with L1 ball constraints
-- Computational algorithms for lasso
+- **Expanded code and LaTeX math explanations**
 
 ### 3.5 Discussion and Comparison
 - **Method Selection**: When to use each approach
 - **Simulation Studies**: Comparing methods on different data scenarios
 - **Practical Guidelines**: Choosing methods based on data characteristics
+- **Visual and LaTeX math enhancements**
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Code Examples
 
@@ -113,17 +109,17 @@ lassocv.fit(X_train, Y_train)
 ## Key Mathematical Concepts
 
 ### Model Selection Criteria
-- **AIC**: `-2log(likelihood) + 2p`
-- **BIC**: `-2log(likelihood) + log(n)p`
-- **Mallow's Cp**: `RSS + 2σ²p`
+- **AIC**: $`-2\log(\text{likelihood}) + 2p`$
+- **BIC**: $`-2\log(\text{likelihood}) + \log(n)p`$
+- **Mallow's Cp**: $`\text{RSS} + 2\sigma^2 p`$
 
 ### Regularization Objectives
-- **Ridge**: `min ||y - Xβ||² + λ||β||²`
-- **Lasso**: `min ||y - Xβ||² + λ||β||₁`
+- **Ridge**: $`\min \|y - X\beta\|^2 + \lambda\|\beta\|^2`$
+- **Lasso**: $`\min \|y - X\beta\|^2 + \lambda\|\beta\|_1`$
 
 ### Soft Thresholding (Lasso)
-```
-β̂_j^lasso = sign(β̂_j^LS)(|β̂_j^LS| - λ/2)_+
+```math
+\hat{\beta}_j^{lasso} = \operatorname{sign}(\hat{\beta}_j^{LS})\left(|\hat{\beta}_j^{LS}| - \frac{\lambda}{2}\right)_+
 ```
 
 ## Practical Applications
@@ -160,6 +156,8 @@ The code examples include comprehensive visualizations:
 - **Model Comparison Plots**: AIC/BIC vs model size
 - **Performance Evaluation**: Test MSE comparisons
 
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
+
 ## Getting Started
 
 1. **Review the theoretical foundations** in the markdown files
@@ -167,6 +165,7 @@ The code examples include comprehensive visualizations:
 3. **Experiment with the R code** for additional insights
 4. **Try the simulation study** to compare methods
 5. **Apply to your own datasets** to gain practical experience
+6. **Reference expanded math/code explanations and LaTeX formatting throughout**
 
 ## Additional Resources
 
