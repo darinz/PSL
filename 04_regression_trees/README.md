@@ -232,8 +232,6 @@ The code examples include comprehensive visualizations:
 - **Variable Importance**: Feature ranking and importance scores
 - **OOB Error Plots**: Random Forest performance vs number of trees
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Getting Started
 
 1. **Review the theoretical foundations** in the markdown files
