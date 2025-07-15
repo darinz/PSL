@@ -63,17 +63,6 @@ This folder contains comprehensive, modernized materials on linear regression, c
 - Hypothesis testing and model diagnostics
 - Enhanced code comments and explanations
 
-### Visualizations
-
-The `img/` folder contains supporting visualizations:
-- `w2_coef_X_corr.png` – Coefficient correlation analysis
-- `w2_projection.png` – Geometric projection concepts
-- `w2_example_subspace.png` – Linear subspace examples
-- `w2_Xr.png` – Design matrix and residuals
-- `w2_LS.png` – Least squares visualization
-- `w2_large_p_small_n.png` – High-dimensional setting
-- `w2_large_n_small_p.png` – Classical setting
-
 ## Learning Objectives
 
 By working through this material, you will:
