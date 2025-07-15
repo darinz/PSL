@@ -4,6 +4,10 @@
 
 Regularization is a fundamental concept in statistical learning that addresses the bias-variance tradeoff by introducing penalty terms to the objective function. In this comprehensive lecture, we'll explore the theoretical foundations, mathematical formulations, and practical implementations of regularization methods.
 
+![Regularization Solution Paths](../_images/w4_solution_path.png)
+
+*Figure: Solution paths for ridge and lasso regression. Shows how coefficients change as the regularization parameter varies.*
+
 ## 3.2.1 The Regularization Framework
 
 ### Motivation and Problem Setup
@@ -156,6 +160,10 @@ Lasso can be viewed as constrained optimization:
 ```
 
 The L1 constraint creates a diamond-shaped feasible region that can intersect the contours of the RSS at corners, leading to sparse solutions.
+
+![Lasso Duality and Geometry](../_images/w3_lasso_duality.png)
+
+*Figure: Geometric interpretation of the lasso constraint and solution. The diamond-shaped constraint region leads to sparse solutions.*
 
 ### Soft Thresholding
 
