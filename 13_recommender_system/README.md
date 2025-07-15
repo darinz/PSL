@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This section covers modern recommender systems, from fundamental approaches to cutting-edge deep learning methods.
+This section covers modern, expanded recommender systems, from fundamental approaches to cutting-edge deep learning methods.
 
 ## Example Implementations
 
