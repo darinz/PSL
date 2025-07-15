@@ -5,7 +5,12 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This section covers modern, expanded recommender systems, from fundamental approaches to cutting-edge deep learning methods. The content has been clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This section covers modern recommender systems, from fundamental approaches to cutting-edge deep learning methods.
+
+## Example Implementations
+
+- [Movie-Rec-Sys (Streamlit Movie Recommendation App)](https://github.com/darinz/Movie-Rec-Sys): A Streamlit-based movie recommendation system with interactive UI and content-based filtering.
+- [Movie-Recommender (Python MovieLens Recommender)](https://github.com/darinz/Movie-Recommender): A Python implementation of a recommender system using the MovieLens dataset and collaborative filtering.
 
 ## Contents
 
