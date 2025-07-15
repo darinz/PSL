@@ -6,7 +6,7 @@
 [![Classification](https://img.shields.io/badge/Classification-Supervised%20Learning-orange.svg)](https://en.wikipedia.org/wiki/Classification)
 [![Statistics](https://img.shields.io/badge/Statistics-Bayesian%20Methods-red.svg)](https://en.wikipedia.org/wiki/Bayesian_statistics)
 
-A comprehensive, modernized module covering discriminant analysis methods for classification problems, including theoretical foundations, practical implementations, and code examples in both Python and R. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+A comprehensive, modernized module covering discriminant analysis methods for classification problems, including theoretical foundations, practical implementations, and code examples in both Python and R.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ A comprehensive, modernized module covering discriminant analysis methods for cl
 
 ## Overview
 
-This module introduces discriminant analysis methods for classification problems, focusing on both theoretical foundations and practical applications. The methods covered include various approaches to estimating conditional probabilities and constructing optimal classification rules, with expanded mathematical explanations and enhanced code examples.
+This module introduces discriminant analysis methods for classification problems, focusing on both theoretical foundations and practical applications. The methods covered include various approaches to estimating conditional probabilities and constructing optimal classification rules.
 
 ## Module Structure
 
