@@ -7,6 +7,7 @@
 This section covers classification trees and boosting algorithms, building upon the concepts introduced in regression trees while focusing on classification problems.
 
   ![Example of a classification tree split.](../_images/w12_example.png)
+  
   *Figure: Example of a classification tree split.*
 
 ## Contents
@@ -33,6 +34,7 @@ This section covers classification trees and boosting algorithms, building upon 
   - Enhanced code and math explanations
 
   ![Concavity of impurity measures.](../_images/w12_concave.png)
+  
   *Figure: Concavity of impurity measures (entropy, Gini, misclassification rate).*
 
 ### 12.3. Misclassification Rate vs. Entropy
@@ -56,9 +58,11 @@ This section covers classification trees and boosting algorithms, building upon 
   - Expanded code and math explanations
 
   ![AdaBoost algorithm flow.](../_images/w12_adaboosting_alg.png)
+  
   *Figure: AdaBoost algorithm flow.*
 
   ![Exponential loss function used in AdaBoost.](../_images/w12_exp_loss.png)
+  
   *Figure: Exponential loss function used in AdaBoost.*
 
 ### 12.5. Forward Stagewise Additive Modeling
@@ -72,6 +76,7 @@ This section covers classification trees and boosting algorithms, building upon 
   - Enhanced code and math explanations
 
   ![Forward stagewise additive modeling.](../_images/w12_forward_additive.png)
+  
   *Figure: Forward stagewise additive modeling.*
 
 ## Key Concepts
