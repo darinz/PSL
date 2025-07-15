@@ -60,6 +60,10 @@ Root: All houses
     └── Latitude > 42.2 → Price = 4.2 (log scale)
 ```
 
+![Boston Housing: Tree Partitioning of Feature Space](../_images/w4_plot_housing_lon_alt.png)
+
+*Figure: Partitioning of the Boston Housing data by longitude and latitude. Each region corresponds to a leaf node in the regression tree.*
+
 ### Advantages of Tree-Based Models
 
 1. **Interpretability**: Tree structure is easily explainable to non-technical audiences
