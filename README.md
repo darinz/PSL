@@ -1,6 +1,5 @@
 # Practical Statistical Learning (PSL)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
 [![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
@@ -110,6 +109,23 @@ The course is organized into the following modules:
 - Practical considerations and applications
 - [See module: `11_support_vector_machine/`](./11_support_vector_machine/)
 
+### 11. Classification Trees and Boosting
+- Classification trees with impurity measures
+- Misclassification rate vs. entropy comparison
+- AdaBoost algorithm and convergence proof
+- Forward stagewise additive modeling
+- Modern boosting algorithms (GBM, XGBoost, CatBoost)
+- [See module: `12_classification_trees/`](./12_classification_trees/)
+
+### 12. Recommender Systems
+- Content-based recommendation methods
+- Collaborative filtering (user-based and item-based)
+- Latent factor models and matrix decomposition
+- Challenges and evaluation strategies
+- Deep learning approaches for recommendations
+- Real-world applications (Netflix, Spotify, Amazon)
+- [See module: `13_recommender_system/`](./13_recommender_system/)
+
 ## Topics Covered
 
 ### Core Concepts
@@ -120,11 +136,13 @@ The course is organized into the following modules:
 
 ### Algorithms and Methods
 - **Linear Methods**: Linear regression, logistic regression, LDA, SVM
-- **Tree-Based Methods**: Decision trees, random forests, boosting
+- **Tree-Based Methods**: Decision trees, random forests, boosting, classification trees
 - **Regularization**: Ridge, Lasso, elastic net
 - **Clustering**: K-means, hierarchical clustering, model-based clustering
 - **Dimensionality Reduction**: PCA, factor analysis
 - **Advanced Models**: HMM, LDA, mixture models, SVMs with kernels
+- **Ensemble Methods**: AdaBoost, gradient boosting, modern variants (XGBoost, CatBoost)
+- **Recommender Systems**: Content-based, collaborative filtering, latent factor models, deep learning approaches
 
 ### Programming Languages
 - **Python**: NumPy, Pandas, Scikit-learn, Matplotlib, Seaborn
