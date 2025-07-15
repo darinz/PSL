@@ -6,7 +6,7 @@
 
 ## Overview
 
-This module provides a comprehensive, modernized introduction to Support Vector Machines (SVMs), a powerful class of supervised learning algorithms for classification and regression. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This module provides a comprehensive, modernized introduction to Support Vector Machines (SVMs), a powerful class of supervised learning algorithms for classification and regression.
 
 ## Module Structure
 
