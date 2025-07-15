@@ -1,166 +1,674 @@
 # 3.3. Ridge Regression
 
-## 3.3.1. Introduction to Ridge
+## Introduction
 
-In ridge regression, the objective function to be minimized is a smooth quadratic function of $\beta$. This function consists of two terms: the residual sum of squares and the L2 norm of $\beta$.
+Ridge regression, introduced by Hoerl and Kennard in 1970, is one of the most fundamental regularization techniques in statistical learning. It addresses the bias-variance tradeoff by introducing an L2 penalty on the regression coefficients, leading to more stable and often more accurate predictions than ordinary least squares (OLS).
 
-$$
-\min_{\boldsymbol{\beta}} \| \mathbf{y} - \mathbf{X}  \boldsymbol{\beta}\|^2 + \lambda \| \boldsymbol{\beta} \|^2
-$$
+## 3.3.1 Mathematical Foundation
 
-To find the minimizer of this objective function, multiple approaches can be employed. For instance, taking the derivative with respect to $\beta$ and setting it to zero leads to a solvable form for the minimizer. Alternatively, one can express the objective function as the residual sum of squares for an augmented linear regression model.
+### The Ridge Regression Objective Function
 
-In this augmented model, we have $n+p$ observations. The response vector is formed by stacking $p$ zero responses onto the original $y$ vector. The design matrix for the newly added $p$ responses is simply an identity matrix. Defining this augmented response vector as $\tilde{y}$ and the new design matrix as $\tilde{\mathbf{X}}$, one finds that their residual sum of squares is identical to the ridge regression objective function.
+Ridge regression modifies the standard least squares objective by adding a penalty term proportional to the squared L2 norm of the coefficient vector:
 
-$$
-\begin{pmatrix} \mathbf{y}_{n \times 1} \\ \mathbf{0}_{p \times 1} \end{pmatrix} = \begin{pmatrix} \mathbf{X}_{n \times p} \\ \sqrt{\lambda} \mathbf{I}_p \end{pmatrix}_{(n+p) \times p} \boldsymbol{\beta}_{p \times 1} + \text{ error}
-$$
+```math
+\min_{\boldsymbol{\beta}} \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2_2 + \lambda \|\boldsymbol{\beta}\|^2_2
+```
 
-We can then find the ridge regression solution using this new design matrix and new response vector.
+where:
+- $\mathbf{y} \in \mathbb{R}^n$ is the response vector
+- $\mathbf{X} \in \mathbb{R}^{n \times p}$ is the design matrix
+- $\boldsymbol{\beta} \in \mathbb{R}^p$ is the coefficient vector
+- $\lambda \geq 0$ is the regularization parameter
 
-$$
-\begin{align*}
-\tilde{\mathbf{X}}^t \tilde{\mathbf{X}}  & =  \left (\mathbf{X}^t \, \sqrt{\lambda} \mathbf{I}_p \right ) \begin{pmatrix} \mathbf{X}_{n \times p} \\ \sqrt{\lambda} \mathbf{I}_p \end{pmatrix} \\
-& = (\mathbf{X}^t \mathbf{X} + \lambda \mathbf{I}) \\
-\tilde{\mathbf{X}}^t \tilde{\mathbf{y}} & = \left (\mathbf{X}^t \, \sqrt{\lambda} \mathbf{I}_p \right ) \begin{pmatrix} \mathbf{y}_{n \times 1} \\ \mathbf{0}_{p \times 1} \end{pmatrix} = \mathbf{X}^t \mathbf{y} \\
-\hat{\boldsymbol{\beta}}^{\text{ridge}} & = (\tilde{\mathbf{X}}^t \tilde{\mathbf{X}})^{-1} \tilde{\mathbf{X}}^t \tilde{\mathbf{y}} = (\mathbf{X}^t \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^t \mathbf{y}.
-\end{align*}
-$$
+### Derivation of the Ridge Estimator
 
-A key benefit of ridge regression is its applicability to design matrices that are not of full rank. This is made possible by adding $\lambda \mathbf{I}$ to $\mathbf{X}^t \mathbf{X}$, which allows us to invert the resulting matrix. This feature sets ridge regression apart from ordinary least squares (OLS) methods, making it a versatile tool for tackling a wide range of problems.
+To find the ridge estimator, we take the derivative of the objective function with respect to $\boldsymbol{\beta}$ and set it to zero:
 
-## 3.3.2. The Shrinkage Effect
+```math
+\frac{\partial}{\partial \boldsymbol{\beta}} \left[\|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2_2 + \lambda \|\boldsymbol{\beta}\|^2_2\right] = 0
+```
 
-When discussing ridge regression, it’s crucial to consider its nature as a ‘shrinkage’ method. This becomes evident when we look at the special case where the design matrix $X$ is orthogonal.
+This gives us:
 
-Suppose $X$ is an $n \times p$ matrix where the columns are orthonormal (i.e., unit length and mutually orthogonal). Then $\mathbf{X}^t \mathbf{X} = \mathbf{I}$.
+```math
+-2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\boldsymbol{\beta}) + 2\lambda\boldsymbol{\beta} = 0
+```
 
+Rearranging:
 
-$$
-\begin{align*}
-\hat{\boldsymbol{\beta}}^{\mathrm{LS}} \quad &= \; (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T \mathbf{y} = \mathbf{X}^T \mathbf{y} \\
-\hat{\boldsymbol{\beta}}^{\mathrm{ridge}} \quad &= \; (\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y} \\
-&= \frac{1}{1 + \lambda} \mathbf{X}^T \mathbf{y} = \frac{1}{1 + \lambda} \hat{\boldsymbol{\beta}}^{\mathrm{LS}} \\
-\\
-\hat{\mathbf{y}}_{\mathrm{LS}} \quad &= \; \mathbf{X} \hat{\boldsymbol{\beta}}^{\mathrm{LS}} \\
-\hat{\mathbf{y}}_{\mathrm{ridge}} \quad &= \; \mathbf{X} \hat{\boldsymbol{\beta}}^{\mathrm{ridge}} = \frac{1}{1 + \lambda} \mathbf{y}_{\mathrm{LS}}
-\end{align*}
-$$
+```math
+\mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda\boldsymbol{\beta} = \mathbf{X}^T\mathbf{y}
+```
 
-It becomes clear that the ridge estimate is a shrunk version of the OLS estimate since $\frac{1}{1 + \lambda} < 1$ for any $\lambda > 0$.
+```math
+(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})\boldsymbol{\beta} = \mathbf{X}^T\mathbf{y}
+```
 
-In situations where the columns of $X$ are not orthogonal, we can reformulate the regression problem using an orthogonal version of $X$, achieved through techniques such as Principal Component Analysis (PCA) or Singular Value Decomposition (SVD). In this transformed space, it becomes evident that the ridge estimates and predictions serve as shrunken versions of their least squares (LS) counterparts.
+Therefore, the ridge estimator is:
 
-Consider a singular value decomposition (SVD) of $\mathbf{X}$:
+```math
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}
+```
 
-$$
-\mathbf{X}_{n \times p} = \mathbf{U}_{n \times p} \mathbf{D}_{p \times p} \mathbf{V}^T_{p \times p},
-$$
+### The Augmented Data Interpretation
 
-where
+An elegant interpretation of ridge regression is through the concept of augmented data. We can view ridge regression as ordinary least squares applied to an augmented dataset.
 
-- $\mathbf{U}_{n \times p}$: columns $\mathbf{u}_j$ form an orthonormal (ON) basis for $C(\mathbf{X})$, $\mathbf{U}^T \mathbf{U} = I_p$.
-- $\mathbf{V}_{p \times p}$: columns $\mathbf{v}_j$ form an ON basis for $\mathbb{R}^p$ with $\mathbf{V}^T \mathbf{V} = I_p$.
-- $\mathbf{D}_{p \times p}$: diagonal matrix with diagonal entries $d_1 \geq d_2 \geq \cdots \geq d_p \geq 0$ being the singular values of $\mathbf{X}$.
+Consider the augmented response vector and design matrix:
 
-<span style="color:teal">For ease of exposition we assume $n > p$ and $\operatorname{rank}(\mathbf{X}) = p$. Therefore $d_p > 0$.</span>
+```math
+\tilde{\mathbf{y}} = \begin{pmatrix} \mathbf{y} \\ \mathbf{0}_p \end{pmatrix}, \quad \tilde{\mathbf{X}} = \begin{pmatrix} \mathbf{X} \\ \sqrt{\lambda}\mathbf{I}_p \end{pmatrix}
+```
 
-- PCA: write $\mathbf{X} = \mathbf{F} \mathbf{V}^T$ where each column of $\mathbf{F}_{n \times p} = \mathbf{U} \mathbf{D}$ is the so-called principal components and each column of $\mathbf{V}$ is the principal component directions of $\mathbf{X}$.
+The augmented model becomes:
 
-Next, we can rewrite the problem in terms of a transformed design matrix $F$ and new coefficient vector $\alpha$, which is a rotation transformation of the original $\beta$.
+```math
+\tilde{\mathbf{y}} = \tilde{\mathbf{X}}\boldsymbol{\beta} + \boldsymbol{\varepsilon}
+```
 
+The residual sum of squares for this augmented model is:
 
-Write
+```math
+\|\tilde{\mathbf{y}} - \tilde{\mathbf{X}}\boldsymbol{\beta}\|^2_2 = \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2_2 + \lambda\|\boldsymbol{\beta}\|^2_2
+```
 
-$$
-\mathbf{y} - \mathbf{X}\boldsymbol{\beta} = \mathbf{y} - \mathbf{U}\mathbf{D}\mathbf{V}^T\boldsymbol{\beta} = \mathbf{y} - \mathbf{F}\boldsymbol{\alpha}.
-$$
+This is exactly the ridge regression objective function! The OLS solution for the augmented model is:
 
-There is a one-to-one correspondence between $\boldsymbol{\beta}_{p \times 1}$ and $\boldsymbol{\alpha}_{p \times 1}$ and $\|\boldsymbol{\beta}\|^2 = \|\boldsymbol{\alpha}\|^2$. So
+```math
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = (\tilde{\mathbf{X}}^T\tilde{\mathbf{X}})^{-1}\tilde{\mathbf{X}}^T\tilde{\mathbf{y}}
+```
 
-$$
-\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 + \lambda \|\boldsymbol{\beta}\|^2 \iff \min_{\boldsymbol{\alpha} \in \mathbb{R}^p} \|\mathbf{y} - \mathbf{F}\boldsymbol{\alpha}\|^2 + \lambda \|\boldsymbol{\alpha}\|^2.
-$$
+Computing the components:
 
-$$
-\begin{align*}
-\hat{\boldsymbol{\alpha}}^{\mathrm{LS}} &= \mathbf{D}^{-1} \mathbf{U}^T \mathbf{y}, \qquad \hat{\alpha}^{\mathrm{LS}}_j = \frac{1}{d_j} \mathbf{u}_j^T \mathbf{y} \\
-\hat{\boldsymbol{\alpha}}^{\mathrm{ridge}} &= \operatorname{diag}\left( \frac{d_j}{d_j^2 + \lambda} \right) \mathbf{U}^T \mathbf{y}, \qquad \hat{\alpha}^{\mathrm{ridge}}_j = \frac{d_j^2}{d_j^2 + \lambda} \hat{\alpha}^{\mathrm{LS}}_j
-\end{align*}
-$$
+```math
+\tilde{\mathbf{X}}^T\tilde{\mathbf{X}} = \begin{pmatrix} \mathbf{X}^T & \sqrt{\lambda}\mathbf{I}_p \end{pmatrix} \begin{pmatrix} \mathbf{X} \\ \sqrt{\lambda}\mathbf{I}_p \end{pmatrix} = \mathbf{X}^T\mathbf{X} + \lambda\mathbf{I}
+```
 
-So the ridge estimate $\hat{\boldsymbol{\alpha}}^{\mathrm{ridge}}$ shrinks the LS estimate $\hat{\boldsymbol{\alpha}}^{\mathrm{LS}}$ by the factor $\frac{d_j^2}{d_j^2 + \lambda}$: directions with smaller eigenvalues get more shrinkage.
+```math
+\tilde{\mathbf{X}}^T\tilde{\mathbf{y}} = \begin{pmatrix} \mathbf{X}^T & \sqrt{\lambda}\mathbf{I}_p \end{pmatrix} \begin{pmatrix} \mathbf{y} \\ \mathbf{0}_p \end{pmatrix} = \mathbf{X}^T\mathbf{y}
+```
 
-### Summary
+Therefore:
 
-In ridge regression, the coefficients and predictions are shrinkage versions of those in OLS. The degree of shrinkage varies with the magnitude of singular values, shrinking less for larger singular values and more for smaller ones. This accounts for the regularization effect that makes ridge regression robust, especially when $X$ has multicollinearity or is not full-rank.
+```math
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}
+```
 
-## 3.3.3. Why Shrinkage
+### Key Properties of the Ridge Estimator
 
-A natural question that arises is why one might want to shrink the least squares estimate. One might argue that the least squares estimate is unbiased, so applying shrinkage, which would introduce bias, seems counterintuitive. After all, isn’t unbiasedness a desirable property?
+1. **Existence**: The ridge estimator always exists, even when $\mathbf{X}^T\mathbf{X}$ is singular
+2. **Uniqueness**: The solution is unique for any $\lambda > 0$
+3. **Continuity**: The estimator is continuous in $\lambda$
+4. **Limiting behavior**: 
+   - As $\lambda \to 0$, $\hat{\boldsymbol{\beta}}_{\text{ridge}} \to \hat{\boldsymbol{\beta}}_{\text{OLS}}$
+   - As $\lambda \to \infty$, $\hat{\boldsymbol{\beta}}_{\text{ridge}} \to \mathbf{0}$
 
-To explore this, let’s consider a simple one-dimensional estimation problem and examine the mean squared error (MSE) of two estimators. MSE, defined as the expected squared difference between the estimator and the true value, is equal to Bias-square plus Variance.
+## 3.3.2 The Shrinkage Effect
 
-Consider a simple estimation problem: $Z_1, \ldots, Z_n$ iid $\sim N(\theta, \sigma^2)$. What’s the MSE of $\bar{Z}$ and what’s the MSE of $\frac{1}{2} \bar{Z}$?
+### Orthogonal Design Matrix Case
 
-$$
-\begin{align*}
-\mathrm{MSE}(\bar{Z}) \quad &= \; \mathbb{E}(\bar{Z} - \theta)^2 = \frac{\sigma^2}{n} \\
-\mathrm{MSE}\left( \frac{1}{2} \bar{Z} \right) \quad &= \; \mathbb{E}(\bar{Z} - \theta)^2 = \frac{\theta^2}{4} + \frac{1}{4} \frac{\sigma^2}{n}
-\end{align*}
-$$
+To understand the shrinkage effect, let's first consider the special case where the design matrix $\mathbf{X}$ has orthonormal columns (i.e., $\mathbf{X}^T\mathbf{X} = \mathbf{I}$).
 
-When comparing the MSE of these two estimators, it’s not straightforward to determine which estimator performs better. The effectiveness of the shrinkage depends on the magnitude of $\theta^2$.
+In this case:
 
-In summary, while shrinkage introduces bias, it also reduces variance. This trade-off may result in an overall lower MSE, making shrinkage a worthwhile consideration in certain situations.
+```math
+\hat{\boldsymbol{\beta}}_{\text{OLS}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y} = \mathbf{X}^T\mathbf{y}
+```
 
-## 3.3.4. Degree-of-Freedom of Ridge Regression
+```math
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y} = \frac{1}{1 + \lambda}\mathbf{X}^T\mathbf{y} = \frac{1}{1 + \lambda}\hat{\boldsymbol{\beta}}_{\text{OLS}}
+```
 
-When discussing linear regression with variable selection, a key consideration is the model’s dimensionality, which refers to the number of parameters or predictors utilized.
+The ridge estimator is a scaled version of the OLS estimator, with scaling factor $\frac{1}{1 + \lambda} < 1$ for $\lambda > 0$.
 
-A pertinent question in this context is: What is the effective degree of freedom for a ridge regression model? Despite using a $p$-dimensional coefficient vector, the model’s effective dimensionality may be less due to the shrinkage effect introduced by the regularization term.
+For predictions:
 
-In ridge regression, the regularization strength is controlled by $\lambda$. This parameter directly impacts the shrinkage factor, usually represented as $a/(a + \lambda)$, where $a$ and $\lambda$ are both positive.
+```math
+\hat{\mathbf{y}}_{\text{OLS}} = \mathbf{X}\hat{\boldsymbol{\beta}}_{\text{OLS}}
+```
 
-- As $\lambda$ approaches infinity, the shrinkage factor nears zero, essentially reducing the dimension of the model to zero.
-- On the other hand, as $\lambda$ goes to zero, the ridge regression model becomes a standard $p$-dimensional least squares regression model.
+```math
+\hat{\mathbf{y}}_{\text{ridge}} = \mathbf{X}\hat{\boldsymbol{\beta}}_{\text{ridge}} = \frac{1}{1 + \lambda}\mathbf{X}\hat{\boldsymbol{\beta}}_{\text{OLS}} = \frac{1}{1 + \lambda}\hat{\mathbf{y}}_{\text{OLS}}
+```
 
-A commonly-adopted metric for the degree of freedom involves the sum of the normalized variance between the observed $y_i$ and its corresponding predicted value $\hat{y}_i$, across all $n$ samples. In matrix notation, if a method returns $\hat{\mathbf{y}} = \mathbf{A} \mathbf{y}$, the degree of freedom can be computed as the trace of matrix $A$.
+### General Case: Singular Value Decomposition
 
-One way to measure the degree of freedom (df) of a method is
+For the general case, we use the singular value decomposition (SVD) of $\mathbf{X}$:
 
-$$
-df = \frac{1}{\sigma^2} \sum_{i=1}^n \operatorname{Cov}(y_i, \hat{y}_i).
-$$
+```math
+\mathbf{X} = \mathbf{U}\mathbf{D}\mathbf{V}^T
+```
 
-Suppose a method returns the $n$ fitted values as $\hat{\mathbf{y}} = \mathbf{A}_{n \times n} \mathbf{y}$ where $\mathbf{A}$ is an $n$-by-$n$ matrix not depending on $\mathbf{y}$ (of course, it depends on the $\mathbf{x}_i$'s). Then
+where:
+- $\mathbf{U} \in \mathbb{R}^{n \times p}$ has orthonormal columns
+- $\mathbf{D} \in \mathbb{R}^{p \times p}$ is diagonal with singular values $d_1 \geq d_2 \geq \cdots \geq d_p \geq 0$
+- $\mathbf{V} \in \mathbb{R}^{p \times p}$ is orthogonal
 
-$$
-df = \frac{1}{\sigma^2} \sum_{i=1}^n \operatorname{Cov}(y_i, \hat{y}_i) = \sum_{i=1}^n A_{ii} = \operatorname{tr}(\mathbf{A}).
-$$
+The OLS estimator can be written as:
 
-For example, for a linear regression model with $p$ coefficients, we all agree that the degree of freedom is $p$. If using the formula above we have
+```math
+\hat{\boldsymbol{\beta}}_{\text{OLS}} = \mathbf{V}\mathbf{D}^{-1}\mathbf{U}^T\mathbf{y}
+```
 
-$$
-df = \operatorname{tr}(\mathbf{H}) = p, \qquad \hat{\mathbf{y}}_{\mathrm{LS}} = \mathbf{H} \mathbf{y}
-$$
+The ridge estimator becomes:
 
-which also gives us $df = p$.
+```math
+\hat{\boldsymbol{\beta}}_{\text{ridge}} = \mathbf{V}(\mathbf{D}^2 + \lambda\mathbf{I})^{-1}\mathbf{D}\mathbf{U}^T\mathbf{y}
+```
 
-Similarly, we can compute the effective degree of freedom in ridge regression as follows.
+In terms of the principal components, let $\boldsymbol{\alpha} = \mathbf{V}^T\boldsymbol{\beta}$. Then:
 
-For ridge regression, we have $\hat{\mathbf{y}}_{\mathrm{ridge}} = \mathbf{S}_\lambda \mathbf{y}$, where
+```math
+\hat{\boldsymbol{\alpha}}_{\text{OLS}} = \mathbf{D}^{-1}\mathbf{U}^T\mathbf{y}, \quad \hat{\alpha}_j^{\text{OLS}} = \frac{1}{d_j}\mathbf{u}_j^T\mathbf{y}
+```
 
-$$
-\mathbf{S}_\lambda = \mathbf{X}(\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T = \sum_{j=1}^p \frac{d_j^2}{d_j^2 + \lambda} \mathbf{u}_j \mathbf{u}_j^T.
-$$
+```math
+\hat{\boldsymbol{\alpha}}_{\text{ridge}} = \frac{d_j}{d_j^2 + \lambda}\mathbf{U}^T\mathbf{y}, \quad \hat{\alpha}_j^{\text{ridge}} = \frac{d_j^2}{d_j^2 + \lambda}\hat{\alpha}_j^{\text{OLS}}
+```
 
-We can define the **effective df** of ridge regression to be
+The shrinkage factor for the $j$-th component is $\frac{d_j^2}{d_j^2 + \lambda}$:
+- Components with large singular values (strong signal) are shrunk less
+- Components with small singular values (weak signal or noise) are shrunk more
 
-$$
-df(\lambda) = \operatorname{tr}(\mathbf{S}_\lambda) = \sum_{j=1}^p \frac{d_j^2}{d_j^2 + \lambda}.
-$$
+### Geometric Interpretation
 
-When the tuning parameter $\lambda = 0$ (i.e., no regularization), $df(\lambda) = p$; when $\lambda$ goes to $\infty$, $df(\lambda)$ goes to $0$.
+The shrinkage effect can be understood geometrically:
 
-Distinct from other variable selection methods, ridge regression allows for a fractional degree of freedom. This value can range continuously between zero and $p$, contingent upon the regularization parameter $\lambda$.
+1. **OLS**: Minimizes the distance from $\mathbf{y}$ to the column space of $\mathbf{X}$
+2. **Ridge**: Minimizes this distance while also penalizing the norm of $\boldsymbol{\beta}$
+
+The ridge solution is the projection of $\mathbf{y}$ onto a shrunken version of the column space, where the shrinkage is more pronounced in directions corresponding to small singular values.
+
+## 3.3.3 Why Shrinkage Works: Bias-Variance Tradeoff
+
+### Theoretical Motivation
+
+While the OLS estimator is unbiased, it may have high variance, especially when:
+- The number of predictors is large relative to sample size
+- Predictors are highly correlated (multicollinearity)
+- The design matrix is ill-conditioned
+
+Ridge regression introduces bias but reduces variance, potentially leading to lower mean squared error (MSE).
+
+### Simple Example: One-Dimensional Estimation
+
+Consider estimating a parameter $\theta$ from $Z_1, \ldots, Z_n \sim N(\theta, \sigma^2)$.
+
+The sample mean $\bar{Z}$ is unbiased with variance $\sigma^2/n$.
+
+Consider the shrunken estimator $\frac{1}{2}\bar{Z}$:
+
+```math
+\text{Bias}\left(\frac{1}{2}\bar{Z}\right) = \mathbb{E}\left(\frac{1}{2}\bar{Z}\right) - \theta = \frac{\theta}{2} - \theta = -\frac{\theta}{2}
+```
+
+```math
+\text{Var}\left(\frac{1}{2}\bar{Z}\right) = \frac{1}{4}\text{Var}(\bar{Z}) = \frac{\sigma^2}{4n}
+```
+
+The MSE is:
+
+```math
+\text{MSE}\left(\frac{1}{2}\bar{Z}\right) = \text{Bias}^2 + \text{Var} = \frac{\theta^2}{4} + \frac{\sigma^2}{4n}
+```
+
+Comparing with the MSE of $\bar{Z}$:
+
+```math
+\text{MSE}(\bar{Z}) = \frac{\sigma^2}{n}
+```
+
+The shrunken estimator has lower MSE when:
+
+```math
+\frac{\theta^2}{4} + \frac{\sigma^2}{4n} < \frac{\sigma^2}{n}
+```
+
+```math
+\theta^2 < \frac{3\sigma^2}{n}
+```
+
+This demonstrates that shrinkage can be beneficial when the true parameter is small relative to the noise level.
+
+### Ridge Regression MSE Analysis
+
+For ridge regression, the bias and variance are:
+
+```math
+\text{Bias}(\hat{\boldsymbol{\beta}}_{\text{ridge}}) = -\lambda(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\boldsymbol{\beta}
+```
+
+```math
+\text{Var}(\hat{\boldsymbol{\beta}}_{\text{ridge}}) = \sigma^2(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{X}(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}
+```
+
+The total MSE is the sum of squared bias and trace of variance:
+
+```math
+\text{MSE}(\hat{\boldsymbol{\beta}}_{\text{ridge}}) = \|\text{Bias}\|^2 + \text{tr}(\text{Var})
+```
+
+## 3.3.4 Degrees of Freedom
+
+### Definition and Motivation
+
+The degrees of freedom (df) of a statistical method measures its effective complexity. For linear methods that produce fitted values $\hat{\mathbf{y}} = \mathbf{A}\mathbf{y}$, the degrees of freedom is defined as:
+
+```math
+\text{df} = \text{tr}(\mathbf{A})
+```
+
+This definition has several interpretations:
+1. **Variance inflation**: Measures how much the method inflates the variance of predictions
+2. **Model complexity**: Represents the effective number of parameters
+3. **Optimism**: Quantifies the optimism in in-sample performance
+
+### Degrees of Freedom for Ridge Regression
+
+For ridge regression, the fitted values are:
+
+```math
+\hat{\mathbf{y}}_{\text{ridge}} = \mathbf{X}(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y} = \mathbf{S}_\lambda\mathbf{y}
+```
+
+where $\mathbf{S}_\lambda = \mathbf{X}(\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T$ is the ridge smoother matrix.
+
+Using the SVD decomposition:
+
+```math
+\mathbf{S}_\lambda = \mathbf{U}\mathbf{D}(\mathbf{D}^2 + \lambda\mathbf{I})^{-1}\mathbf{D}\mathbf{U}^T = \sum_{j=1}^p \frac{d_j^2}{d_j^2 + \lambda}\mathbf{u}_j\mathbf{u}_j^T
+```
+
+The degrees of freedom is:
+
+```math
+\text{df}(\lambda) = \text{tr}(\mathbf{S}_\lambda) = \sum_{j=1}^p \frac{d_j^2}{d_j^2 + \lambda}
+```
+
+### Properties of Ridge Degrees of Freedom
+
+1. **Range**: $0 < \text{df}(\lambda) < p$
+2. **Monotonicity**: $\text{df}(\lambda)$ decreases as $\lambda$ increases
+3. **Limiting behavior**:
+   - $\lambda \to 0$: $\text{df}(\lambda) \to p$ (full complexity)
+   - $\lambda \to \infty$: $\text{df}(\lambda) \to 0$ (no complexity)
+4. **Fractional values**: Unlike subset selection, ridge can have fractional degrees of freedom
+
+## 3.3.5 Practical Implementation
+
+### Python Implementation
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import Ridge
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import linalg
+
+# Generate synthetic data with multicollinearity
+np.random.seed(42)
+n, p = 100, 10
+
+# Create correlated predictors
+X = np.random.randn(n, p)
+# Add correlation between predictors
+X[:, 1] = 0.8 * X[:, 0] + 0.2 * np.random.randn(n)
+X[:, 2] = 0.7 * X[:, 0] + 0.3 * np.random.randn(n)
+
+# True coefficients (only first 3 are non-zero)
+true_beta = np.zeros(p)
+true_beta[:3] = [2, -1.5, 1]
+
+# Generate response
+y = X @ true_beta + 0.5 * np.random.randn(n)
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Standardize data
+scaler_X = StandardScaler()
+scaler_y = StandardScaler()
+
+X_train_scaled = scaler_X.fit_transform(X_train)
+X_test_scaled = scaler_X.transform(X_test)
+y_train_scaled = scaler_y.fit_transform(y_train.reshape(-1, 1)).ravel()
+y_test_scaled = scaler_y.transform(y_test.reshape(-1, 1)).ravel()
+
+# Compute SVD
+U, d, Vt = linalg.svd(X_train_scaled, full_matrices=False)
+
+# Ridge regression with different lambda values
+lambda_values = np.logspace(-3, 3, 50)
+ridge_coefs = []
+ridge_preds = []
+ridge_dfs = []
+
+for alpha in lambda_values:
+    # Fit ridge regression
+    ridge = Ridge(alpha=alpha)
+    ridge.fit(X_train_scaled, y_train_scaled)
+    
+    # Store coefficients
+    ridge_coefs.append(ridge.coef_)
+    
+    # Store predictions
+    y_pred = ridge.predict(X_test_scaled)
+    ridge_preds.append(y_pred)
+    
+    # Compute degrees of freedom
+    df = np.sum(d**2 / (d**2 + alpha))
+    ridge_dfs.append(df)
+
+ridge_coefs = np.array(ridge_coefs)
+ridge_preds = np.array(ridge_preds)
+
+# Plot results
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+
+# Coefficient paths
+axes[0, 0].semilogx(lambda_values, ridge_coefs)
+axes[0, 0].set_xlabel('Regularization Parameter (λ)')
+axes[0, 0].set_ylabel('Coefficient Values')
+axes[0, 0].set_title('Ridge: Coefficient Paths')
+axes[0, 0].grid(True)
+
+# Degrees of freedom
+axes[0, 1].semilogx(lambda_values, ridge_dfs, 'b-')
+axes[0, 1].set_xlabel('Regularization Parameter (λ)')
+axes[0, 1].set_ylabel('Degrees of Freedom')
+axes[0, 1].set_title('Ridge: Degrees of Freedom')
+axes[0, 1].grid(True)
+
+# Shrinkage factors for different singular values
+shrinkage_factors = d**2 / (d**2[:, None] + lambda_values)
+for i in range(min(5, len(d))):
+    axes[0, 2].semilogx(lambda_values, shrinkage_factors[i], label=f'd_{i+1}={d[i]:.2f}')
+axes[0, 2].set_xlabel('Regularization Parameter (λ)')
+axes[0, 2].set_ylabel('Shrinkage Factor')
+axes[0, 2].set_title('Shrinkage Factors by Singular Value')
+axes[0, 2].legend()
+axes[0, 2].grid(True)
+
+# Cross-validation for optimal lambda
+cv_scores = []
+for alpha in lambda_values:
+    ridge = Ridge(alpha=alpha)
+    scores = cross_val_score(ridge, X_train_scaled, y_train_scaled, cv=5, scoring='neg_mean_squared_error')
+    cv_scores.append(-scores.mean())
+
+best_idx = np.argmin(cv_scores)
+best_lambda = lambda_values[best_idx]
+
+axes[1, 0].semilogx(lambda_values, cv_scores, 'r-')
+axes[1, 0].axvline(best_lambda, color='red', linestyle='--', label=f'Best λ = {best_lambda:.4f}')
+axes[1, 0].set_xlabel('Regularization Parameter (λ)')
+axes[1, 0].set_ylabel('Cross-Validation MSE')
+axes[1, 0].set_title('Cross-Validation Performance')
+axes[1, 0].legend()
+axes[1, 0].grid(True)
+
+# Compare OLS vs Ridge coefficients
+ols_coefs = linalg.lstsq(X_train_scaled, y_train_scaled, rcond=None)[0]
+best_ridge = Ridge(alpha=best_lambda)
+best_ridge.fit(X_train_scaled, y_train_scaled)
+
+x_pos = np.arange(len(ols_coefs))
+width = 0.35
+
+axes[1, 1].bar(x_pos - width/2, ols_coefs, width, label='OLS', alpha=0.7)
+axes[1, 1].bar(x_pos + width/2, best_ridge.coef_, width, label=f'Ridge (λ={best_lambda:.4f})', alpha=0.7)
+axes[1, 1].set_xlabel('Predictor Index')
+axes[1, 1].set_ylabel('Coefficient Value')
+axes[1, 1].set_title('OLS vs Ridge Coefficients')
+axes[1, 1].legend()
+axes[1, 1].grid(True)
+
+# Prediction comparison
+y_test_original = scaler_y.inverse_transform(y_test_scaled.reshape(-1, 1)).ravel()
+ols_pred = scaler_y.inverse_transform((X_test_scaled @ ols_coefs).reshape(-1, 1)).ravel()
+ridge_pred = scaler_y.inverse_transform((X_test_scaled @ best_ridge.coef_).reshape(-1, 1)).ravel()
+
+axes[1, 2].scatter(y_test_original, ols_pred, alpha=0.6, label=f'OLS (R²={r2_score(y_test_original, ols_pred):.3f})')
+axes[1, 2].scatter(y_test_original, ridge_pred, alpha=0.6, label=f'Ridge (R²={r2_score(y_test_original, ridge_pred):.3f})')
+axes[1, 2].plot([y_test_original.min(), y_test_original.max()], [y_test_original.min(), y_test_original.max()], 'k--', alpha=0.5)
+axes[1, 2].set_xlabel('True Values')
+axes[1, 2].set_ylabel('Predicted Values')
+axes[1, 2].set_title('Prediction Comparison')
+axes[1, 2].legend()
+axes[1, 2].grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# Print results
+print(f"Best Ridge λ: {best_lambda:.4f}")
+print(f"Degrees of Freedom: {ridge_dfs[best_idx]:.2f}")
+print(f"OLS Test R²: {r2_score(y_test_original, ols_pred):.4f}")
+print(f"Ridge Test R²: {r2_score(y_test_original, ridge_pred):.4f}")
+print(f"OLS Test MSE: {mean_squared_error(y_test_original, ols_pred):.4f}")
+print(f"Ridge Test MSE: {mean_squared_error(y_test_original, ridge_pred):.4f}")
+
+# Demonstrate the augmented data interpretation
+def ridge_via_augmented_data(X, y, lambda_val):
+    """Implement ridge regression using the augmented data approach"""
+    n, p = X.shape
+    
+    # Create augmented data
+    X_aug = np.vstack([X, np.sqrt(lambda_val) * np.eye(p)])
+    y_aug = np.concatenate([y, np.zeros(p)])
+    
+    # Solve using OLS on augmented data
+    beta_aug = linalg.lstsq(X_aug, y_aug, rcond=None)[0]
+    
+    return beta_aug
+
+# Compare methods
+lambda_test = 1.0
+ridge_sklearn = Ridge(alpha=lambda_test)
+ridge_sklearn.fit(X_train_scaled, y_train_scaled)
+
+ridge_augmented = ridge_via_augmented_data(X_train_scaled, y_train_scaled, lambda_test)
+
+print(f"\nCoefficient comparison (λ={lambda_test}):")
+print("Sklearn Ridge:", ridge_sklearn.coef_[:3])
+print("Augmented Data:", ridge_augmented[:3])
+print("Difference:", np.max(np.abs(ridge_sklearn.coef_ - ridge_augmented)))
+```
+
+### R Implementation
+
+```r
+# Load libraries
+library(glmnet)
+library(ggplot2)
+library(dplyr)
+
+# Generate synthetic data with multicollinearity
+set.seed(42)
+n <- 100
+p <- 10
+
+# Create correlated predictors
+X <- matrix(rnorm(n * p), n, p)
+X[, 2] <- 0.8 * X[, 1] + 0.2 * rnorm(n)
+X[, 3] <- 0.7 * X[, 1] + 0.3 * rnorm(n)
+
+# True coefficients
+true_beta <- rep(0, p)
+true_beta[1:3] <- c(2, -1.5, 1)
+
+# Generate response
+y <- X %*% true_beta + 0.5 * rnorm(n)
+
+# Split data
+train_idx <- sample(1:n, 0.7 * n)
+X_train <- X[train_idx, ]
+X_test <- X[-train_idx, ]
+y_train <- y[train_idx]
+y_test <- y[-train_idx]
+
+# Standardize data
+X_train_scaled <- scale(X_train)
+X_test_scaled <- scale(X_test, center = attr(X_train_scaled, "scaled:center"), 
+                       scale = attr(X_train_scaled, "scaled:scale"))
+y_train_scaled <- scale(y_train)
+y_test_scaled <- scale(y_test, center = attr(y_train_scaled, "scaled:center"), 
+                       scale = attr(y_train_scaled, "scaled:scale"))
+
+# Compute SVD
+svd_result <- svd(X_train_scaled)
+U <- svd_result$u
+d <- svd_result$d
+V <- svd_result$v
+
+# Ridge regression with cross-validation
+ridge_cv <- cv.glmnet(X_train_scaled, y_train_scaled, alpha = 0, standardize = FALSE)
+ridge_fit <- glmnet(X_train_scaled, y_train_scaled, alpha = 0, lambda = ridge_cv$lambda.min)
+
+# Compute degrees of freedom
+df_ridge <- sum(d^2 / (d^2 + ridge_cv$lambda.min))
+
+# Plot coefficient paths
+plot(ridge_cv$glmnet.fit, xvar = "lambda", main = "Ridge: Coefficient Paths")
+abline(v = log(ridge_cv$lambda.min), col = "red", lty = 2)
+
+# Compare with OLS
+ols_coefs <- coef(lm(y_train_scaled ~ X_train_scaled - 1))
+ridge_coefs <- as.vector(coef(ridge_fit))[-1]  # Remove intercept
+
+# Create comparison plot
+coef_comparison <- data.frame(
+  predictor = 1:p,
+  ols = ols_coefs,
+  ridge = ridge_coefs
+)
+
+ggplot(coef_comparison, aes(x = predictor)) +
+  geom_bar(aes(y = ols, fill = "OLS"), stat = "identity", alpha = 0.7, width = 0.4) +
+  geom_bar(aes(y = ridge, fill = "Ridge"), stat = "identity", alpha = 0.7, width = 0.4, 
+           position = position_nudge(x = 0.4)) +
+  scale_fill_manual(values = c("OLS" = "blue", "Ridge" = "red")) +
+  labs(title = "OLS vs Ridge Coefficients", x = "Predictor Index", y = "Coefficient Value") +
+  theme_minimal()
+
+# Prediction comparison
+ols_pred <- X_test_scaled %*% ols_coefs
+ridge_pred <- predict(ridge_fit, newx = X_test_scaled)
+
+ols_r2 <- 1 - sum((y_test_scaled - ols_pred)^2) / sum((y_test_scaled - mean(y_test_scaled))^2)
+ridge_r2 <- 1 - sum((y_test_scaled - ridge_pred)^2) / sum((y_test_scaled - mean(y_test_scaled))^2)
+
+cat("OLS Test R²:", round(ols_r2, 4), "\n")
+cat("Ridge Test R²:", round(ridge_r2, 4), "\n")
+cat("Ridge Degrees of Freedom:", round(df_ridge, 2), "\n")
+cat("Best λ:", round(ridge_cv$lambda.min, 4), "\n")
+```
+
+## 3.3.6 Advanced Topics
+
+### Bayesian Interpretation
+
+Ridge regression can be interpreted as a Bayesian estimator with a Gaussian prior:
+
+```math
+\boldsymbol{\beta} \sim N(0, \tau^2\mathbf{I})
+```
+
+The posterior mean is:
+
+```math
+\mathbb{E}[\boldsymbol{\beta}|\mathbf{y}] = (\mathbf{X}^T\mathbf{X} + \sigma^2/\tau^2\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}
+```
+
+This is equivalent to ridge regression with $\lambda = \sigma^2/\tau^2$.
+
+### Ridge Regression with Different Penalties
+
+Generalized ridge regression allows different penalties for different coefficients:
+
+```math
+\min_{\boldsymbol{\beta}} \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2_2 + \boldsymbol{\beta}^T\mathbf{D}\boldsymbol{\beta}
+```
+
+where $\mathbf{D}$ is a diagonal matrix with penalty weights.
+
+### Ridge Regression for Classification
+
+Ridge regression can be extended to classification problems using logistic regression with L2 penalty:
+
+```math
+\min_{\boldsymbol{\beta}} \sum_{i=1}^n \log(1 + e^{-y_i\mathbf{x}_i^T\boldsymbol{\beta}}) + \lambda\|\boldsymbol{\beta}\|^2_2
+```
+
+## 3.3.7 Model Selection and Validation
+
+### Choosing the Regularization Parameter
+
+1. **Cross-validation**: Most common approach
+2. **Generalized cross-validation**: Approximates leave-one-out CV
+3. **Information criteria**: AIC, BIC with effective degrees of freedom
+4. **Bayesian methods**: Empirical Bayes, hierarchical models
+
+### Generalized Cross-Validation
+
+GCV provides an efficient approximation to leave-one-out cross-validation:
+
+```math
+\text{GCV}(\lambda) = \frac{\|\mathbf{y} - \hat{\mathbf{y}}_{\text{ridge}}\|^2_2}{[n - \text{df}(\lambda)]^2}
+```
+
+### Model Diagnostics
+
+1. **Residual analysis**: Check for model adequacy
+2. **Influence diagnostics**: Identify influential observations
+3. **Multicollinearity**: Assess correlation structure
+4. **Prediction intervals**: Quantify uncertainty
+
+## 3.3.8 Practical Guidelines
+
+### When to Use Ridge Regression
+
+**Use ridge regression when:**
+- You have many predictors relative to sample size
+- Predictors are highly correlated
+- The design matrix is ill-conditioned
+- You want to keep all variables in the model
+- Primary goal is prediction accuracy
+
+**Consider alternatives when:**
+- You want automatic variable selection (use lasso)
+- You have domain knowledge about variable importance
+- The true model is sparse
+- Interpretability is crucial
+
+### Best Practices
+
+1. **Always standardize predictors** before applying ridge regression
+2. **Use cross-validation** to select the regularization parameter
+3. **Check for influential observations** that might affect the solution
+4. **Validate assumptions** about the error distribution
+5. **Consider the bias-variance tradeoff** when interpreting results
+
+### Common Pitfalls
+
+1. **Not standardizing data**: Can lead to inconsistent results
+2. **Over-regularization**: Choosing λ too large can introduce excessive bias
+3. **Under-regularization**: Choosing λ too small may not address overfitting
+4. **Ignoring multicollinearity**: Can affect coefficient interpretation
+5. **Not validating on holdout set**: Can lead to overoptimistic performance estimates
+
+## Summary
+
+Ridge regression is a powerful regularization technique that addresses the bias-variance tradeoff through L2 penalization. It provides stable coefficient estimates, handles multicollinearity effectively, and often improves prediction accuracy compared to ordinary least squares. The key insights are:
+
+1. **Shrinkage**: Ridge shrinks coefficients toward zero, with more shrinkage for directions with smaller singular values
+2. **Bias-variance tradeoff**: Introduces bias but reduces variance, potentially lowering MSE
+3. **Degrees of freedom**: Provides a continuous measure of model complexity
+4. **Geometric interpretation**: Can be viewed as projection onto a shrunken subspace
+5. **Bayesian interpretation**: Equivalent to maximum a posteriori estimation with Gaussian prior
+
+Proper implementation requires careful attention to data preprocessing, parameter selection, and model validation. Ridge regression is particularly valuable in high-dimensional settings with correlated predictors.
