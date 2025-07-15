@@ -4,6 +4,10 @@
 
 Random Forest is an ensemble learning method that constructs multiple decision trees during training and outputs the mean prediction of the individual trees. This approach addresses the high variance problem inherent in single decision trees by leveraging the power of ensemble methods.
 
+![Random Forest Ensemble](../_images/w4_forest.png)
+
+*Figure: A random forest is an ensemble of many decision trees, each trained on a different bootstrap sample of the data.*
+
 ### Mathematical Framework
 
 Consider a regression problem with:
