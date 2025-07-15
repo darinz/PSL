@@ -1,187 +1,346 @@
-# 11.2. The Separable case
+# 11.2. The Separable Case
 
-In Support Vector Machine (SVM), we aim to find a linear decision boundary, but unlike Linear Discriminant Analysis (LDA) and logistic regression, our focus isn’t on modeling conditional or joint distributions. Instead, we are directly modeling the decision boundary.
+In Support Vector Machine (SVM), we aim to find a linear decision boundary, but unlike Linear Discriminant Analysis (LDA) and logistic regression, our focus isn't on modeling conditional or joint distributions. Instead, we are directly modeling the decision boundary.
 
 ## 11.2.1. The Max-Margin Problem
 
-To illustrate this, let’s consider a scenario where we have two groups of points, and we want to create a linear decision boundary to separate them. Our goal is to maximize the separation, making the margin between the two groups as wide as possible.
+### Problem Setup
 
-![Linear SVM separation](../_images/w11_linear_sep_1.png)
+To illustrate this, let's consider a scenario where we have two groups of points, and we want to create a linear decision boundary to separate them. Our goal is to maximize the separation, making the margin between the two groups as wide as possible.
 
-To achieve this, we introduce a solid blue line to separate the two groups of points, and we imagine creating parallel dashed lines on either side of it. We extend these dashed lines until they touch the green/red points on either side, creating a “margin” between them. This margin is essentially an “avenue” that separates the two groups, and we aim to maximize its width.
+**Key Insight**: Unlike other classification methods that try to model the probability of class membership, SVM focuses on finding the optimal decision boundary that maximizes the margin between classes.
 
-To formulate this problem mathematically, we start by representing the linear decision boundary (represented by the solid blue line) using coefficients, such as the slope $`\beta`$ and the intercept $`\beta_0`$. However, $`\beta`$ and $`\beta_0`$ are not uniquely determined, as we can scale them or flip their signs and still have the same line. To address this, we take the following steps to fix these parameters:
+### Geometric Intuition
 
-- We set the output labels $`y`$ to be either +1 or -1. Then require $`y_i (\beta \cdot x_i + \beta_0)`$ should always be positive. Here $`\beta \cdot x_i = \beta^t x_i`$ represents the Euclidean inner product between two vectors.
-- We also need to fix the scale of $`\beta`$ and $`\beta_0`$. To do this, we parameterize the two dashed lines on either side of the solid blue line as $`\beta \cdot x + \beta_0 = 1`$ and $`\beta \cdot x + \beta_0 = -1`$. This scaling fixes the magnitude of $`\beta`$.
-
-![Linear SVM margin](../_images/w11_linear_sep_2.png)
-
-Next, our objective is to measure the margin or the width of the avenue between the two groups of points. Note that the distance between the solid and dashed lines is half the width. Recognize that the slope parameter of the line $`\beta`$ is orthogonal to both the solid and dashed lines.
-
-![Linear SVM margin width](../_images/w11_linear_margin.png)
-
-To calculate the width of the avenue, we can pick a point on a dashed line, denoted as $`z`$, and another point on the solid line, denoted as $`x`$. We then compute the projection of the vector from $`x`$ to $`z`$ onto the direction of $`\beta`$ to find the magnitude of the red bar, representing half of the avenue’s width:
+Consider a binary classification problem with two classes labeled as $`y_i \in \{-1, +1\}`$ and feature vectors $`x_i \in \mathbb{R}^p`$. We want to find a hyperplane defined by:
 
 ```math
-(x - z)^t \frac{\beta}{\| \beta\|} = \frac{x^t \beta - z^t \beta}{\| \beta\|} = \frac{1}{\| \beta\|}.
+f(x) = \beta^T x + \beta_0 = 0
 ```
 
-This leads us to the conclusion that half of the avenue’s width is equal to $`1/\|\beta\|`$. Therefore, to maximize the margin, we can equivalently minimize $`\|\beta\|^2/2`$.
+where $`\beta \in \mathbb{R}^p`$ is the normal vector to the hyperplane and $`\beta_0 \in \mathbb{R}`$ is the intercept.
 
-So, our goal becomes an optimization problem (known as the **max-margin** problem) subject to certain constraints. These constraints ensure that the data points fall on the correct side of the dashed lines:
+**The Margin Concept**: The margin is the distance between the decision boundary and the closest data points from each class. SVM seeks to maximize this margin, which provides better generalization and robustness.
 
-```math
-\begin{split}
-\min_{\beta, \beta_0 } & \frac{1}{2} \|\beta\|^2  \\
-\text{subject to } & y_i ( \beta \cdot x_i + \beta_0) - 1 \ge 0,
-\end{split}
-```
+### Mathematical Formulation
 
-The max-margin problem is a convex optimization problem with a quadratic objective function and linear or affine constraints, making it free from issues related to local optima.
+To achieve maximum margin separation, we need to:
 
-Additionally, the equation above represents the primal problem in SVM. Instead of directly solving the primal problem, we often solve its dual problem. The dual problem yields a set of $`\lambda`$ values, which can be linked to the solutions of the primal problem using the Karush-Kuhn-Tucker (KKT) conditions.
+1. **Normalize the decision function**: We require that for all training points:
+   ```math
+   y_i(\beta^T x_i + \beta_0) \geq 1
+   ```
+
+2. **Define the margin**: The margin width is $`2/\|\beta\|`$, so maximizing the margin is equivalent to minimizing $`\|\beta\|^2/2`$.
+
+3. **Formulate the optimization problem**:
+   ```math
+   \begin{aligned}
+   \min_{\beta, \beta_0} \quad & \frac{1}{2}\|\beta\|^2 \\
+   \text{subject to} \quad & y_i(\beta^T x_i + \beta_0) \geq 1, \quad i = 1, 2, \ldots, n
+   \end{aligned}
+   ```
+
+### Support Vectors
+
+The data points that lie exactly on the margin boundaries (where $`y_i(\beta^T x_i + \beta_0) = 1`$) are called **support vectors**. These are the critical points that define the optimal decision boundary.
+
+**Why Support Vectors Matter**:
+- They determine the optimal hyperplane
+- Removing non-support vectors doesn't change the solution
+- The number of support vectors is typically much smaller than the total number of training points
 
 ## 11.2.2. The KKT Conditions
 
-The Karush-Kuhn-Tucker (KKT) conditions are a set of necessary conditions that characterize the solutions to constrained optimization problems.
+### Understanding Constrained Optimization
 
-When we want to minimize a function $`f(x)`$, we focus on its derivative. Specifically, we look at the negative derivative at a particular point, $`- \frac{\partial f(x)}{\partial x}`$, which indicates a direction along which we can make further reductions in the value of $`f`$.
+The Karush-Kuhn-Tucker (KKT) conditions are fundamental to understanding how SVM optimization works. They provide necessary conditions for optimality in constrained optimization problems.
 
-### Optimization Without Constraints
+### Lagrangian Function
 
-First, let’s consider a scenario without constraints. We know that at the minimizer, the derivative of $`f`$ evaluated at that point should be zero. In mathematical terms, this is expressed as $`\frac{\partial f(x)}{\partial x} = 0`$. This condition signifies that there is no direction left to further reduce the value of $`f`$, making it a necessary condition for optimality.
-
-### Optimization With Equality Constraints
-
-Next, let’s extend this to situations where we have an equality constraint:
+For the SVM problem, we introduce the Lagrangian function:
 
 ```math
-\min_x  f(x), \quad \text{subject to }  g(x) =  b.
+L(\beta, \beta_0, \lambda) = \frac{1}{2}\|\beta\|^2 - \sum_{i=1}^n \lambda_i [y_i(\beta^T x_i + \beta_0) - 1]
 ```
 
-Here, our **feasible region** is defined by the set of $`x`$ values that satisfy $`g(x) =  b`$.
+where $`\lambda_i \geq 0`$ are the Lagrange multipliers.
 
-Suppose $`x`$ is a solution to this problem. At such a point, the negative derivative of $`f`$, which indicates a direction along which we can further reduce the value of $`f`$, may not necessarily be zero. However, this non-zero direction must be a “forbidden” one in the sense that moving along it would lead us outside the feasible region, violating the equality constraint. Mathematically, we can express this situation as:
+### KKT Conditions for SVM
 
-$`\frac{\partial f}{\partial x} + \lambda \frac{\partial g}{\partial x} = 0`$, where $`\lambda`$ can take any real number value.
+The KKT conditions for our SVM problem are:
 
-![Optimization with equality constraint](../_images/w11_optimize.png)
+1. **Stationarity**: $`\frac{\partial L}{\partial \beta} = 0`$ and $`\frac{\partial L}{\partial \beta_0} = 0`$
+2. **Primal feasibility**: $`y_i(\beta^T x_i + \beta_0) \geq 1`$ for all $`i`$
+3. **Dual feasibility**: $`\lambda_i \geq 0`$ for all $`i`$
+4. **Complementary slackness**: $`\lambda_i[y_i(\beta^T x_i + \beta_0) - 1] = 0`$ for all $`i`$
 
-### Optimization With Inequality Constraints
+### Implications of KKT Conditions
 
-Now, consider scenarios with an inequality constraint:
+From the stationarity conditions, we derive:
 
 ```math
-\min_x  f(x), \quad \text{subject to }  g(x) =  b.
+\beta = \sum_{i=1}^n \lambda_i y_i x_i
 ```
-
-Assuming $`g(x)`$ is a concave function and $`f(x)`$ is smooth, there are two cases to explore. Suppose $`x`$ is a solution to this problem.
-
-- **Case 1:** $`x`$ is inside the convex feasible region (interior point): In this case, we can place a small neighborhood around $`x`$ where the entire neighborhood remains within the feasible region. Then, the derivative $`\frac{\partial f(x)}{\partial x}`$ must be zero at this point. This aligns with the idea that there are no directions within the feasible region where $`f`$ can be further reduced.
-- **Case 2:** $`x`$ lies on the boundary of the convex region (boundary point): Here, the negative derivative $`-\frac{\partial f(x)}{\partial x}`$ may not necessarily be zero. However, this direction is a “forbidden” one in the sense that moving along it would decrease the value of $`g`$, leading to $`g(x) < b`$ and therefore violating the inequality constraint. Mathematically, we can describe this direction as
 
 ```math
-- \frac{\partial f(x)}{\partial x} = - \lambda \frac{\partial g}{\partial x}, \quad \lambda \ge 0,
+\sum_{i=1}^n \lambda_i y_i = 0
 ```
 
-where $`\lambda`$ must always be non-negative due to the inequality constraint.
-
-The conditions outlined above can be encapsulated in the KKT conditions for optimization with inequality constraints.
-
-![KKT general conditions](../_images/w11_KKT_general.png)
-
-Specifically, we have four conditions:
-
-1. **First Condition:** The derivative of the Lagrangian function should be equal to zero. Here the Lagrangian function is defined as
-
-```math
-\begin{split}
-L(x, \lambda) & = f(x) - \lambda (g(x) - b) \\
-\frac{\partial}{\partial x} L & = 0 \quad \Longrightarrow \quad \frac{\partial f(x)}{\partial x} =  \lambda \frac{\partial g(x)}{\partial x}.
-\end{split}
-```
-2. **Second Condition:** $`\lambda \ge 0`$.
-3. **Third Condition:** The inequality constraints $`g(x) \ge b`$ should be satisfied.
-4. **Fourth Condition (Complementary Slackness):** This condition ensures that when the constraint is not active, i.e., $`g(x) - b \ne 0`$, then the Lagrange multiplier $`\lambda`$ should be zero (Case 1).
-
-#### KKT Conditions for SVM
-
-The Lagrangian function and the four KKT conditions for the SVM problem are summarized below. The Lagrangian function involves two sets of arguments: the first set is for the primal problem, which includes the slope $`\beta`$ and intercept $`\beta_0`$, and the second set is for the Lagrange multipliers $`\lambda_1`$ to $`\lambda_n`$, as we have $`n`$ inequality constraints.
-
-![KKT conditions for SVM](../_images/w11_KKT_SVM.png)
+From complementary slackness, we see that:
+- If $`\lambda_i > 0`$, then $`y_i(\beta^T x_i + \beta_0) = 1`$ (support vector)
+- If $`y_i(\beta^T x_i + \beta_0) > 1`$, then $`\lambda_i = 0`$ (non-support vector)
 
 ## 11.2.3. The Duality
 
-Next, let’s discuss the duality between the primal and dual problems in optimization.
+### Primal to Dual Transformation
 
-We start with the general **primal problem**, where our goal is to minimize a function $`f(x)`$ subject to an inequality constraint of the form $`g(x) \geq b`$. To establish the duality, we introduce the Lagrangian of this problem: $`L(x, \lambda) = f(x) - \lambda (g(x) - b)`$. (There is a typo in the image below: the Lagrangian multiplier $`\lambda \ge 0`$.)
-
-![Primal minimax](../_images/w11_primal_minimax.png)
-
-The primal problem can be transformed into a minimax problem, which means minimizing with respect to variable $`x`$ and maximizing with respect to the Lagrange multiplier $`\lambda`$. To understand their equivalence, we analyze what’s inside the max operation with respect to $`\lambda`$. Two cases emerge:
-
-- If $`g(x) \geq b`$, the expression inside the parentheses is positive. Therefore, we set $`\lambda = 0`$, which leads to the maximized value being equivalent to $`f(x)`$.
-- If $`g(x) < b`$, the expression inside the parentheses is negative, and the product of a negative value and $`(-\lambda)`$ becomes positive. In this scenario, we aim to maximize $`\lambda`$ as much as possible, driving the value inside the parentheses to infinity. This situation results in the overall maximization value being infinite.
-
-By analyzing these two cases, we conclude that the expression inside the max operation simplifies to $`f(x)`$. Therefore, the primal problem can be reformulated as a minimax problem.
-
-Next, we switch the order of the minimization and maximization, the resulting optimization problem is known as the **dual problem**:
-
-![Dual problem](../_images/w11_dual.png)
-
-Usually, the dual problem provides a lower bound on the primal problem (known as weak duality):
+The dual formulation of SVM is often more convenient to solve. The dual problem is:
 
 ```math
-\max_\lambda \min_x L(x, \lambda) \le \min_x \max_\lambda L(x, \lambda).
+\begin{aligned}
+\max_{\lambda} \quad & \sum_{i=1}^n \lambda_i - \frac{1}{2}\sum_{i=1}^n\sum_{j=1}^n \lambda_i \lambda_j y_i y_j x_i^T x_j \\
+\text{subject to} \quad & \sum_{i=1}^n \lambda_i y_i = 0 \\
+& \lambda_i \geq 0, \quad i = 1, 2, \ldots, n
+\end{aligned}
 ```
 
-But for SVM-type convex programming problems, strong duality holds, which means the optimal value of the primal problem is equal to the optimal value of the dual:
+### Advantages of the Dual Formulation
 
-```math
-\max_\lambda \min_x L(x, \lambda) = \min_x \max_\lambda L(x, \lambda).
-```
+1. **Kernel Trick**: The dual formulation only depends on inner products $`x_i^T x_j`$, making it easy to apply the kernel trick
+2. **Sparsity**: Many $`\lambda_i`$ values are zero, leading to sparse solutions
+3. **Computational Efficiency**: Often easier to solve than the primal problem
 
-The primal and dual problems for SVM are summarized below:
+### Strong Duality
 
-![SVM primal and dual](../_images/w11_linear_prime_dual.png)
-
-For SVM, we can choose to solve either the primal or dual problem to obtain the same optimal solution. In practice, solving the dual problem is often preferred for various reasons:
-
-- The dual is easier to optimize than the primal, especially when it comes to handling constraints.
-- The dual solution involves Lagrange multipliers $`\lambda_i`$’s. Many of these $`\lambda_i`$ values will be zero for data points that are not support vectors (data points on the dashed lines). Complementary Slackness in the KKT conditions ensures that only support vectors have non-zero $`\lambda`$ values. This leads to a sparse solution.
-- The dual formulation of the SVM is advantageous when using kernel functions. The kernel trick allows SVMs to implicitly map data into higher-dimensional feature spaces without explicitly computing the mapping.
+For convex optimization problems like SVM, strong duality holds, meaning the optimal value of the primal equals the optimal value of the dual.
 
 ## 11.2.4. Prediction
 
-Solving for the $`\lambda_i`$ values in the dual problem allows us to retrieve the parameters of the primal problem, specifically the slope $`\beta`$ and the intercept $`\beta_0`$ of the optimal linear decision boundary.
+### Decision Function
 
-We will use the two equations colored in pink in the KKT conditions. The first equality can help us to solve for $`\beta`$:
+Once we solve the dual problem and obtain the optimal $`\lambda_i`$ values, we can make predictions using:
 
 ```math
-\beta = \sum \lambda_i y_i x_i = \sum_{i \in N_s} \lambda_i y_i x_i,
+f(x) = \sum_{i=1}^n \lambda_i y_i x_i^T x + \beta_0
 ```
 
-where $`N_s`$ represents the set of support vectors. Pick any support vector; since it’s on the dashed line, it must satisfy the equality $`y_i ( \beta \cdot x_i + \beta_0) - 1 =0`$. Thus we can solve for the intercept $`\beta_0`$. For computational stability, it is common to compute multiple $`\beta_0`$ values based on different support vectors and then average them. This helps mitigate slight variations that may occur in practice.
+### Computing the Intercept
 
-When it comes to making predictions for new data points, we simply evaluate the linear equation, involving $`(\beta, \beta_0)`$, and the new feature vector $`x^*`$, and examine the sign of the result. The sign determines whether we predict the new feature to belong to one class (+1) or the other class (-1).
+The intercept $`\beta_0`$ can be computed from any support vector:
 
-### Computation Cost
+```math
+\beta_0 = y_i - \sum_{j=1}^n \lambda_j y_j x_j^T x_i
+```
 
-SVM computation revolves around the dual problem, focusing on solving for $`\lambda_1`$ to $`\lambda_n`$. Consequently, the computational cost of SVM primarily depends on the sample size ($`n`$), not the original feature dimension ($`p`$). This implies that even a straightforward SVM model with a relatively low dimensional feature space can demand substantial computational resources when working with a large dataset.
+For numerical stability, it's common to average over all support vectors.
 
-### Probabilistic Outputs
+### Classification Rule
 
-Unlike logistic regression or discriminant analysis, SVM directly determines the decision boundary without providing probabilities. However, there is a way to obtain probability outcomes from the distance of a point to the binary decision boundary based on Platt Scaling:
+The classification rule is:
+```math
+\hat{y} = \text{sign}(f(x))
+```
 
-[A Note on Platt’s Probabilistic Outputs for Support Vector Machines (Hsuan-Tien Lin et al., 2007)](https://liangfgithub.github.io/ref/SVM_Platt.pdf)
+## 11.2.5. Implementation and Examples
 
-## 11.2.5. Summary
+### Python Implementation
 
-Let me provide a refined summary of our discussion regarding **linear SVMs for separable cases**.
+Let's implement SVM from scratch to understand the concepts better:
 
-To recap, we’ve been exploring linear SVMs in scenarios where data points can be cleanly separated by a linear function within the feature space $`X`$. This separability implies that multiple suitable linear functions could exist. Our goal has been to find the optimal linear function, or decision boundary, that **maximizes the margin** between two groups of data points.
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
+import cvxopt
+from cvxopt import matrix, solvers
 
-Formally, this problem can be framed as a constrained optimization task. The constraints ensure that data points from both groups are correctly positioned on the respective sides of the decision boundary. However, instead of directly solving this constrained optimization problem, we’ve been addressing the **dual problem**, a pivotal concept in SVMs.
+class SVM:
+    def __init__(self, C=1.0):
+        self.C = C
+        self.support_vectors = None
+        self.lambda_values = None
+        self.beta = None
+        self.beta_0 = None
+        
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        
+        # Prepare the quadratic programming problem
+        P = matrix(np.outer(y, y) * np.dot(X, X.T))
+        q = matrix(-np.ones(n_samples))
+        G = matrix(-np.eye(n_samples))
+        h = matrix(np.zeros(n_samples))
+        A = matrix(y.reshape(1, -1))
+        b = matrix(0.0)
+        
+        # Solve the quadratic programming problem
+        solvers.options['show_progress'] = False
+        solution = solvers.qp(P, q, G, h, A, b)
+        
+        # Extract Lagrange multipliers
+        self.lambda_values = np.array(solution['x']).flatten()
+        
+        # Find support vectors
+        support_vector_indices = self.lambda_values > 1e-5
+        self.support_vectors = X[support_vector_indices]
+        support_vector_lambdas = self.lambda_values[support_vector_indices]
+        support_vector_y = y[support_vector_indices]
+        
+        # Compute beta
+        self.beta = np.sum(support_vector_lambdas.reshape(-1, 1) * 
+                          support_vector_y.reshape(-1, 1) * self.support_vectors, axis=0)
+        
+        # Compute beta_0
+        self.beta_0 = np.mean(support_vector_y - 
+                             np.dot(self.support_vectors, self.beta))
+        
+    def predict(self, X):
+        return np.sign(np.dot(X, self.beta) + self.beta_0)
+    
+    def decision_function(self, X):
+        return np.dot(X, self.beta) + self.beta_0
 
-In the dual problem, the objective is to find the Lagrange multipliers (lambda values) associated with the original constraints. Importantly, due to a fundamental property called the **Complementary Slackness**, many of these lambda values will be zero. This condition, which is part of the Karush-Kuhn-Tucker (KKT) conditions, dictates that $`\lambda_i`$ and the constraint cannot both be nonzero simultaneously. Therefore, only data points located on the dashed lines exhibit nonzero $`\lambda_i`$ values. These special data points are referred to as **support vectors**.
+# Generate separable data
+X, y = make_blobs(n_samples=100, centers=2, random_state=42)
+y = 2 * y - 1  # Convert to {-1, 1}
+
+# Scale the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Fit SVM
+svm = SVM()
+svm.fit(X_scaled, y)
+
+# Plotting
+plt.figure(figsize=(12, 8))
+
+# Plot data points
+plt.scatter(X_scaled[y == 1][:, 0], X_scaled[y == 1][:, 1], 
+           c='red', label='Class 1', alpha=0.6)
+plt.scatter(X_scaled[y == -1][:, 0], X_scaled[y == -1][:, 1], 
+           c='blue', label='Class -1', alpha=0.6)
+
+# Plot decision boundary
+x_min, x_max = X_scaled[:, 0].min() - 1, X_scaled[:, 0].max() + 1
+y_min, y_max = X_scaled[:, 1].min() - 1, X_scaled[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                     np.arange(y_min, y_max, 0.01))
+
+Z = svm.decision_function(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+plt.contour(xx, yy, Z, levels=[-1, 0, 1], alpha=0.8, 
+           colors=['blue', 'black', 'red'])
+plt.contourf(xx, yy, Z, levels=[-1, 0, 1], alpha=0.1, 
+            colors=['blue', 'white', 'red'])
+
+# Highlight support vectors
+if svm.support_vectors is not None:
+    plt.scatter(svm.support_vectors[:, 0], svm.support_vectors[:, 1], 
+               s=100, linewidth=1, facecolors='none', edgecolors='k', 
+               label='Support Vectors')
+
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('SVM Decision Boundary with Support Vectors')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Print model information
+print(f"Number of support vectors: {len(svm.support_vectors) if svm.support_vectors is not None else 0}")
+print(f"Beta: {svm.beta}")
+print(f"Beta_0: {svm.beta_0}")
+```
+
+### R Implementation
+
+```r
+library(e1071)
+library(ggplot2)
+
+# Generate separable data
+set.seed(42)
+n <- 100
+X <- matrix(rnorm(2*n), ncol=2)
+y <- ifelse(X[,1] + X[,2] > 0, 1, -1)
+
+# Fit SVM
+svm_model <- svm(X, y, kernel="linear", scale=FALSE)
+
+# Create prediction grid
+x_min <- min(X[,1]) - 1
+x_max <- max(X[,1]) + 1
+y_min <- min(X[,2]) - 1
+y_max <- max(X[,2]) + 1
+
+grid_points <- expand.grid(
+  x1 = seq(x_min, x_max, length.out=100),
+  x2 = seq(y_min, y_max, length.out=100)
+)
+
+# Make predictions
+grid_points$pred <- predict(svm_model, grid_points)
+
+# Plot
+ggplot() +
+  geom_point(data=data.frame(X, y=factor(y)), 
+             aes(x=X1, y=X2, color=y), size=2) +
+  geom_contour(data=grid_points, 
+               aes(x=x1, y=x2, z=as.numeric(pred)), 
+               breaks=c(0.5), color="black", size=1) +
+  geom_point(data=data.frame(X[svm_model$index,]), 
+             aes(x=X1, y=X2), shape=21, size=3, 
+             fill="transparent", color="black") +
+  labs(title="SVM Decision Boundary", 
+       x="Feature 1", y="Feature 2") +
+  theme_minimal()
+```
+
+## 11.2.6. Computational Complexity
+
+### Time Complexity
+
+- **Training**: $`O(n^3)`$ for the quadratic programming solver
+- **Prediction**: $`O(n_{sv} \cdot p)`$ where $`n_{sv}`$ is the number of support vectors
+
+### Space Complexity
+
+- **Training**: $`O(n^2)`$ for storing the kernel matrix
+- **Model storage**: $`O(n_{sv} \cdot p)`$ for storing support vectors
+
+## 11.2.7. Advantages and Limitations
+
+### Advantages
+
+1. **Maximum Margin**: Provides good generalization
+2. **Sparsity**: Only support vectors matter
+3. **Kernel Trick**: Can handle non-linear decision boundaries
+4. **Theoretical Guarantees**: Based on solid optimization theory
+
+### Limitations
+
+1. **Computational Cost**: Scales poorly with dataset size
+2. **Memory Requirements**: Needs to store kernel matrix
+3. **Sensitivity to Scaling**: Features should be scaled
+4. **Binary Classification**: Need extensions for multi-class
+
+## 11.2.8. Summary
+
+The separable case of SVM provides a beautiful geometric interpretation of classification. By maximizing the margin between classes, SVM achieves:
+
+1. **Robust Decision Boundary**: Less sensitive to small perturbations
+2. **Good Generalization**: Better performance on unseen data
+3. **Sparse Solution**: Only support vectors are important
+4. **Theoretical Foundation**: Based on convex optimization
+
+The key insights are:
+- The margin width is $`2/\|\beta\|`$
+- Support vectors lie exactly on the margin boundaries
+- The dual formulation enables the kernel trick
+- KKT conditions provide the theoretical foundation
+
+This formulation sets the stage for handling non-separable data (soft margin SVM) and non-linear decision boundaries (kernel SVM), which we'll explore in subsequent sections.
