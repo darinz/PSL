@@ -19,7 +19,7 @@ where:
 - $\mathbf{X} \in \mathbb{R}^{n \times p}$ is the design matrix
 - $\boldsymbol{\beta} \in \mathbb{R}^p$ is the coefficient vector
 - $\lambda \geq 0$ is the regularization parameter
-- $\|\boldsymbol{\beta}\|_1 = \sum_{j=1}^p |\beta_j|$ is the L1 norm
+- $`\|\boldsymbol{\beta}\|_1 = \sum_{j=1}^p |\beta_j|`$ is the L1 norm
 
 ### Key Properties of the L1 Penalty
 
