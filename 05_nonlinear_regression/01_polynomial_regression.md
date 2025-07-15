@@ -64,6 +64,10 @@ For a polynomial of degree $`d`$, the model has $`d + 1`$ parameters (including 
 \text{df}_{\text{residual}} = n - (d + 1)
 ```
 
+![Degrees of Freedom and Model Flexibility](../_images/w5_ss_DR.png)
+
+*Figure: Illustration of how degrees of freedom affect the flexibility of a polynomial regression model.*
+
 ## 5.1.2. Basis Functions and Orthogonal Polynomials
 
 ### Standard Polynomial Basis
