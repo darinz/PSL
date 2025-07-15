@@ -4,7 +4,7 @@
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This folder contains comprehensive, modernized materials on linear regression, covering both theoretical foundations and practical implementation. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
+This folder contains comprehensive, modernized materials on linear regression, covering both theoretical foundations and practical implementation.
 
 ## Contents
 
