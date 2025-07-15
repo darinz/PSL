@@ -74,14 +74,6 @@ This module explores advanced, modernized unsupervised learning techniques that 
 - **Baum-Welch Algorithm**: Parameter estimation via EM
 - **Expanded code and LaTeX math explanations**
 
-## Recent Enhancements
-
-- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
-- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
-- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
-- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
-- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
-
 ## Key Concepts
 
 ### Mixture Model Structure
@@ -100,12 +92,3 @@ $`f(x) = \sum_{k=1}^K \pi_k f_k(x \mid \theta_k)`$
 - **Initial Distribution**: $`w_{m_z \times 1}`$ for $`Z_1`$
 - **Transition Matrix**: $`A_{m_z \times m_z}`$ for $`Z_t \rightarrow Z_{t+1}`$
 - **Emission Matrix**: $`B_{m_z \times m_x}`$ for $`Z_t \rightarrow X_t`$
-
-## Files
-
-### Documentation
-- `01_model-based_clustering.md` – Introduction to mixture model clustering
-- `02_mixture_models.md` – Mathematical foundations and estimation
-- `03_em_algorithm.md` – Expectation-Maximization algorithm details
-- `04_latent_dirichlet_allocation_model.md` – LDA for document modeling
-- `
