@@ -60,6 +60,10 @@ d_{\text{single}}(A, B) = \min_{x \in A, y \in B} d(x, y)
 
 **Example**: If cluster A contains points (1,1) and (1,2), and cluster B contains (5,1), then $`d_{\text{single}}(A, B) = \min\{d((1,1), (5,1)), d((1,2), (5,1))\} = \min\{4, \sqrt{17}\} = 4`$
 
+![Single Linkage Example](../_images/w6_hist_single.png)
+
+*Figure: Example of single linkage clustering, which tends to produce long, chain-like clusters.*
+
 ### Complete Linkage (Farthest Neighbor)
 
 Distance is the maximum distance between any point in $`A`$ and any point in $`B`$:
@@ -75,6 +79,10 @@ d_{\text{complete}}(A, B) = \max_{x \in A, y \in B} d(x, y)
 - Computationally efficient
 
 **Example**: Using the same clusters as above, $`d_{\text{complete}}(A, B) = \max\{4, \sqrt{17}\} = \sqrt{17}`$
+
+![Complete Linkage Example](../_images/w6_hist_complete.png)
+
+*Figure: Example of complete linkage clustering, which tends to produce compact, spherical clusters.*
 
 ### Average Linkage (UPGMA - Unweighted Pair Group Method with Arithmetic Mean)
 
