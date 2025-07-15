@@ -129,25 +129,25 @@ Given only feature data $`\mathcal{D} = \{x_1, x_2, \ldots, x_n\}`$ where $`x_i 
 
 1. **Clustering**: Partition data into groups based on similarity
    - **K-means**: Minimize within-cluster variance
-   ```math
-   \min_{C_1, \ldots, C_K} \sum_{k=1}^K \sum_{x_i \in C_k} \|x_i - \mu_k\|^2
-   ```
+```math
+\min_{C_1, \ldots, C_K} \sum_{k=1}^K \sum_{x_i \in C_k} \|x_i - \mu_k\|^2
+```
    where $`C_k`$ are clusters and $`\mu_k`$ are cluster centers.
 
 2. **Dimensionality Reduction**: Find lower-dimensional representations
    - **Principal Component Analysis (PCA)**: Find directions of maximum variance
-   ```math
-   \max_{w: \|w\| = 1} \text{Var}(w^T X)
-   ```
+```math
+\max_{w: \|w\| = 1} \text{Var}(w^T X)
+```
 
 3. **Association Rules**: Discover relationships between variables
    - **Apriori Algorithm**: Find frequent itemsets and generate rules
 
 4. **Density Estimation**: Model the underlying data distribution
    - **Kernel Density Estimation**: Estimate probability density function
-   ```math
-   \hat{f}(x) = \frac{1}{nh} \sum_{i=1}^n K\left(\frac{x - x_i}{h}\right)
-   ```
+```math
+\hat{f}(x) = \frac{1}{nh} \sum_{i=1}^n K\left(\frac{x - x_i}{h}\right)
+```
 
 **Real-World Examples:**
 - **Market Segmentation**: Identifying distinct customer groups based on purchasing behavior
