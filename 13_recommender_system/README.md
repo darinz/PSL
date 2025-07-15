@@ -152,3 +152,10 @@ $`\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda
 - R packages for recommender systems
 - Deep learning frameworks (TensorFlow, PyTorch)
 - Real-world datasets and examples
+
+## Additional Resources
+
+- [Dive into Deep Learning: Recommender Systems](https://d2l.ai/chapter_recommender-systems/index.html)
+- [Wikipedia: Recommender system](https://en.wikipedia.org/wiki/Recommender_system)
+- [NVIDIA Glossary: Recommendation System](https://www.nvidia.com/en-us/glossary/recommendation-system/)
+- [Google Developers: Types of Recommendation Systems](https://developers.google.com/machine-learning/recommendation/overview/types)
