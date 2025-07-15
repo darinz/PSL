@@ -1,6 +1,11 @@
 # 13. Recommender Systems
 
-This section covers modern recommender systems, from fundamental approaches to cutting-edge deep learning methods. Recommender systems are essential tools for filtering information and providing personalized recommendations across various platforms.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
+
+This section covers modern, expanded recommender systems, from fundamental approaches to cutting-edge deep learning methods. The content has been clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Contents
 
@@ -12,6 +17,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Evolution from non-personalized to personalized systems
   - Three main approaches: content-based, collaborative filtering, latent factor models
   - Modern developments with deep learning
+  - Expanded mathematical derivations and LaTeX formatting
 
 ### 13.2. Content-Based Methods
 - **File**: `02_content-based.md`
@@ -21,6 +27,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Proximity-based recommendations
   - Advantages: immediate recommendations, good for new items, transparency
   - Limitations: predictable recommendations, feature engineering challenges
+  - Enhanced code and math explanations
 
 ### 13.3. Collaborative Filtering
 - **File**: `03_collaborative_filtering.md`
@@ -30,6 +37,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Matrix completion problem
   - Similarity metrics: Jaccard, Cosine, Centered Cosine (Pearson)
   - Key issues with missing data and similarity calculations
+  - Expanded code and math explanations
 
 ### 13.4. UBCF and IBCF
 - **File**: `04_ubcf-ibcf.md`
@@ -39,6 +47,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Mathematical formulations and algorithms
   - Pros and cons of collaborative filtering
   - Computational considerations and real-world applications
+  - Enhanced code and math explanations
 
 ### 13.5. Latent Factor Model
 - **File**: `05_latent_factor.md`
@@ -48,6 +57,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Handling missing entries with regularization
   - Baseline models for bias correction
   - Gradient descent optimization
+  - Expanded code and math explanations
 
 ### 13.6. Challenges and Strategies
 - **File**: `06_challenges.md`
@@ -58,6 +68,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Evaluation metrics (RMSE, Precision@K, diversity, serendipity)
   - User feedback incorporation
   - Cold start and scalability challenges
+  - Enhanced code and math explanations
 
 ### 13.7. Deep Recommender Systems
 - **File**: `07_deep_recommender_systems.md`
@@ -67,6 +78,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Two-stage recommender systems (filtering + ranking)
   - Google's Deep and Wide Model
   - Real-world applications (Spotify, modern platforms)
+  - Expanded code and math explanations
 
 ## Key Concepts
 
@@ -76,15 +88,23 @@ This section covers modern recommender systems, from fundamental approaches to c
 - **Latent Factor Models**: Matrix decomposition approaches
 
 ### Similarity Metrics
-- **Jaccard Similarity**: $\frac{|A \cap B|}{|A \cup B|}$
-- **Cosine Similarity**: $\frac{u^t v}{\| u\| \cdot \| v\|}$
-- **Centered Cosine**: $\frac{(u - \bar{u})^t (v - \bar{v})}{\| u - \bar{u} \| \cdot \| v- \bar{v} \|}$
+- **Jaccard Similarity**: $`\frac{|A \cap B|}{|A \cup B|}`$
+- **Cosine Similarity**: $`\frac{u^t v}{\| u\| \cdot \| v\|}`$
+- **Centered Cosine**: $`\frac{(u - \bar{u})^t (v - \bar{v})}{\| u - \bar{u} \| \cdot \| v- \bar{v} \|}`$
 
 ### Matrix Decomposition
-$$R_{m \times n} \approx U_{m \times d} V^t_{d \times n}$$
+$`R_{m \times n} \approx U_{m \times d} V^t_{d \times n}`$
 
 ### Loss Function with Regularization
-$$\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda_2 \text{Pen}(V)$$
+$`\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda_2 \text{Pen}(V)`$
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Practical Considerations
 
@@ -119,6 +139,8 @@ $$\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda
 - **Spotify**: Music recommendation with audio features
 - **Amazon**: Product recommendations
 - **YouTube**: Video recommendations
+
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
 
 ## Related Sections
 - **Week 6**: Clustering Analysis (for user/item clustering)
