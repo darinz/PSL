@@ -62,14 +62,14 @@ where $`\text{NCS}_n`$ denotes the family of natural cubic splines with knots at
 The proof relies on two key insights:
 
 1. **Interpolation Property**: For any function $`f \in S[a,b]`$, there exists a natural cubic spline $`g`$ with knots at $`x_1, x_2, \ldots, x_n`$ such that:
-   ```math
-   f(x_i) = g(x_i), \quad i = 1, 2, \ldots, n
-   ```
+```math
+f(x_i) = g(x_i), \quad i = 1, 2, \ldots, n
+```
 
 2. **Minimum Curvature Property**: Among all functions that interpolate the data points, the natural cubic spline minimizes the integrated squared second derivative:
-   ```math
-   \int_{x_1}^{x_n} [g''(x)]^2 dx \leq \int_{x_1}^{x_n} [f''(x)]^2 dx
-   ```
+```math
+\int_{x_1}^{x_n} [g''(x)]^2 dx \leq \int_{x_1}^{x_n} [f''(x)]^2 dx
+```
 
 This result reduces the infinite-dimensional optimization problem to a finite-dimensional one.
 
