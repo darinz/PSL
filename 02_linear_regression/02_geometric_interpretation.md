@@ -163,6 +163,9 @@ S = \{ c \begin{pmatrix} 1 \\ 2 \end{pmatrix} : c \in \mathbb{R} \}
 S = \{ c_1 \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix} + c_2 \begin{pmatrix} 0 \\ 1 \\ 0 \end{pmatrix} : c_1, c_2 \in \mathbb{R} \}
 ```
 
+![Linear Subspace Examples](img/w2_example_subspace.png)
+*Figure: Examples of linear subspaces in regression geometry*
+
 ### Column Space: The Heart of Linear Regression
 
 **Definition**: The column space of a matrix $`X`$ is the set of all possible linear combinations of its columns:
