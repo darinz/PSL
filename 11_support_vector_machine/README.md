@@ -9,6 +9,7 @@
 This module provides a comprehensive, modernized introduction to Support Vector Machines (SVMs), a powerful class of supervised learning algorithms for classification and regression.
 
   ![Linear separable SVM with max-margin.](../_images/svm_separable_case.png)
+  
   *Figure: Linear separable SVM with max-margin.*
 
 ## Module Structure
@@ -17,25 +18,31 @@ This module provides a comprehensive, modernized introduction to Support Vector 
 - **02_separable_case.md**: Max-margin problem, KKT conditions, duality, prediction, computational cost, summary
 
   ![SVM margin and support vectors.](../_images/w11_linear_margin.png)
+  
   *Figure: SVM margin and support vectors.*
 
   ![KKT conditions for SVM.](../_images/w11_KKT_SVM.png)
+  
   *Figure: KKT conditions for SVM.*
 
 - **03_non-separable_case.md**: Soft margin SVM, slack variables, KKT for non-separable case, gamma parameter, loss+penalty view
 
   ![Soft margin SVM (non-separable case).](../_images/svm_nonseparable_case.png)
+  
   *Figure: Soft margin SVM (non-separable case).* 
 
   ![Soft margin SVM illustration.](../_images/svm_soft_margin_1.png)
+  
   *Figure: Soft margin SVM illustration.*
 
   ![Overview of non-separable SVM optimization.](../_images/w11_nonsep_overview.png)
+  
   *Figure: Overview of non-separable SVM optimization.*
 
 - **04_nonlinear_svms.md**: Nonlinear SVMs, feature space embedding, kernel functions, kernel machines, RKHS
 
   ![Kernel machine and feature space embedding.](../_images/w11_kernel_machine.png)
+  
   *Figure: Kernel machine and feature space embedding.*
 
 - **05_appendix.md**: Additional notes and references
@@ -87,9 +94,11 @@ Dual formulation:
 - SVM objective: $`\min_f \sum_{i=1}^n [1 - y_i f(x_i)]_+ + \nu \|f\|^2_{\mathcal{H}_K}`$
 
   ![Comparison of hinge loss and other loss functions.](../_images/svm_loss_comparison.png)
+  
   *Figure: Comparison of hinge loss and other loss functions.*
 
   ![SVM loss + penalty framework.](../_images/w11_SVM_loss_penalty.png)
+  
   *Figure: SVM loss + penalty framework.*
 
 ## Key Algorithms
