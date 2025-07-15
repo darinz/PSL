@@ -18,7 +18,9 @@ To determine the optimal K, researchers often use the "elbow method." Here, the 
 
 The **gap statistic** (Tibshirani, Walther and Hastie, 2001) compares the clustering of actual data against a random clustering from a reference distribution. It's calculated by measuring the SS from the observed data against the expected log sum of squares from a reference set. This reference set is derived from a distribution that has no intrinsic clustering, meaning an ideal number of clusters would be one.
 
-$$G(K) = \mathbb{E}_0 \Big [ \log SS^*(K) \Big ]- \log SS_{\text{obs}}(K) \approx \frac{1}{B} \sum_{b=1}^B \log SS^*_b(K) - \log SS_{\text{obs}}(K)$$
+```math
+G(K) = \mathbb{E}_0 \Big [ \log SS^*(K) \Big ]- \log SS_{\text{obs}}(K) \approx \frac{1}{B} \sum_{b=1}^B \log SS^*_b(K) - \log SS_{\text{obs}}(K)
+```
 
 To estimate the gap statistic, multiple samples from the reference distribution are taken, and the average over these samples provides an expectation. As K grows, even though the sum of squares shrinks, the difference (or gap) may not always decrease. A high gap statistic suggests that the SS for the observed data at a particular K is notably smaller than its reference counterpart, indicating good clustering.
 
