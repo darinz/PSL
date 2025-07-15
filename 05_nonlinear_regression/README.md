@@ -1,6 +1,11 @@
 # Nonlinear Regression
 
-This module covers advanced methods for modeling nonlinear relationships in regression problems. From polynomial regression to sophisticated spline-based approaches and local regression methods, these techniques provide flexible ways to capture complex patterns in data that linear models cannot represent.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
+
+This module covers advanced, modernized methods for modeling nonlinear relationships in regression problems. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Learning Objectives
 
@@ -23,6 +28,7 @@ By the end of this module, you will be able to:
 - **Degree Selection**: Forward and backward approaches for choosing polynomial degree
 - **Orthogonal Polynomials**: Using poly() function for numerical stability
 - **Global vs Local Limitations**: Understanding when polynomials fail
+- **Expanded mathematical derivations and LaTeX formatting**
 
 **Key Concepts:**
 - Polynomial basis expansion
@@ -37,6 +43,7 @@ By the end of this module, you will be able to:
 - **Basis Functions**: Truncated power basis and B-splines
 - **Natural Cubic Splines**: Linear behavior in boundary regions
 - **Degrees of Freedom**: Understanding spline complexity
+- **Enhanced code and LaTeX math explanations**
 
 **Key Concepts:**
 - Piecewise polynomial construction
@@ -51,6 +58,7 @@ By the end of this module, you will be able to:
 - **Model Fitting**: Ordinary least squares with spline basis
 - **Cross-Validation**: Selecting optimal number of knots
 - **B-spline Implementation**: Using software packages
+- **Expanded code and math explanations**
 
 **Key Concepts:**
 - Basis function representation
@@ -66,6 +74,7 @@ By the end of this module, you will be able to:
 - **DR Basis**: Double orthogonality and shrinkage interpretation
 - **Effective Degrees of Freedom**: Trace of smoother matrix
 - **Lambda Selection**: Cross-validation and GCV methods
+- **Expanded code and LaTeX math explanations**
 
 **Key Concepts:**
 - Roughness penalty approach
@@ -80,12 +89,21 @@ By the end of this module, you will be able to:
 - **Kernel Methods**: Weighted local polynomial fitting
 - **Bandwidth Selection**: Controlling local vs global behavior
 - **Implementation**: Using statistical software packages
+- **Expanded code and math explanations**
 
 **Key Concepts:**
 - Local polynomial fitting
 - Kernel weighting functions
 - Bandwidth parameter selection
 - Point-wise estimation
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Code Examples
 
@@ -162,26 +180,26 @@ model = LinearRegression().fit(F, y)
 ## Key Mathematical Concepts
 
 ### Polynomial Regression
-- **Model**: y = β₀ + β₁x + β₂x² + ... + β_dx^d + ε
-- **Design Matrix**: X = [1, x, x², ..., x^d]
-- **Orthogonal Polynomials**: poly(x, d) for numerical stability
+- **Model**: $`y = \beta_0 + \beta_1 x + \beta_2 x^2 + ... + \beta_d x^d + \varepsilon`$
+- **Design Matrix**: $`X = [1, x, x^2, ..., x^d]`$
+- **Orthogonal Polynomials**: $`\text{poly}(x, d)`$ for numerical stability
 
 ### Cubic Splines
-- **Piecewise Definition**: f(x) = cubic polynomial on each interval
+- **Piecewise Definition**: $`f(x)`$ is a cubic polynomial on each interval
 - **Smoothness**: Continuous up to second derivatives at knots
-- **Degrees of Freedom**: m+4 for cubic splines, m for natural splines
-- **Basis Functions**: h₀(x) = 1, h₁(x) = x, h₂(x) = x², h₃(x) = x³, h_{i+3}(x) = (x-ξ_i)₊³
+- **Degrees of Freedom**: $`m+4`$ for cubic splines, $`m`$ for natural splines
+- **Basis Functions**: $`h_0(x) = 1, h_1(x) = x, h_2(x) = x^2, h_3(x) = x^3, h_{i+3}(x) = (x-\xi_i)_+^3`$
 
 ### Regression Splines
-- **Basis Expansion**: y = Σβᵢhᵢ(x) + ε
-- **Matrix Form**: y = Fβ + ε
-- **Estimation**: β̂ = argmin ||y - Fβ||²
+- **Basis Expansion**: $`y = \sum \beta_i h_i(x) + \varepsilon`$
+- **Matrix Form**: $`y = F\beta + \varepsilon`$
+- **Estimation**: $`\hat{\beta} = \arg\min \|y - F\beta\|^2`$
 
 ### Smoothing Splines
-- **Objective Function**: RSS_λ(g) = Σ[y_i - g(x_i)]² + λ∫[g''(x)]²dx
+- **Objective Function**: $`\text{RSS}_\lambda(g) = \sum [y_i - g(x_i)]^2 + \lambda \int [g''(x)]^2 dx`$
 - **Solution**: Natural cubic spline with knots at data points
-- **Matrix Form**: min ||y - Fβ||² + λβ^TΩβ
-- **Effective DF**: tr(S_λ) where S_λ = F(F^TF + λΩ)^(-1)F^T
+- **Matrix Form**: $`\min \|y - F\beta\|^2 + \lambda \beta^T \Omega \beta`$
+- **Effective DF**: $`\operatorname{tr}(S_\lambda)`$ where $`S_\lambda = F(F^T F + \lambda \Omega)^{-1} F^T`$
 
 ## Practical Applications
 
@@ -244,6 +262,8 @@ The code examples include comprehensive visualizations:
 - **Cross-Validation Plots**: Model selection using CV
 - **Local Regression**: Point-wise estimation and confidence bands
 
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
+
 ## Getting Started
 
 1. **Review the theoretical foundations** in the markdown files
@@ -253,6 +273,7 @@ The code examples include comprehensive visualizations:
 5. **Explore local regression** for highly localized patterns
 6. **Compare methods** on your own datasets
 7. **Practice parameter tuning** and model selection
+8. **Reference expanded math/code explanations and LaTeX formatting throughout**
 
 ## Additional Resources
 
