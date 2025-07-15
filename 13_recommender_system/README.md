@@ -145,8 +145,6 @@ $`\sum_{R_{ij} \ne ?} (R_{ij} - u_i^t v_j)^2 + \lambda_1 \text{Pen}(U) + \lambda
 - **Amazon**: Product recommendations
 - **YouTube**: Video recommendations
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Related Sections
 - **Week 6**: Clustering Analysis (for user/item clustering)
 - **Week 9**: Discriminant Analysis (classification approaches)
