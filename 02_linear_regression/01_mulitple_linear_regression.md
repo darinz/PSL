@@ -141,19 +141,27 @@ where:
 
 ### Classical vs. Modern Settings
 
-**Classical Setting ($`n \gg p`$)**:
+**Classical Setting ($`n \gg p`$):**
 - More observations than predictors
 - Design matrix is "tall and skinny"
 - $`\mathbf{X}^T\mathbf{X}`$ is typically invertible
 - Unique solution exists
 - Well-understood statistical properties
 
-**Modern Setting ($`p \gg n`$)**:
+![Classical Setting: Large n, Small p](img/w2_large_n_small_p.png)
+
+*Figure: Classical setting with many observations and few predictors*
+
+**Modern Setting ($`p \gg n`$):**
 - More predictors than observations
 - Design matrix is "short and fat"
 - $`\mathbf{X}^T\mathbf{X}`$ is not invertible
 - Infinitely many solutions exist
 - Requires regularization or feature selection
+
+![Modern Setting: Large p, Small n](img/w2_large_p_small_n.png)
+
+*Figure: Modern setting with many predictors and few observations*
 
 **Example**: In genomics, we might have 100 patients ($`n=100`$) but 20,000 gene expressions ($`p=20,000`$).
 
@@ -189,6 +197,10 @@ In matrix notation, the RSS becomes:
 - Least squares finds the point in the column space closest to $`\mathbf{y}`$
 
 **2D Example**: For simple linear regression, we find the line that minimizes the sum of squared vertical distances from points to the line.
+
+![Least Squares Visualization](img/w2_LS.png)
+
+*Figure: Least Squares Principle—minimizing the sum of squared vertical distances from points to the regression line*
 
 ### Why Squared Error?
 
