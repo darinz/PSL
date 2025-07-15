@@ -2,13 +2,12 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
-[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
 ## Overview
 
-This module provides a comprehensive introduction to Support Vector Machines (SVMs), a powerful class of supervised learning algorithms for classification and regression. SVMs are known for their ability to find optimal separating hyperplanes, handle non-linear boundaries via kernels, and produce sparse, robust solutions.
+This module provides a comprehensive, modernized introduction to Support Vector Machines (SVMs), a powerful class of supervised learning algorithms for classification and regression. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Module Structure
 
@@ -17,6 +16,14 @@ This module provides a comprehensive introduction to Support Vector Machines (SV
 - **03_non-separable_case.md**: Soft margin SVM, slack variables, KKT for non-separable case, gamma parameter, loss+penalty view
 - **04_nonlinear_svms.md**: Nonlinear SVMs, feature space embedding, kernel functions, kernel machines, RKHS
 - **05_appendix.md**: Additional notes and references
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Prerequisites
 
@@ -86,6 +93,8 @@ Dual formulation:
 - Bioinformatics and genomics
 - Finance and risk modeling
 - General binary and multiclass classification tasks
+
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
 
 ## References
 
