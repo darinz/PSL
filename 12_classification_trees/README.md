@@ -99,8 +99,6 @@ $`f(x) = \alpha_1 g_1(x) + \alpha_2 g_2(x) + \cdots + \alpha_T g_T(x)`$
 - **Regularization**: Early stopping often necessary
 - **Weak Classifiers**: Can use classifiers worse than random guessing
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Related Sections
 - **Week 4**: Regression Trees and Ensemble Methods
 - **Week 10**: Logistic Regression
