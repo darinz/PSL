@@ -12,6 +12,12 @@ However, if our sole aim is to achieve accurate predictions without being concer
 
 This question touches on the fundamental trade-off between **model complexity** and **generalization ability**. To understand this trade-off, we need to explore the theoretical foundations of training and test errors in linear regression.
 
+### The Bias-Variance Trade-off and Model Complexity
+
+![Bias-Variance Trade-off and Model Complexity](../_images/w3_fig_3_11.png)
+
+*Figure: The relationship between model complexity, training error, and test error. Illustrates the bias-variance trade-off central to variable selection.*
+
 ### Mathematical Foundation: Training vs. Test Error
 
 Let's embark on a theoretical exploration of the training and test errors in a linear regression model. Consider a training dataset $`\{(\mathbf{x}_i, y_i)\}_{i=1}^n`$ of size $`n`$. Using this data, we can fit a linear regression model, yielding a least squares estimate $`\hat{\boldsymbol{\beta}}`$.
