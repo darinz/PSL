@@ -117,8 +117,6 @@ The `img/` directory contains essential visualizations:
 - **model_complexity.png** – U-shaped error curves
 - **linear_function.png** – Linear model illustrations
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Advanced Topic Connections
 
 This introduction establishes the foundation for:
