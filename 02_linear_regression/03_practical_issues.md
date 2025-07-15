@@ -170,9 +170,21 @@ plt.title('Correlation Matrix of Predictors')
 plt.show()
 ```
 
+### Correlation Among Predictors
+
+Understanding the correlation structure among predictors is crucial for diagnosing multicollinearity and interpreting regression coefficients.
+
+![Correlation Among Predictors](../_images/w2_coef_X_corr.png)
+
+*Figure: Visualizing correlation among predictors in a regression model*
+
 ---
 
 ## 2.3.2. Interpreting Least Squares Coefficients
+
+![Least Squares Solution Geometry](../_images/w2_LS.png)
+
+*Figure: Geometric interpretation of the least squares solution in linear regression*
 
 Understanding how to interpret regression coefficients is crucial for extracting meaningful insights from your model. The interpretation of coefficients in multiple linear regression is more nuanced than in simple linear regression due to the presence of multiple predictors and their potential interactions.
 
