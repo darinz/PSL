@@ -155,8 +155,6 @@ The code examples include comprehensive visualizations:
 - **Model Comparison Plots**: AIC/BIC vs model size
 - **Performance Evaluation**: Test MSE comparisons
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Getting Started
 
 1. **Review the theoretical foundations** in the markdown files
