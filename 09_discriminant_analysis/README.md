@@ -179,8 +179,6 @@ Before studying this module, you should have:
 - **Performance Comparison**: Evaluation of different methods
 - **Implementation Details**: Code comments and explanations
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## References
 
 ### Textbooks
