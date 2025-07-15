@@ -2,13 +2,12 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
 ## Overview
 
-This module provides a comprehensive introduction to logistic regression, a fundamental classification technique in statistical learning. Logistic regression models the probability of a binary outcome using a logistic function, making it one of the most widely used methods for binary classification problems.
+This module provides a comprehensive, modernized introduction to logistic regression, a fundamental classification technique in statistical learning. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Module Structure
 
@@ -16,21 +15,33 @@ This module provides a comprehensive introduction to logistic regression, a fund
 - **File**: `01_setup.md`
 - **Topics**: Binary classification, link functions, logit transformation, loss function design
 - **Key Concepts**: Probability modeling, linear model constraints, sigmoid function
+- **Expanded mathematical derivations and LaTeX formatting**
 
 ### 2. Maximum Likelihood Estimation
 - **File**: `02_mle.md`
 - **Topics**: MLE derivation, Newton-Raphson algorithm, Hessian matrix, reweighted least squares
 - **Key Concepts**: Likelihood function, iterative optimization, convergence properties
+- **Expanded code and math explanations**
 
 ### 3. Separable Data Challenges
 - **File**: `03_seperable_data.md`
 - **Topics**: Well-separated data, convergence issues, decision boundaries, regularization limitations
 - **Key Concepts**: Perfect separation, coefficient growth, model interpretation
+- **Enhanced visual and LaTeX math explanations**
 
 ### 4. Retrospective Sampling
 - **File**: `04_retrospective_sampling_data.md`
 - **Topics**: Multinomial extension, nonlinear models, sampling bias, population inference
 - **Key Concepts**: Sampling methodology, coefficient consistency, intercept adjustment
+- **Expanded code and math explanations**
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Prerequisites
 
@@ -72,29 +83,29 @@ By the end of this module, students will be able to:
 ### Core Model
 The logistic regression model is defined as:
 
-$$P(Y=1|X=x) = \frac{\exp(x^T\beta)}{1 + \exp(x^T\beta)}$$
+$`P(Y=1|X=x) = \frac{\exp(x^T\beta)}{1 + \exp(x^T\beta)}`$
 
 ### Logit Transformation
 The logit link function transforms probabilities to unconstrained values:
 
-$$\text{logit}(\eta(x)) = \log\frac{\eta(x)}{1 - \eta(x)} = x^T\beta$$
+$`\text{logit}(\eta(x)) = \log\frac{\eta(x)}{1 - \eta(x)} = x^T\beta`$
 
 ### Likelihood Function
 For binary outcomes, the likelihood is:
 
-$$L(\beta) = \prod_{i=1}^n \sigma(x_i^T\beta)^{y_i}(1 - \sigma(x_i^T\beta))^{1-y_i}$$
+$`L(\beta) = \prod_{i=1}^n \sigma(x_i^T\beta)^{y_i}(1 - \sigma(x_i^T\beta))^{1-y_i}`$
 
 ## Key Algorithms
 
 ### Newton-Raphson Method
 The iterative algorithm for finding MLE:
 
-$$\beta^{(t+1)} = \beta^{(t)} - H^{-1}(\beta^{(t)}) \nabla l(\beta^{(t)})$$
+$`\beta^{(t+1)} = \beta^{(t)} - H^{-1}(\beta^{(t)}) \nabla l(\beta^{(t)})`$
 
 ### Reweighted Least Squares
 Alternative formulation for computational efficiency:
 
-$$\beta^{(t+1)} = (X^TW^{(t)}X)^{-1}X^TW^{(t)}z^{(t)}$$
+$`\beta^{(t+1)} = (X^TW^{(t)}X)^{-1}X^TW^{(t)}z^{(t)}`$
 
 ## Practical Considerations
 
@@ -119,6 +130,8 @@ Logistic regression is widely used in:
 - **Marketing**: Customer churn prediction, response modeling
 - **Finance**: Credit scoring, fraud detection
 - **Social Sciences**: Survey analysis, behavioral prediction
+
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
 
 ## References
 
