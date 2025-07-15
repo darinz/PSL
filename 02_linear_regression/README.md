@@ -74,8 +74,6 @@ The `img/` folder contains supporting visualizations:
 - `w2_large_p_small_n.png` – High-dimensional setting
 - `w2_large_n_small_p.png` – Classical setting
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## Recent Enhancements
 
 - **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
