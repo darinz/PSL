@@ -61,6 +61,12 @@ This module introduces discriminant analysis methods for classification problems
   - Overfitting considerations
   - Enhanced code and math explanations
 
+  ![LDA toy data and normalization.](../_images/w9_LDA_normalize.png)
+  *Figure: LDA toy data and normalization.*
+
+  ![LDA overfitting example.](../_images/w9_LDA_overfit.png)
+  *Figure: LDA overfitting example.*
+
 ### 5. Fisher Discriminant Analysis (FDA)
 - **File**: `05_fisher_discriminant_analysis.md`
 - **Content**:
@@ -70,6 +76,15 @@ This module introduces discriminant analysis methods for classification problems
   - Comparison with LDA
   - Overfitting risks and remedies
   - Expanded code and LaTeX math explanations
+
+  ![FDA toy data example.](../_images/w9_FDA_toydata.png)
+  *Figure: FDA toy data example.*
+
+  ![FDA generalized eigenvalue problem (1).](../_images/w9_FDA_genEigen_1.png)
+  *Figure: FDA generalized eigenvalue problem (1).* 
+
+  ![FDA generalized eigenvalue problem (2).](../_images/w9_FDA_genEigen_2.png)
+  *Figure: FDA generalized eigenvalue problem (2).* 
 
 ### 6. Naive Bayes Classifiers
 - **File**: `06_naive_bayes_classifiers.md`
@@ -88,6 +103,9 @@ This module introduces discriminant analysis methods for classification problems
   - Parameter efficiency considerations
   - Future directions
   - Enhanced visual and LaTeX math explanations
+
+  ![Summary comparison of discriminant analysis methods.](../_images/w9_summ_1.png)
+  *Figure: Summary comparison of discriminant analysis methods.*
 
 ## Recent Enhancements
 
