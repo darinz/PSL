@@ -22,17 +22,32 @@ This module provides a comprehensive, modernized introduction to logistic regres
 - **Key Concepts**: Likelihood function, iterative optimization, convergence properties
 - **Expanded code and math explanations**
 
+  ![Logistic regression MLE surface.](../_images/w10_MLE_1.png)
+  *Figure: Logistic regression MLE surface.*
+
+  ![Logistic regression MLE convergence.](../_images/w10_MLE_2.png)
+  *Figure: Logistic regression MLE convergence.*
+
+  ![Newton-Raphson algorithm for logistic regression.](../_images/w10_MLE_alg.png)
+  *Figure: Newton-Raphson algorithm for logistic regression.*
+
 ### 3. Separable Data Challenges
 - **File**: `03_seperable_data.md`
 - **Topics**: Well-separated data, convergence issues, decision boundaries, regularization limitations
 - **Key Concepts**: Perfect separation, coefficient growth, model interpretation
 - **Enhanced visual and LaTeX math explanations**
 
+  ![Toy data illustrating perfect separation in logistic regression.](../_images/w10_separable_toy_data.png)
+  *Figure: Toy data illustrating perfect separation in logistic regression.*
+
 ### 4. Retrospective Sampling
 - **File**: `04_retrospective_sampling_data.md`
 - **Topics**: Multinomial extension, nonlinear models, sampling bias, population inference
 - **Key Concepts**: Sampling methodology, coefficient consistency, intercept adjustment
 - **Expanded code and math explanations**
+
+  ![Diagram illustrating retrospective sampling.](../_images/w10_sampling.png)
+  *Figure: Diagram illustrating retrospective sampling.*
 
 ## Recent Enhancements
 
