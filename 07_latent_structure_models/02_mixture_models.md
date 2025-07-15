@@ -29,15 +29,15 @@ The mixture model can be interpreted as:
 The data generation process for a mixture model involves two steps:
 
 1. **Component Selection**: Generate a latent variable $`Z`$ from a categorical distribution:
-   ```math
-   Z \sim \text{Categorical}(\pi_1, \pi_2, \ldots, \pi_K)
-   ```
+```math
+Z \sim \text{Categorical}(\pi_1, \pi_2, \ldots, \pi_K)
+```
    where $`P(Z=k) = \pi_k`$ for $`k = 1, 2, \ldots, K`$
 
 2. **Observation Generation**: Given $`Z=k`$, generate the observation $`X`$ from the $`k`$-th component:
-   ```math
-   X \mid Z=k \sim f_k(\cdot \mid \theta_k)
-   ```
+```math
+X \mid Z=k \sim f_k(\cdot \mid \theta_k)
+```
 
 This two-stage process is crucial for understanding mixture models and implementing the EM algorithm.
 
