@@ -172,6 +172,10 @@ Different covariance structures can be imposed to control model complexity:
 
 The Old Faithful Geyser data contains measurements of eruption duration and waiting time between eruptions. This data naturally forms clusters due to the geyser's bimodal behavior.
 
+![Scatter plot of Old Faithful Geyser data showing two natural clusters.](../_images/w7_geyser_2.png)
+
+*Figure: Scatter plot of Old Faithful Geyser data showing two natural clusters.*
+
 ### Data Description
 - **Duration**: Length of eruption in minutes
 - **Waiting**: Time between eruptions in minutes
@@ -187,6 +191,10 @@ The Old Faithful Geyser data contains measurements of eruption duration and wait
 - Component 1: Short eruptions, short waits
 - Component 2: Long eruptions, long waits  
 - Component 3: Intermediate eruptions, variable waits
+
+![Clustering results on Old Faithful Geyser data using GMM.](../_images/w7_geyser_3.png)
+
+*Figure: Clustering results on Old Faithful Geyser data using GMM.*
 
 ## 7.1.8. Python Implementation
 
