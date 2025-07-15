@@ -4,6 +4,10 @@
 
 Cubic splines represent a powerful approach to nonlinear regression that addresses many limitations of polynomial regression. Unlike global polynomials, splines use piecewise polynomial functions that provide local flexibility while maintaining smoothness across the entire domain.
 
+![Cubic Spline Definition and Structure](../_images/w5_cubic_spline_def.png)
+
+*Figure: Definition and structure of a cubic spline, showing piecewise polynomial segments and continuity at knots.*
+
 ### Mathematical Framework
 
 Consider a one-dimensional predictor variable $`x`$ and response variable $`y`$. A spline function $`f(x)`$ is defined as a piecewise polynomial function over a partition of the domain into intervals.
