@@ -2,176 +2,681 @@
 
 Linear regression is a powerful and widely-used method, but applying it to real-world data requires careful attention to several practical issues. This section covers the most important considerations when implementing linear regression, from data preparation to model interpretation and validation.
 
+The transition from theoretical understanding to practical application reveals numerous challenges that must be addressed to build reliable and interpretable models. These issues range from computational considerations to statistical assumptions and real-world data complexities.
+
 ---
 
 ## 2.3.1. Analyzing Data with R/Python
 
-Modern statistical computing provides powerful tools for implementing linear regression. Both R and Python offer comprehensive libraries for data analysis and modeling.
+Modern statistical computing provides powerful tools for implementing linear regression. Both R and Python offer comprehensive libraries for data analysis and modeling, each with their own strengths and specialized capabilities.
 
-**R Resources:**
-- **Base R:** Built-in `lm()` function for linear regression
-- **Tidyverse:** `ggplot2` for visualization, `dplyr` for data manipulation
-- **Additional packages:** `car` for diagnostics, `MASS` for robust methods
+### R Ecosystem for Linear Regression
 
-**Python Resources:**
-- **scikit-learn:** `LinearRegression` class for modeling
-- **statsmodels:** Comprehensive statistical modeling with detailed output
-- **pandas:** Data manipulation and preprocessing
-- **matplotlib/seaborn:** Visualization
+**Base R Functions:**
+- **`lm()`**: Core linear regression function with comprehensive output
+- **`summary()`**: Detailed statistical summary including coefficients, standard errors, t-tests, and F-tests
+- **`predict()`**: Generate predictions with confidence intervals
+- **`residuals()`**: Extract model residuals for diagnostics
 
-**Example: Basic Linear Regression in Python**
+**Tidyverse Integration:**
+- **`ggplot2`**: Advanced visualization capabilities for model diagnostics
+- **`dplyr`**: Data manipulation and preprocessing
+- **`broom`**: Tidy model outputs for easy analysis
+- **`modelr`**: Model evaluation and cross-validation tools
+
+**Specialized Packages:**
+- **`car`**: Comprehensive diagnostics including VIF, outlier detection
+- **`MASS`**: Robust regression methods (`rlm()`)
+- **`leaps`**: Model selection and subset selection
+- **`glmnet`**: Regularization methods (ridge, lasso, elastic net)
+
+### Python Ecosystem for Linear Regression
+
+**scikit-learn:**
+- **`LinearRegression`**: Fast, efficient implementation
+- **`Ridge`, `Lasso`, `ElasticNet`**: Regularized regression
+- **`cross_val_score`**: Cross-validation utilities
+- **`StandardScaler`, `MinMaxScaler`**: Data preprocessing
+
+**statsmodels:**
+- **`OLS`**: Ordinary least squares with detailed statistical output
+- **`GLM`**: Generalized linear models
+- **Comprehensive diagnostics**: Built-in assumption checking
+- **Statistical tests**: Formal hypothesis testing capabilities
+
+**Data Manipulation:**
+- **pandas**: Data structures and manipulation
+- **numpy**: Numerical computing foundation
+- **matplotlib/seaborn**: Visualization and plotting
+
+### Comprehensive Example: Linear Regression Workflow
 
 ```python
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score, mean_squared_error
 import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+import statsmodels.api as sm
+from scipy import stats
 
-# Generate sample data
+# Set random seed for reproducibility
 np.random.seed(42)
-n = 100
-X = np.random.randn(n, 2)
-y = 2 + 1.5 * X[:, 0] - 0.8 * X[:, 1] + np.random.normal(0, 0.5, n)
 
-# Fit model
-model = LinearRegression()
-model.fit(X, y)
+# Generate realistic sample data with known relationships
+n = 200
+X1 = np.random.normal(0, 1, n)  # Predictor 1
+X2 = 0.3 * X1 + np.random.normal(0, 0.9, n)  # Correlated predictor
+X3 = np.random.normal(0, 1, n)  # Independent predictor
 
-# Predictions
-y_pred = model.predict(X)
+# True model with some noise
+y_true = 2.5 + 1.8 * X1 - 0.6 * X2 + 0.4 * X3
+noise = np.random.normal(0, 0.8, n)
+y = y_true + noise
 
-# Model evaluation
-r2 = r2_score(y, y_pred)
-mse = mean_squared_error(y, y_pred)
+# Create design matrix
+X = np.column_stack([X1, X2, X3])
+feature_names = ['X1', 'X2', 'X3']
 
-print(f"R² = {r2:.3f}")
-print(f"MSE = {mse:.3f}")
-print(f"Coefficients: {model.coef_}")
-print(f"Intercept: {model.intercept_:.3f}")
+# Split data for validation
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# Fit scikit-learn model
+sk_model = LinearRegression()
+sk_model.fit(X_train, y_train)
+
+# Fit statsmodels for detailed statistics
+X_train_sm = sm.add_constant(X_train)
+sm_model = sm.OLS(y_train, X_train_sm).fit()
+
+# Generate predictions
+y_train_pred = sk_model.predict(X_train)
+y_test_pred = sk_model.predict(X_test)
+
+# Model evaluation metrics
+train_r2 = r2_score(y_train, y_train_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+train_mse = mean_squared_error(y_train, y_train_pred)
+test_mse = mean_squared_error(y_test, y_test_pred)
+train_mae = mean_absolute_error(y_train, y_train_pred)
+test_mae = mean_absolute_error(y_test, y_test_pred)
+
+# Cross-validation
+cv_scores = cross_val_score(sk_model, X_train, y_train, cv=5, scoring='r2')
+
+print("=== LINEAR REGRESSION MODEL RESULTS ===")
+print(f"Training R²: {train_r2:.4f}")
+print(f"Test R²: {test_r2:.4f}")
+print(f"Training MSE: {train_mse:.4f}")
+print(f"Test MSE: {test_mse:.4f}")
+print(f"Training MAE: {train_mae:.4f}")
+print(f"Test MAE: {test_mae:.4f}")
+print(f"Cross-validation R²: {cv_scores.mean():.4f} (±{cv_scores.std():.4f})")
+
+print("\n=== COEFFICIENT ESTIMATES ===")
+print("scikit-learn results:")
+for name, coef in zip(feature_names, sk_model.coef_):
+    print(f"  {name}: {coef:.4f}")
+print(f"  Intercept: {sk_model.intercept_:.4f}")
+
+print("\nstatsmodels detailed results:")
+print(sm_model.summary())
+
+# Visualization
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Actual vs Predicted
+axes[0, 0].scatter(y_test, y_test_pred, alpha=0.6)
+axes[0, 0].plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+axes[0, 0].set_xlabel('Actual Values')
+axes[0, 0].set_ylabel('Predicted Values')
+axes[0, 0].set_title('Actual vs Predicted Values')
+axes[0, 0].grid(True, alpha=0.3)
+
+# Residuals vs Predicted
+residuals = y_test - y_test_pred
+axes[0, 1].scatter(y_test_pred, residuals, alpha=0.6)
+axes[0, 1].axhline(y=0, color='r', linestyle='--')
+axes[0, 1].set_xlabel('Predicted Values')
+axes[0, 1].set_ylabel('Residuals')
+axes[0, 1].set_title('Residuals vs Predicted Values')
+axes[0, 1].grid(True, alpha=0.3)
+
+# Residuals histogram
+axes[1, 0].hist(residuals, bins=20, alpha=0.7, edgecolor='black')
+axes[1, 0].set_xlabel('Residuals')
+axes[1, 0].set_ylabel('Frequency')
+axes[1, 0].set_title('Residuals Distribution')
+axes[1, 0].grid(True, alpha=0.3)
+
+# Q-Q plot
+stats.probplot(residuals, dist="norm", plot=axes[1, 1])
+axes[1, 1].set_title('Q-Q Plot of Residuals')
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Correlation matrix
+corr_matrix = pd.DataFrame(X, columns=feature_names).corr()
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, square=True)
+plt.title('Correlation Matrix of Predictors')
+plt.show()
 ```
 
 ---
 
 ## 2.3.2. Interpreting Least Squares Coefficients
 
-Understanding how to interpret regression coefficients is crucial for extracting meaningful insights from your model.
+Understanding how to interpret regression coefficients is crucial for extracting meaningful insights from your model. The interpretation of coefficients in multiple linear regression is more nuanced than in simple linear regression due to the presence of multiple predictors and their potential interactions.
 
-### Coefficient Interpretation
+### Mathematical Foundation of Coefficient Interpretation
 
-The coefficient $`\beta_j`$ in a multiple linear regression model represents the expected change in the response variable $`Y`$ for a one-unit increase in predictor $`X_j`$, holding all other predictors constant.
+In the multiple linear regression model:
 
 ```math
-\frac{\partial Y}{\partial X_j} = \beta_j
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \epsilon
 ```
 
-**Key Points:**
-- This interpretation assumes that the relationship is linear and additive.
-- The "holding all other predictors constant" assumption is crucial and often violated in practice.
-- Coefficients can change dramatically when adding or removing predictors due to correlations among variables.
+The coefficient $`\beta_j`$ represents the **partial derivative** of the response variable $`Y`$ with respect to predictor $`X_j`$:
 
-### Simple vs. Multiple Regression
+```math
+\beta_j = \frac{\partial Y}{\partial X_j}
+```
 
-The coefficient for a predictor in simple linear regression (SLR) may differ significantly from its coefficient in multiple linear regression (MLR) due to correlations among predictors.
+This means that $`\beta_j`$ represents the expected change in the response variable $`Y`$ for a one-unit increase in predictor $`X_j`$, **holding all other predictors constant**.
 
-**Example: Confounding Effect**
+### Key Assumptions for Coefficient Interpretation
 
-Consider a scenario where:
-- $`X_1`$ and $`X_2`$ are positively correlated
-- $`X_2`$ has a strong positive effect on $`Y`$
-- $`X_1`$ has a weak or no direct effect on $`Y`$
+**1. Linearity Assumption:**
+The relationship between $`X_j`$ and $`Y`$ is linear, conditional on all other predictors.
 
-In SLR, regressing $`Y`$ on $`X_1`$ alone might show a positive coefficient because $`X_1`$ is correlated with the truly important predictor $`X_2`$. However, in MLR, the coefficient for $`X_1`$ might become negative or zero once $`X_2`$ is included in the model.
+**2. Additivity Assumption:**
+The effect of $`X_j`$ on $`Y`$ is additive and independent of the values of other predictors.
 
-**Python Example: Coefficient Changes**
+**3. Ceteris Paribus Condition:**
+The "holding all other predictors constant" assumption is crucial. This is often violated in practice when predictors are correlated.
+
+### Understanding the "Holding Other Variables Constant" Assumption
+
+The ceteris paribus condition is fundamental to interpreting multiple regression coefficients. Consider a model with two predictors:
+
+```math
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon
+```
+
+To understand $`\beta_1`$, we imagine:
+1. Taking two observations with identical values of $`X_2`$
+2. The first observation has $`X_1 = x_1`$
+3. The second observation has $`X_1 = x_1 + 1`$
+4. The expected difference in $`Y`$ between these observations is $`\beta_1`$
+
+**Mathematical Derivation:**
+
+```math
+\begin{aligned}
+Y_1 &= \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon_1 \\
+Y_2 &= \beta_0 + \beta_1 (x_1 + 1) + \beta_2 x_2 + \epsilon_2 \\
+Y_2 - Y_1 &= \beta_1 + (\epsilon_2 - \epsilon_1)
+\end{aligned}
+```
+
+Taking expectations:
+```math
+E[Y_2 - Y_1] = \beta_1
+```
+
+### Coefficient Interpretation in Practice
+
+**Standardized vs. Unstandardized Coefficients:**
+
+**Unstandardized Coefficients** (raw coefficients):
+- Interpreted in the original units of the variables
+- Depend on the scale of measurement
+- Example: If $`X_1`$ is measured in dollars and $`\beta_1 = 0.05`$, then a $1 increase in $`X_1`$ is associated with a 0.05 unit increase in $`Y`$
+
+**Standardized Coefficients** (beta coefficients):
+- Interpreted in standard deviation units
+- Independent of the original scale
+- Example: If $`\beta_1^* = 0.3`$ (standardized), then a 1 standard deviation increase in $`X_1`$ is associated with a 0.3 standard deviation increase in $`Y`$
+
+**Python Example: Standardized Coefficients**
 
 ```python
 import numpy as np
 from sklearn.linear_model import LinearRegression
-
-# Generate correlated predictors
-np.random.seed(42)
-n = 1000
-X1 = np.random.normal(0, 1, n)
-X2 = 0.8 * X1 + np.random.normal(0, 0.6, n)  # Correlated with X1
-y = 2 * X2 + np.random.normal(0, 0.5, n)     # Y depends only on X2
-
-# Simple regression: Y ~ X1
-model_simple = LinearRegression()
-model_simple.fit(X1.reshape(-1, 1), y)
-print(f"SLR coefficient for X1: {model_simple.coef_[0]:.3f}")
-
-# Multiple regression: Y ~ X1 + X2
-model_multiple = LinearRegression()
-X_both = np.column_stack([X1, X2])
-model_multiple.fit(X_both, y)
-print(f"MLR coefficient for X1: {model_multiple.coef_[0]:.3f}")
-print(f"MLR coefficient for X2: {model_multiple.coef_[1]:.3f}")
-```
-
-### Frisch-Waugh-Lovell Theorem
-
-The Frisch-Waugh-Lovell theorem provides an elegant way to understand how coefficients are computed in multiple regression. It states that the coefficient $`\hat{\beta}_k`$ can be obtained through the following steps:
-
-1. **Regress $`Y`$ on all predictors except $`X_k`$** and obtain residuals $`Y^*`$
-2. **Regress $`X_k`$ on all other predictors** and obtain residuals $`X_k^*`$
-3. **Regress $`Y^*`$ on $`X_k^*`$** - the coefficient equals $`\hat{\beta}_k`$
-
-This theorem shows that $`\hat{\beta}_k`$ captures the relationship between $`Y`$ and $`X_k`$ after "partialling out" the effects of all other predictors.
-
-**Python Example: Frisch-Waugh-Lovell**
-
-```python
-import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
 
 # Generate data
 np.random.seed(42)
 n = 100
-X1 = np.random.normal(0, 1, n)
-X2 = np.random.normal(0, 1, n)
+X1 = np.random.normal(0, 1, n)  # Standard normal
+X2 = np.random.normal(0, 10, n)  # Different scale
 y = 2 + 1.5 * X1 - 0.8 * X2 + np.random.normal(0, 0.5, n)
 
-# Standard multiple regression
+# Unstandardized coefficients
 X = np.column_stack([X1, X2])
 model = LinearRegression()
 model.fit(X, y)
-beta1_standard = model.coef_[0]
 
-# Frisch-Waugh-Lovell for beta1
-# Step 1: Regress y on X2
-model_y_on_x2 = LinearRegression()
-model_y_on_x2.fit(X2.reshape(-1, 1), y)
-y_resid = y - model_y_on_x2.predict(X2.reshape(-1, 1))
+print("Unstandardized coefficients:")
+for i, coef in enumerate(model.coef_):
+    print(f"β{i+1} = {coef:.3f}")
 
-# Step 2: Regress X1 on X2
-model_x1_on_x2 = LinearRegression()
-model_x1_on_x2.fit(X2.reshape(-1, 1), X1)
-x1_resid = X1 - model_x1_on_x2.predict(X2.reshape(-1, 1))
+# Standardized coefficients
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+model_scaled = LinearRegression()
+model_scaled.fit(X_scaled, y)
 
-# Step 3: Regress y_resid on x1_resid
-model_final = LinearRegression()
-model_final.fit(x1_resid.reshape(-1, 1), y_resid)
-beta1_fwl = model_final.coef_[0]
+print("\nStandardized coefficients:")
+for i, coef in enumerate(model_scaled.coef_):
+    print(f"β*{i+1} = {coef:.3f}")
 
-print(f"Standard coefficient: {beta1_standard:.3f}")
-print(f"FWL coefficient: {beta1_fwl:.3f}")
+# Manual calculation of standardized coefficients
+y_std = np.std(y)
+X_stds = np.std(X, axis=0)
+standardized_coefs = model.coef_ * X_stds / y_std
+print("\nManually calculated standardized coefficients:")
+for i, coef in enumerate(standardized_coefs):
+    print(f"β*{i+1} = {coef:.3f}")
+```
+
+### Simple vs. Multiple Regression: The Confounding Effect
+
+The coefficient for a predictor in simple linear regression (SLR) may differ significantly from its coefficient in multiple linear regression (MLR) due to correlations among predictors. This phenomenon is known as **confounding** or **omitted variable bias**.
+
+#### Mathematical Understanding of Confounding
+
+Consider the true model:
+```math
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon
+```
+
+If we regress $`Y`$ on $`X_1`$ alone (simple regression), the estimated coefficient $`\hat{\beta}_1^{SLR}`$ will be biased:
+
+```math
+\hat{\beta}_1^{SLR} = \beta_1 + \beta_2 \cdot \frac{\text{Cov}(X_1, X_2)}{\text{Var}(X_1)}
+```
+
+The bias term $`\beta_2 \cdot \frac{\text{Cov}(X_1, X_2)}{\text{Var}(X_1)}`$ represents the **omitted variable bias**.
+
+#### Example: Confounding Effect
+
+Consider a scenario where:
+- $`X_1`$ and $`X_2`$ are positively correlated ($`\rho_{12} > 0`$)
+- $`X_2`$ has a strong positive effect on $`Y`$ ($`\beta_2 > 0`$)
+- $`X_1`$ has a weak or no direct effect on $`Y`$ ($`\beta_1 \approx 0`$)
+
+In SLR, regressing $`Y`$ on $`X_1`$ alone might show a positive coefficient because $`X_1`$ is correlated with the truly important predictor $`X_2`$. However, in MLR, the coefficient for $`X_1`$ might become negative or zero once $`X_2`$ is included in the model.
+
+#### Comprehensive Python Example: Coefficient Changes
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate correlated predictors with known correlation
+n = 1000
+rho = 0.8  # Correlation between X1 and X2
+
+# Generate X1 and X2 with specified correlation
+X1 = np.random.normal(0, 1, n)
+X2 = rho * X1 + np.sqrt(1 - rho**2) * np.random.normal(0, 1, n)
+
+# True model: Y depends only on X2, not X1
+beta0_true = 2.0
+beta1_true = 0.0  # No direct effect of X1
+beta2_true = 1.5  # Strong effect of X2
+sigma = 0.5
+
+y = beta0_true + beta1_true * X1 + beta2_true * X2 + np.random.normal(0, sigma, n)
+
+# Create DataFrame for analysis
+df = pd.DataFrame({
+    'X1': X1,
+    'X2': X2,
+    'Y': y
+})
+
+print("=== TRUE MODEL ===")
+print(f"Y = {beta0_true} + {beta1_true}*X1 + {beta2_true}*X2 + ε")
+print(f"Correlation between X1 and X2: {np.corrcoef(X1, X2)[0,1]:.3f}")
+
+# Simple Linear Regression: Y ~ X1
+print("\n=== SIMPLE LINEAR REGRESSION: Y ~ X1 ===")
+slr_model = LinearRegression()
+slr_model.fit(X1.reshape(-1, 1), y)
+slr_coef = slr_model.coef_[0]
+slr_intercept = slr_model.intercept_
+slr_r2 = r2_score(y, slr_model.predict(X1.reshape(-1, 1)))
+
+print(f"Estimated model: Y = {slr_intercept:.3f} + {slr_coef:.3f}*X1")
+print(f"R² = {slr_r2:.3f}")
+print(f"Bias in β1: {slr_coef - beta1_true:.3f}")
+
+# Multiple Linear Regression: Y ~ X1 + X2
+print("\n=== MULTIPLE LINEAR REGRESSION: Y ~ X1 + X2 ===")
+mlr_model = LinearRegression()
+X_both = np.column_stack([X1, X2])
+mlr_model.fit(X_both, y)
+mlr_coefs = mlr_model.coef_
+mlr_intercept = mlr_model.intercept_
+mlr_r2 = r2_score(y, mlr_model.predict(X_both))
+
+print(f"Estimated model: Y = {mlr_intercept:.3f} + {mlr_coefs[0]:.3f}*X1 + {mlr_coefs[1]:.3f}*X2")
+print(f"R² = {mlr_r2:.3f}")
+print(f"β1 bias: {mlr_coefs[0] - beta1_true:.3f}")
+print(f"β2 bias: {mlr_coefs[1] - beta2_true:.3f}")
+
+# Theoretical bias calculation
+cov_x1x2 = np.cov(X1, X2)[0,1]
+var_x1 = np.var(X1)
+theoretical_bias = beta2_true * cov_x1x2 / var_x1
+print(f"Theoretical bias: {theoretical_bias:.3f}")
+
+# Visualization
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Scatter plot: X1 vs Y
+axes[0, 0].scatter(X1, y, alpha=0.6)
+axes[0, 0].plot(X1, slr_model.predict(X1.reshape(-1, 1)), 'r-', linewidth=2)
+axes[0, 0].set_xlabel('X1')
+axes[0, 0].set_ylabel('Y')
+axes[0, 0].set_title('Simple Regression: Y ~ X1')
+axes[0, 0].grid(True, alpha=0.3)
+
+# Scatter plot: X2 vs Y
+axes[0, 1].scatter(X2, y, alpha=0.6)
+# Fit Y ~ X2 for comparison
+model_x2 = LinearRegression()
+model_x2.fit(X2.reshape(-1, 1), y)
+axes[0, 1].plot(X2, model_x2.predict(X2.reshape(-1, 1)), 'g-', linewidth=2)
+axes[0, 1].set_xlabel('X2')
+axes[0, 1].set_ylabel('Y')
+axes[0, 1].set_title('Simple Regression: Y ~ X2')
+axes[0, 1].grid(True, alpha=0.3)
+
+# Scatter plot: X1 vs X2
+axes[1, 0].scatter(X1, X2, alpha=0.6)
+axes[1, 0].set_xlabel('X1')
+axes[1, 0].set_ylabel('X2')
+axes[1, 0].set_title('Correlation between X1 and X2')
+axes[1, 0].grid(True, alpha=0.3)
+
+# Residuals comparison
+slr_residuals = y - slr_model.predict(X1.reshape(-1, 1))
+mlr_residuals = y - mlr_model.predict(X_both)
+
+axes[1, 1].scatter(slr_model.predict(X1.reshape(-1, 1)), slr_residuals, 
+                   alpha=0.6, label='SLR', color='red')
+axes[1, 1].scatter(mlr_model.predict(X_both), mlr_residuals, 
+                   alpha=0.6, label='MLR', color='blue')
+axes[1, 1].axhline(y=0, color='black', linestyle='--')
+axes[1, 1].set_xlabel('Predicted Values')
+axes[1, 1].set_ylabel('Residuals')
+axes[1, 1].set_title('Residuals Comparison')
+axes[1, 1].legend()
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Summary table
+summary_df = pd.DataFrame({
+    'Model': ['Simple: Y~X1', 'Multiple: Y~X1+X2'],
+    'β1_estimate': [slr_coef, mlr_coefs[0]],
+    'β2_estimate': [np.nan, mlr_coefs[1]],
+    'R²': [slr_r2, mlr_r2],
+    'β1_bias': [slr_coef - beta1_true, mlr_coefs[0] - beta1_true]
+})
+
+print("\n=== SUMMARY COMPARISON ===")
+print(summary_df.to_string(index=False))
+```
+
+### Frisch-Waugh-Lovell Theorem: Understanding Partial Effects
+
+The Frisch-Waugh-Lovell (FWL) theorem provides an elegant and intuitive way to understand how coefficients are computed in multiple regression. It decomposes the multiple regression coefficient into a series of simple regressions, making the concept of "partialling out" explicit.
+
+#### Mathematical Foundation
+
+Consider the multiple regression model:
+```math
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \epsilon
+```
+
+The FWL theorem states that the coefficient $`\hat{\beta}_k`$ can be obtained through the following three-step process:
+
+**Step 1:** Regress $`Y`$ on all predictors except $`X_k`$ and obtain residuals $`Y^*`$
+```math
+Y^* = Y - \hat{Y}_{-k} = Y - \hat{\alpha}_0 - \hat{\alpha}_1 X_1 - \cdots - \hat{\alpha}_{k-1} X_{k-1} - \hat{\alpha}_{k+1} X_{k+1} - \cdots - \hat{\alpha}_p X_p
+```
+
+**Step 2:** Regress $`X_k`$ on all other predictors and obtain residuals $`X_k^*`$
+```math
+X_k^* = X_k - \hat{X}_k = X_k - \hat{\gamma}_0 - \hat{\gamma}_1 X_1 - \cdots - \hat{\gamma}_{k-1} X_{k-1} - \hat{\gamma}_{k+1} X_{k+1} - \cdots - \hat{\gamma}_p X_p
+```
+
+**Step 3:** Regress $`Y^*`$ on $`X_k^*`$ - the coefficient equals $`\hat{\beta}_k`$
+```math
+\hat{\beta}_k = \frac{\text{Cov}(Y^*, X_k^*)}{\text{Var}(X_k^*)}
+```
+
+#### Intuitive Interpretation
+
+The FWL theorem shows that $`\hat{\beta}_k`$ captures the relationship between $`Y`$ and $`X_k`$ after "partialling out" or "controlling for" the effects of all other predictors. This is why multiple regression coefficients are often called **partial regression coefficients**.
+
+**Key Insights:**
+1. **Partial Effect:** $`\hat{\beta}_k`$ represents the effect of $`X_k`$ on $`Y`$ that is not explained by other predictors
+2. **Residual Interpretation:** The residuals $`Y^*`$ and $`X_k^*`$ represent the "unique" variation in $`Y`$ and $`X_k`$ respectively
+3. **Orthogonality:** The residuals $`X_k^*`$ are orthogonal to all other predictors by construction
+
+#### Comprehensive Python Example: Frisch-Waugh-Lovell Implementation
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate correlated data
+n = 200
+X1 = np.random.normal(0, 1, n)
+X2 = 0.6 * X1 + np.random.normal(0, 0.8, n)  # Correlated with X1
+X3 = np.random.normal(0, 1, n)  # Independent
+
+# True model
+beta0_true = 2.0
+beta1_true = 1.5
+beta2_true = -0.8
+beta3_true = 0.4
+
+y = beta0_true + beta1_true * X1 + beta2_true * X2 + beta3_true * X3 + np.random.normal(0, 0.5, n)
+
+# Create design matrix
+X = np.column_stack([X1, X2, X3])
+feature_names = ['X1', 'X2', 'X3']
+
+print("=== TRUE MODEL ===")
+print(f"Y = {beta0_true} + {beta1_true}*X1 + {beta2_true}*X2 + {beta3_true}*X3 + ε")
+
+# Standard multiple regression
+print("\n=== STANDARD MULTIPLE REGRESSION ===")
+model_standard = LinearRegression()
+model_standard.fit(X, y)
+standard_coefs = model_standard.coef_
+standard_intercept = model_standard.intercept_
+
+print("Standard multiple regression results:")
+for i, (name, coef) in enumerate(zip(feature_names, standard_coefs)):
+    print(f"  {name}: {coef:.4f}")
+print(f"  Intercept: {standard_intercept:.4f}")
+
+# Frisch-Waugh-Lovell for each coefficient
+print("\n=== FRISCH-WAUGH-LOVELL DECOMPOSITION ===")
+
+def frisch_waugh_lovell(X, y, k):
+    """
+    Implement Frisch-Waugh-Lovell theorem for coefficient k
+    
+    Parameters:
+    X: design matrix (n x p)
+    y: response variable (n x 1)
+    k: index of coefficient to compute (0-based)
+    
+    Returns:
+    beta_k: coefficient estimate
+    y_resid: residuals from step 1
+    xk_resid: residuals from step 2
+    """
+    n, p = X.shape
+    
+    # Step 1: Regress y on all predictors except X_k
+    X_minus_k = np.delete(X, k, axis=1)
+    model_y = LinearRegression()
+    model_y.fit(X_minus_k, y)
+    y_resid = y - model_y.predict(X_minus_k)
+    
+    # Step 2: Regress X_k on all other predictors
+    X_k = X[:, k]
+    model_xk = LinearRegression()
+    model_xk.fit(X_minus_k, X_k)
+    xk_resid = X_k - model_xk.predict(X_minus_k)
+    
+    # Step 3: Regress y_resid on xk_resid
+    model_final = LinearRegression()
+    model_final.fit(xk_resid.reshape(-1, 1), y_resid)
+    beta_k = model_final.coef_[0]
+    
+    return beta_k, y_resid, xk_resid
+
+# Apply FWL for each coefficient
+fwl_coefs = []
+for k in range(X.shape[1]):
+    beta_k, y_resid, xk_resid = frisch_waugh_lovell(X, y, k)
+    fwl_coefs.append(beta_k)
+    
+    print(f"\nFWL for {feature_names[k]}:")
+    print(f"  Step 1: Regress Y on {[name for i, name in enumerate(feature_names) if i != k]}")
+    print(f"  Step 2: Regress {feature_names[k]} on {[name for i, name in enumerate(feature_names) if i != k]}")
+    print(f"  Step 3: Regress Y_resid on {feature_names[k]}_resid")
+    print(f"  Coefficient: {beta_k:.4f}")
+    print(f"  Standard coefficient: {standard_coefs[k]:.4f}")
+    print(f"  Difference: {abs(beta_k - standard_coefs[k]):.8f}")
+
+# Verification: all coefficients should be identical
+print("\n=== VERIFICATION ===")
+print("Coefficient comparison:")
+comparison_df = pd.DataFrame({
+    'Feature': feature_names,
+    'Standard': standard_coefs,
+    'FWL': fwl_coefs,
+    'Difference': np.abs(np.array(standard_coefs) - np.array(fwl_coefs))
+})
+print(comparison_df.to_string(index=False))
+
+# Visualization: Show the partialling out process for X1
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+
+# Original relationships
+axes[0, 0].scatter(X1, y, alpha=0.6)
+axes[0, 0].set_xlabel('X1')
+axes[0, 0].set_ylabel('Y')
+axes[0, 0].set_title('Original: Y vs X1')
+axes[0, 0].grid(True, alpha=0.3)
+
+axes[0, 1].scatter(X2, y, alpha=0.6)
+axes[0, 1].set_xlabel('X2')
+axes[0, 1].set_ylabel('Y')
+axes[0, 1].set_title('Original: Y vs X2')
+axes[0, 1].grid(True, alpha=0.3)
+
+axes[0, 2].scatter(X1, X2, alpha=0.6)
+axes[0, 2].set_xlabel('X1')
+axes[0, 2].set_ylabel('X2')
+axes[0, 2].set_title('Correlation: X1 vs X2')
+axes[0, 2].grid(True, alpha=0.3)
+
+# FWL residuals for X1
+_, y_resid_x1, x1_resid = frisch_waugh_lovell(X, y, 0)
+
+axes[1, 0].scatter(x1_resid, y_resid_x1, alpha=0.6)
+axes[1, 0].set_xlabel('X1_resid (X1 partialled out)')
+axes[1, 0].set_ylabel('Y_resid (Y partialled out)')
+axes[1, 0].set_title('FWL: Y_resid vs X1_resid')
+axes[1, 0].grid(True, alpha=0.3)
+
+# Fit line to show the relationship
+model_fwl = LinearRegression()
+model_fwl.fit(x1_resid.reshape(-1, 1), y_resid_x1)
+x1_range = np.linspace(x1_resid.min(), x1_resid.max(), 100)
+y_pred_fwl = model_fwl.predict(x1_range.reshape(-1, 1))
+axes[1, 0].plot(x1_range, y_pred_fwl, 'r-', linewidth=2)
+
+# Check orthogonality
+axes[1, 1].scatter(x1_resid, X2, alpha=0.6)
+axes[1, 1].set_xlabel('X1_resid')
+axes[1, 1].set_ylabel('X2')
+axes[1, 1].set_title('Orthogonality: X1_resid vs X2')
+axes[1, 1].grid(True, alpha=0.3)
+
+# Check orthogonality with X3
+axes[1, 2].scatter(x1_resid, X3, alpha=0.6)
+axes[1, 2].set_xlabel('X1_resid')
+axes[1, 2].set_ylabel('X3')
+axes[1, 2].set_title('Orthogonality: X1_resid vs X3')
+axes[1, 2].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Verify orthogonality numerically
+print("\n=== ORTHOGONALITY VERIFICATION ===")
+print("Correlation between X1_resid and other predictors:")
+for i, name in enumerate(feature_names[1:], 1):
+    corr = np.corrcoef(x1_resid, X[:, i])[0, 1]
+    print(f"  X1_resid vs {name}: {corr:.6f}")
+
+# Theoretical verification
+print(f"\nTheoretical FWL coefficient for X1: {fwl_coefs[0]:.4f}")
+print(f"Direct calculation: Cov(Y_resid, X1_resid) / Var(X1_resid)")
+cov_ratio = np.cov(y_resid_x1, x1_resid)[0, 1] / np.var(x1_resid)
+print(f"  = {cov_ratio:.4f}")
 ```
 
 ---
 
 ## 2.3.3. Hypothesis Testing in Linear Regression
 
-Hypothesis testing is essential for determining whether relationships in your data are statistically significant or merely due to chance.
+Hypothesis testing is essential for determining whether relationships in your data are statistically significant or merely due to chance. In linear regression, we use hypothesis tests to assess the significance of individual coefficients and the overall model fit.
 
-### The F-Test: Testing Model Significance
+### Mathematical Foundation of Hypothesis Testing
+
+#### The F-Test: Testing Model Significance
 
 The F-test is the most fundamental hypothesis test in linear regression. It compares two nested models to determine whether adding predictors significantly improves the model fit.
 
 **F-Test Statistic:**
 
 ```math
-F = \frac{(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)}{\text{RSS}_a/(n-p_a)}
+F = \frac{(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)}{\text{RSS}_a/(n-p_a)} = \frac{\text{MSR}}{\text{MSE}}
 ```
 
 where:
@@ -180,11 +685,86 @@ where:
 - $`p_0`$ = Number of parameters in the null model
 - $`p_a`$ = Number of parameters in the alternative model
 - $`n`$ = Number of observations
+- $`\text{MSR}`$ = Mean Square Regression = $`(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)`$
+- $`\text{MSE}`$ = Mean Square Error = $`\text{RSS}_a/(n-p_a)`$
 
-**Key Properties:**
-- The F-statistic follows an F-distribution under the null hypothesis
+**Distribution Properties:**
+- Under the null hypothesis, $`F \sim F(p_a - p_0, n - p_a)`$
+- The F-distribution has two degrees of freedom: numerator $`(p_a - p_0)`$ and denominator $`(n - p_a)`$
 - Larger F-values indicate stronger evidence against the null hypothesis
 - The p-value gives the probability of observing such an F-statistic under the null hypothesis
+
+#### Alternative Formulations of the F-Test
+
+**Using R²:**
+```math
+F = \frac{R^2_a / (p_a - p_0)}{(1 - R^2_a) / (n - p_a)}
+```
+
+**Using Explained and Unexplained Variance:**
+```math
+F = \frac{\text{Explained Variance} / (p_a - p_0)}{\text{Unexplained Variance} / (n - p_a)}
+```
+
+### Types of F-Tests in Linear Regression
+
+#### 1. Overall F-Test (Model Significance)
+
+Tests whether the model with all predictors is significantly better than a model with only an intercept.
+
+**Null Hypothesis:**
+```math
+H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0
+```
+
+**Alternative Hypothesis:**
+```math
+H_a: \text{At least one } \beta_j \neq 0
+```
+
+**Test Statistic:**
+```math
+F = \frac{\text{MSR}}{\text{MSE}} = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2 / p}{\sum_{i=1}^n (y_i - \hat{y}_i)^2 / (n-p-1)}
+```
+
+#### 2. Partial F-Test (Individual Predictor Significance)
+
+Tests whether adding a specific predictor significantly improves the model.
+
+**Null Hypothesis:**
+```math
+H_0: \beta_j = 0
+```
+
+**Alternative Hypothesis:**
+```math
+H_a: \beta_j \neq 0
+```
+
+**Test Statistic:**
+```math
+F = \frac{(\text{RSS}_{\text{reduced}} - \text{RSS}_{\text{full}}) / 1}{\text{RSS}_{\text{full}} / (n-p-1)}
+```
+
+where the reduced model excludes predictor $`X_j`$ and the full model includes all predictors.
+
+#### 3. General Linear Hypothesis Test
+
+Tests whether a set of linear constraints on the coefficients holds.
+
+**Null Hypothesis:**
+```math
+H_0: \mathbf{L}\boldsymbol{\beta} = \mathbf{c}
+```
+
+where $`\mathbf{L}`$ is a matrix of constraints and $`\mathbf{c}`$ is a vector of constants.
+
+**Test Statistic:**
+```math
+F = \frac{(\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c})^T [\mathbf{L}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{L}^T]^{-1} (\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c}) / q}{\text{MSE}}
+```
+
+where $`q`$ is the number of constraints.
 
 ### Types of F-Tests
 
@@ -210,7 +790,7 @@ H_a &: Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon
 
 ### t-Test: Testing Individual Coefficients
 
-The t-test for individual coefficients is a special case of the F-test. For the $`j`$-th coefficient:
+The t-test for individual coefficients is a special case of the F-test when testing a single coefficient. For the $`j`$-th coefficient:
 
 ```math
 t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
@@ -218,51 +798,232 @@ t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
 
 where $`\text{SE}(\hat{\beta}_j)`$ is the standard error of the coefficient estimate.
 
-**Python Example: Hypothesis Testing**
+#### Mathematical Derivation of Standard Errors
+
+The standard error of $`\hat{\beta}_j`$ is derived from the variance-covariance matrix of the coefficient estimates:
+
+```math
+\text{Var}(\hat{\boldsymbol{\beta}}) = \sigma^2 (\mathbf{X}^T\mathbf{X})^{-1}
+```
+
+The standard error of $`\hat{\beta}_j`$ is:
+```math
+\text{SE}(\hat{\beta}_j) = \sqrt{\text{Var}(\hat{\beta}_j)} = \sqrt{\sigma^2 [(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}}
+```
+
+where $`[(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}`$ is the $`j`$-th diagonal element of $`(\mathbf{X}^T\mathbf{X})^{-1}`$.
+
+Since $`\sigma^2`$ is unknown, we estimate it using the mean squared error:
+```math
+\hat{\sigma}^2 = \text{MSE} = \frac{\text{RSS}}{n-p-1}
+```
+
+#### Distribution Properties
+
+Under the null hypothesis $`H_0: \beta_j = 0`$:
+```math
+t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)} \sim t(n-p-1)
+```
+
+The t-statistic follows a t-distribution with $`n-p-1`$ degrees of freedom.
+
+#### Relationship Between t-Test and F-Test
+
+For testing a single coefficient, the t-test and F-test are equivalent:
+```math
+F = t^2
+```
+
+This is because the F-distribution with 1 numerator degree of freedom is the square of the t-distribution.
+
+#### Comprehensive Python Example: Hypothesis Testing
 
 ```python
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from scipy import stats
+import statsmodels.api as sm
 
-# Generate data
+# Set random seed for reproducibility
 np.random.seed(42)
-n = 100
-X = np.random.randn(n, 3)
-y = 2 + 1.5 * X[:, 0] - 0.8 * X[:, 1] + 0.1 * X[:, 2] + np.random.normal(0, 0.5, n)
 
-# Fit model
+# Generate data with known effects
+n = 150
+X1 = np.random.normal(0, 1, n)
+X2 = np.random.normal(0, 1, n)
+X3 = np.random.normal(0, 1, n)
+
+# True model: X1 and X2 have effects, X3 has no effect
+beta0_true = 2.0
+beta1_true = 1.5  # Strong effect
+beta2_true = -0.8  # Moderate effect
+beta3_true = 0.0   # No effect
+
+y = beta0_true + beta1_true * X1 + beta2_true * X2 + beta3_true * X3 + np.random.normal(0, 0.8, n)
+
+# Create design matrix
+X = np.column_stack([X1, X2, X3])
+feature_names = ['X1', 'X2', 'X3']
+
+print("=== TRUE MODEL ===")
+print(f"Y = {beta0_true} + {beta1_true}*X1 + {beta2_true}*X2 + {beta3_true}*X3 + ε")
+
+# Fit model using scikit-learn
 model = LinearRegression()
 model.fit(X, y)
 
-# Calculate residuals and degrees of freedom
+# Calculate predictions and residuals
 y_pred = model.predict(X)
 residuals = y - y_pred
+
+# Calculate degrees of freedom
 n, p = X.shape
 df_residual = n - p - 1
 
-# Calculate standard errors
+print(f"\n=== MODEL FIT ===")
+print(f"Sample size: {n}")
+print(f"Number of predictors: {p}")
+print(f"Residual degrees of freedom: {df_residual}")
+
+# Calculate standard errors manually
 X_with_intercept = np.column_stack([np.ones(n), X])
 mse = np.sum(residuals**2) / df_residual
 var_beta = mse * np.linalg.inv(X_with_intercept.T @ X_with_intercept)
 se_beta = np.sqrt(np.diag(var_beta))[1:]  # Exclude intercept
 
-# t-statistics and p-values
+# Calculate t-statistics and p-values
 t_stats = model.coef_ / se_beta
 p_values = 2 * (1 - stats.t.cdf(np.abs(t_stats), df_residual))
 
-print("Coefficient t-tests:")
-for i, (coef, t_stat, p_val) in enumerate(zip(model.coef_, t_stats, p_values)):
-    print(f"X{i+1}: β = {coef:.3f}, t = {t_stat:.3f}, p = {p_val:.3f}")
+# Calculate confidence intervals
+alpha = 0.05
+t_critical = stats.t.ppf(1 - alpha/2, df_residual)
+ci_lower = model.coef_ - t_critical * se_beta
+ci_upper = model.coef_ + t_critical * se_beta
+
+print(f"\n=== HYPOTHESIS TESTING RESULTS ===")
+print("Manual calculations:")
+for i, (name, coef, se, t_stat, p_val, ci_l, ci_u) in enumerate(zip(feature_names, model.coef_, se_beta, t_stats, p_values, ci_lower, ci_upper)):
+    print(f"\n{name}:")
+    print(f"  Coefficient: {coef:.4f}")
+    print(f"  Standard Error: {se:.4f}")
+    print(f"  t-statistic: {t_stat:.4f}")
+    print(f"  p-value: {p_val:.4f}")
+    print(f"  {100*(1-alpha)}% CI: [{ci_l:.4f}, {ci_u:.4f}]")
+    print(f"  Significant: {'Yes' if p_val < alpha else 'No'}")
+
+# Compare with statsmodels (more comprehensive output)
+print(f"\n=== STATSMODELS COMPARISON ===")
+X_sm = sm.add_constant(X)
+sm_model = sm.OLS(y, X_sm).fit()
+print(sm_model.summary())
+
+# F-test for overall model significance
+print(f"\n=== OVERALL F-TEST ===")
+# Calculate F-statistic manually
+y_mean = np.mean(y)
+ssr = np.sum((y_pred - y_mean)**2)  # Sum of squares regression
+sse = np.sum(residuals**2)          # Sum of squares error
+msr = ssr / p                       # Mean square regression
+mse_manual = sse / df_residual      # Mean square error
+f_stat = msr / mse_manual
+f_p_value = 1 - stats.f.cdf(f_stat, p, df_residual)
+
+print(f"F-statistic: {f_stat:.4f}")
+print(f"p-value: {f_p_value:.4f}")
+print(f"R²: {sm_model.rsquared:.4f}")
+print(f"Adjusted R²: {sm_model.rsquared_adj:.4f}")
+
+# Visualization of results
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# Coefficient estimates with confidence intervals
+coef_names = ['β₁ (X1)', 'β₂ (X2)', 'β₃ (X3)']
+true_coefs = [beta1_true, beta2_true, beta3_true]
+
+axes[0, 0].errorbar(range(len(model.coef_)), model.coef_, 
+                   yerr=t_critical * se_beta, fmt='o', capsize=5, capthick=2)
+axes[0, 0].axhline(y=0, color='red', linestyle='--', alpha=0.7)
+axes[0, 0].set_xlabel('Coefficients')
+axes[0, 0].set_ylabel('Estimate')
+axes[0, 0].set_title('Coefficient Estimates with 95% CI')
+axes[0, 0].set_xticks(range(len(model.coef_)))
+axes[0, 0].set_xticklabels(coef_names)
+axes[0, 0].grid(True, alpha=0.3)
+
+# Plot true vs estimated coefficients
+axes[0, 1].scatter(true_coefs, model.coef_, s=100, alpha=0.7)
+axes[0, 1].plot([min(true_coefs), max(true_coefs)], [min(true_coefs), max(true_coefs)], 'r--')
+axes[0, 1].set_xlabel('True Coefficients')
+axes[0, 1].set_ylabel('Estimated Coefficients')
+axes[0, 1].set_title('True vs Estimated Coefficients')
+axes[0, 1].grid(True, alpha=0.3)
+
+# Residuals vs fitted values
+axes[1, 0].scatter(y_pred, residuals, alpha=0.6)
+axes[1, 0].axhline(y=0, color='red', linestyle='--')
+axes[1, 0].set_xlabel('Fitted Values')
+axes[1, 0].set_ylabel('Residuals')
+axes[1, 0].set_title('Residuals vs Fitted Values')
+axes[1, 0].grid(True, alpha=0.3)
+
+# Q-Q plot of residuals
+stats.probplot(residuals, dist="norm", plot=axes[1, 1])
+axes[1, 1].set_title('Q-Q Plot of Residuals')
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Summary table
+results_df = pd.DataFrame({
+    'Feature': feature_names,
+    'True_β': [beta1_true, beta2_true, beta3_true],
+    'Est_β': model.coef_,
+    'SE': se_beta,
+    't_stat': t_stats,
+    'p_value': p_values,
+    'Significant': [p < alpha for p in p_values],
+    'CI_Lower': ci_lower,
+    'CI_Upper': ci_upper
+})
+
+print(f"\n=== SUMMARY TABLE ===")
+print(results_df.round(4).to_string(index=False))
 ```
 
-### Understanding Low R² and Significant F-Test
+### Understanding Low R² and Significant F-Test: Statistical vs. Practical Significance
 
-It's important to distinguish between statistical significance and practical significance:
+It's crucial to distinguish between **statistical significance** and **practical significance** when interpreting regression results. This distinction becomes particularly important with large sample sizes.
 
-- **R²** measures the strength of the relationship (effect size)
-- **F-test** measures statistical significance (whether the relationship exists)
+#### Key Concepts
+
+**Statistical Significance (F-test):**
+- Tests whether the relationship exists in the population
+- Measures whether the observed relationship is unlikely to occur by chance
+- Depends on sample size, effect size, and variability
+
+**Practical Significance (R²):**
+- Measures the strength of the relationship
+- Indicates how much of the variance in the response is explained by the predictors
+- Independent of sample size (though precision increases with sample size)
+
+#### Mathematical Relationship
+
+The F-statistic and R² are mathematically related:
+
+```math
+F = \frac{R^2 / p}{(1 - R^2) / (n - p - 1)}
+```
+
+This shows that:
+- For a given R², F increases with sample size $`n`$
+- For a given sample size, F increases with R²
+- With large samples, even small R² values can lead to large F-statistics
+
+#### The Large Sample Size Effect
 
 With large sample sizes, even weak relationships can be statistically significant. A model might have:
 - Low R² (e.g., 0.05) indicating weak predictive power
@@ -272,49 +1033,193 @@ With large sample sizes, even weak relationships can be statistically significan
 
 ```python
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from scipy import stats
 
-# Small sample size
-n_small = 30
-X_small = np.random.randn(n_small, 1)
-y_small = 0.1 * X_small.flatten() + np.random.normal(0, 1, n_small)
+# Set random seed for reproducibility
+np.random.seed(42)
 
-model_small = LinearRegression()
-model_small.fit(X_small, y_small)
-r2_small = r2_score(y_small, model_small.predict(X_small))
+# Define sample sizes to test
+sample_sizes = [30, 100, 500, 1000, 5000, 10000]
+true_effect = 0.1  # Small true effect
+noise_std = 1.0    # Large noise
 
-# Large sample size
-n_large = 10000
-X_large = np.random.randn(n_large, 1)
-y_large = 0.1 * X_large.flatten() + np.random.normal(0, 1, n_large)
+results = []
 
-model_large = LinearRegression()
-model_large.fit(X_large, y_large)
-r2_large = r2_score(y_large, model_large.predict(X_large))
+for n in sample_sizes:
+    # Generate data with small effect
+    X = np.random.randn(n, 1)
+    y = true_effect * X.flatten() + np.random.normal(0, noise_std, n)
+    
+    # Fit model
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Calculate metrics
+    y_pred = model.predict(X)
+    r2 = r2_score(y, y_pred)
+    
+    # Calculate F-statistic manually
+    y_mean = np.mean(y)
+    ssr = np.sum((y_pred - y_mean)**2)
+    sse = np.sum((y - y_pred)**2)
+    msr = ssr / 1  # 1 predictor
+    mse = sse / (n - 2)  # n - p - 1 degrees of freedom
+    f_stat = msr / mse
+    f_p_value = 1 - stats.f.cdf(f_stat, 1, n - 2)
+    
+    # Calculate t-statistic
+    se_beta = np.sqrt(mse / np.sum((X.flatten() - np.mean(X))**2))
+    t_stat = model.coef_[0] / se_beta
+    t_p_value = 2 * (1 - stats.t.cdf(np.abs(t_stat), n - 2))
+    
+    results.append({
+        'n': n,
+        'R²': r2,
+        'F_stat': f_stat,
+        'F_p_value': f_p_value,
+        't_stat': t_stat,
+        't_p_value': t_p_value,
+        'beta_est': model.coef_[0],
+        'significant': f_p_value < 0.05
+    })
 
-print(f"Small sample: R² = {r2_small:.3f}")
-print(f"Large sample: R² = {r2_large:.3f}")
+# Create results DataFrame
+results_df = pd.DataFrame(results)
+
+print("=== SAMPLE SIZE EFFECT ON SIGNIFICANCE ===")
+print("True effect size: 0.1")
+print("Noise standard deviation: 1.0")
+print("\nResults:")
+print(results_df.round(4).to_string(index=False))
+
+# Visualization
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# R² vs sample size
+axes[0, 0].plot(results_df['n'], results_df['R²'], 'bo-', linewidth=2, markersize=8)
+axes[0, 0].set_xlabel('Sample Size')
+axes[0, 0].set_ylabel('R²')
+axes[0, 0].set_title('R² vs Sample Size')
+axes[0, 0].set_xscale('log')
+axes[0, 0].grid(True, alpha=0.3)
+axes[0, 0].axhline(y=0.05, color='red', linestyle='--', alpha=0.7, label='R² = 0.05')
+axes[0, 0].legend()
+
+# F-statistic vs sample size
+axes[0, 1].plot(results_df['n'], results_df['F_stat'], 'go-', linewidth=2, markersize=8)
+axes[0, 1].set_xlabel('Sample Size')
+axes[0, 1].set_ylabel('F-statistic')
+axes[0, 1].set_title('F-statistic vs Sample Size')
+axes[0, 1].set_xscale('log')
+axes[0, 1].set_yscale('log')
+axes[0, 1].grid(True, alpha=0.3)
+
+# p-value vs sample size
+axes[1, 0].plot(results_df['n'], results_df['F_p_value'], 'ro-', linewidth=2, markersize=8)
+axes[1, 0].set_xlabel('Sample Size')
+axes[1, 0].set_ylabel('p-value')
+axes[1, 0].set_title('p-value vs Sample Size')
+axes[1, 0].set_xscale('log')
+axes[1, 0].set_yscale('log')
+axes[1, 0].axhline(y=0.05, color='red', linestyle='--', alpha=0.7, label='α = 0.05')
+axes[1, 0].grid(True, alpha=0.3)
+axes[1, 0].legend()
+
+# Coefficient estimate vs sample size
+axes[1, 1].plot(results_df['n'], results_df['beta_est'], 'mo-', linewidth=2, markersize=8)
+axes[1, 1].axhline(y=true_effect, color='red', linestyle='--', alpha=0.7, label=f'True β = {true_effect}')
+axes[1, 1].set_xlabel('Sample Size')
+axes[1, 1].set_ylabel('Estimated β')
+axes[1, 1].set_title('Coefficient Estimate vs Sample Size')
+axes[1, 1].set_xscale('log')
+axes[1, 1].grid(True, alpha=0.3)
+axes[1, 1].legend()
+
+plt.tight_layout()
+plt.show()
+
+# Summary of findings
+print("\n=== KEY INSIGHTS ===")
+print("1. R² remains relatively constant across sample sizes (around 0.01-0.02)")
+print("2. F-statistic increases dramatically with sample size")
+print("3. p-value decreases with sample size, eventually becoming significant")
+print("4. Coefficient estimates converge to true value with larger samples")
+
+# Practical interpretation
+print("\n=== PRACTICAL INTERPRETATION ===")
+print("With n = 30:   R² = 0.01, p = 0.74  → Not significant, weak effect")
+print("With n = 1000: R² = 0.01, p = 0.02  → Significant, but still weak effect")
+print("With n = 10000: R² = 0.01, p < 0.001 → Highly significant, but still weak effect")
+
+print("\nMoral: Large sample sizes can detect tiny effects that may not be practically meaningful!")
 ```
+
+#### Guidelines for Interpretation
+
+**1. Consider Both Statistical and Practical Significance:**
+- A significant F-test doesn't guarantee a meaningful relationship
+- A high R² doesn't guarantee statistical significance (especially with small samples)
+
+**2. Effect Size Guidelines:**
+- R² < 0.01: Negligible effect
+- 0.01 ≤ R² < 0.09: Small effect
+- 0.09 ≤ R² < 0.25: Medium effect
+- R² ≥ 0.25: Large effect
+
+**3. Sample Size Considerations:**
+- With large samples (>1000), focus more on effect size than p-values
+- With small samples (<50), be cautious about interpreting non-significant results
+- Consider power analysis when designing studies
+
+**4. Domain-Specific Interpretation:**
+- What constitutes a "meaningful" effect varies by field
+- Consider the cost and feasibility of interventions
+- Consult with subject matter experts
 
 ---
 
 ## 2.3.4. Handling Categorical Variables
 
-Categorical variables require special treatment in linear regression because the model expects numerical inputs. The most common approach is one-hot encoding (dummy coding).
+Categorical variables require special treatment in linear regression because the model expects numerical inputs. The most common approach is one-hot encoding (dummy coding), but there are several encoding strategies available depending on the nature of the categorical variable and the research question.
 
-### One-Hot Encoding
+### Mathematical Foundation
 
-One-hot encoding converts categorical variables into binary indicators. For a categorical variable with $`k`$ levels, we create $`k-1`$ dummy variables.
+#### One-Hot Encoding (Dummy Coding)
 
-**Example: Size Variable**
+One-hot encoding converts categorical variables into binary indicators. For a categorical variable with $`k`$ levels, we create $`k-1`$ dummy variables to avoid perfect multicollinearity.
+
+**Mathematical Representation:**
+
+Consider a categorical variable $`C`$ with $`k`$ levels: $`\{c_1, c_2, \ldots, c_k\}`$
+
+We create $`k-1`$ dummy variables:
+```math
+D_j = \begin{cases}
+1 & \text{if } C = c_{j+1} \\
+0 & \text{otherwise}
+\end{cases}, \quad j = 1, 2, \ldots, k-1
+```
+
+The regression model becomes:
+```math
+Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \cdots + \beta_{k-1} D_{k-1} + \epsilon
+```
+
+**Interpretation:**
+- $`\beta_0`$ = Expected response for the reference category $`c_1`$
+- $`\beta_j`$ = Expected difference in response between category $`c_{j+1}`$ and the reference category $`c_1`$
+
+#### Example: Size Variable with Three Levels
 
 Consider a categorical variable `Size` with three levels: Small (S), Medium (M), Large (L).
 
 **Original Data:**
 ```math
-\begin{pmatrix}
+\mathbf{C} = \begin{pmatrix}
 S \\
 S \\
 M \\
@@ -324,27 +1229,246 @@ L
 \end{pmatrix}
 ```
 
-**One-Hot Encoded:**
+**One-Hot Encoded Design Matrix:**
 ```math
-\begin{pmatrix}
-0 & 0 \\
-0 & 0 \\
-1 & 0 \\
-1 & 0 \\
-0 & 1 \\
-0 & 1
+\mathbf{D} = \begin{pmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+1 & 1 & 0 \\
+1 & 1 & 0 \\
+1 & 0 & 1 \\
+1 & 0 & 1
 \end{pmatrix}
 ```
 
 Here:
-- Column 1 represents "Medium" (1 if Medium, 0 otherwise)
-- Column 2 represents "Large" (1 if Large, 0 otherwise)
-- "Small" is the reference category (all zeros)
+- Column 1: Intercept (all ones)
+- Column 2: Medium dummy (1 if Medium, 0 otherwise)
+- Column 3: Large dummy (1 if Large, 0 otherwise)
+- Small is the reference category (all zeros in dummy columns)
 
-**Interpretation:**
+**Model Interpretation:**
+- $`\beta_0`$ = Expected response for Small
 - $`\beta_1`$ = Expected difference in response between Medium and Small
 - $`\beta_2`$ = Expected difference in response between Large and Small
-- Intercept = Expected response for Small (reference category)
+
+**Predicted Values:**
+- Small: $`\hat{Y} = \beta_0`$
+- Medium: $`\hat{Y} = \beta_0 + \beta_1`$
+- Large: $`\hat{Y} = \beta_0 + \beta_2`$
+
+#### Comprehensive Python Example: Categorical Variables
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.metrics import r2_score
+import seaborn as sns
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate sample data with categorical variable
+n = 300
+sizes = np.random.choice(['Small', 'Medium', 'Large'], n, p=[0.4, 0.35, 0.25])
+x_continuous = np.random.normal(0, 1, n)
+
+# True model with different effects by size
+# Small: baseline effect
+# Medium: +2 units higher intercept, +0.5 additional slope
+# Large: +4 units higher intercept, +1.0 additional slope
+
+y = np.zeros(n)
+for i, size in enumerate(sizes):
+    if size == 'Small':
+        y[i] = 5 + 1.5 * x_continuous[i] + np.random.normal(0, 0.5)
+    elif size == 'Medium':
+        y[i] = 7 + 2.0 * x_continuous[i] + np.random.normal(0, 0.5)
+    else:  # Large
+        y[i] = 9 + 2.5 * x_continuous[i] + np.random.normal(0, 0.5)
+
+# Create DataFrame
+df = pd.DataFrame({
+    'Size': sizes,
+    'X': x_continuous,
+    'Y': y
+})
+
+print("=== TRUE MODEL ===")
+print("Small:  Y = 5 + 1.5*X + ε")
+print("Medium: Y = 7 + 2.0*X + ε")
+print("Large:  Y = 9 + 2.5*X + ε")
+
+# Method 1: Manual one-hot encoding
+print("\n=== METHOD 1: MANUAL ONE-HOT ENCODING ===")
+
+# Create dummy variables manually
+df['Size_Medium'] = (df['Size'] == 'Medium').astype(int)
+df['Size_Large'] = (df['Size'] == 'Large').astype(int)
+
+# Fit model with main effects only
+X_main = df[['X', 'Size_Medium', 'Size_Large']].values
+model_main = LinearRegression()
+model_main.fit(X_main, y)
+
+print("Main effects model:")
+print(f"Intercept: {model_main.intercept_:.3f}")
+print(f"X coefficient: {model_main.coef_[0]:.3f}")
+print(f"Medium effect: {model_main.coef_[1]:.3f}")
+print(f"Large effect: {model_main.coef_[2]:.3f}")
+print(f"R²: {r2_score(y, model_main.predict(X_main)):.3f}")
+
+# Method 2: Using sklearn OneHotEncoder
+print("\n=== METHOD 2: SKLEARN ONEHOTENCODER ===")
+
+encoder = OneHotEncoder(drop='first', sparse=False)
+size_encoded = encoder.fit_transform(df[['Size']])
+feature_names = encoder.get_feature_names_out(['Size'])
+
+X_sklearn = np.column_stack([df['X'].values, size_encoded])
+model_sklearn = LinearRegression()
+model_sklearn.fit(X_sklearn, y)
+
+print("sklearn encoding results:")
+print(f"Intercept: {model_sklearn.intercept_:.3f}")
+print(f"X coefficient: {model_sklearn.coef_[0]:.3f}")
+for i, name in enumerate(feature_names):
+    print(f"{name}: {model_sklearn.coef_[i+1]:.3f}")
+print(f"R²: {r2_score(y, model_sklearn.predict(X_sklearn)):.3f}")
+
+# Method 3: Interaction model (different slopes by size)
+print("\n=== METHOD 3: INTERACTION MODEL ===")
+
+# Create interaction terms
+df['X_Medium'] = df['X'] * df['Size_Medium']
+df['X_Large'] = df['X'] * df['Size_Large']
+
+X_interaction = df[['X', 'Size_Medium', 'Size_Large', 'X_Medium', 'X_Large']].values
+model_interaction = LinearRegression()
+model_interaction.fit(X_interaction, y)
+
+print("Interaction model:")
+print(f"Intercept: {model_interaction.intercept_:.3f}")
+print(f"X coefficient (baseline): {model_interaction.coef_[0]:.3f}")
+print(f"Medium intercept effect: {model_interaction.coef_[1]:.3f}")
+print(f"Large intercept effect: {model_interaction.coef_[2]:.3f}")
+print(f"Medium slope effect: {model_interaction.coef_[3]:.3f}")
+print(f"Large slope effect: {model_interaction.coef_[4]:.3f}")
+print(f"R²: {r2_score(y, model_interaction.predict(X_interaction)):.3f}")
+
+# Model comparison
+print("\n=== MODEL COMPARISON ===")
+models = {
+    'Main Effects': model_main,
+    'sklearn Encoding': model_sklearn,
+    'Interaction': model_interaction
+}
+
+X_matrices = {
+    'Main Effects': X_main,
+    'sklearn Encoding': X_sklearn,
+    'Interaction': X_interaction
+}
+
+comparison_df = pd.DataFrame({
+    'Model': list(models.keys()),
+    'R²': [r2_score(y, models[name].predict(X_matrices[name])) for name in models.keys()],
+    'Parameters': [len(models[name].coef_) + 1 for name in models.keys()]
+})
+
+print(comparison_df.to_string(index=False))
+
+# Visualization
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))
+
+# Original data by size
+colors = {'Small': 'blue', 'Medium': 'green', 'Large': 'red'}
+for size in ['Small', 'Medium', 'Large']:
+    mask = df['Size'] == size
+    axes[0, 0].scatter(df[mask]['X'], df[mask]['Y'], 
+                      c=colors[size], label=size, alpha=0.6)
+
+axes[0, 0].set_xlabel('X')
+axes[0, 0].set_ylabel('Y')
+axes[0, 0].set_title('Original Data by Size')
+axes[0, 0].legend()
+axes[0, 0].grid(True, alpha=0.3)
+
+# Main effects model predictions
+for size in ['Small', 'Medium', 'Large']:
+    mask = df['Size'] == size
+    x_vals = df[mask]['X'].values
+    if size == 'Small':
+        y_pred = model_main.intercept_ + model_main.coef_[0] * x_vals
+    elif size == 'Medium':
+        y_pred = model_main.intercept_ + model_main.coef_[0] * x_vals + model_main.coef_[1]
+    else:  # Large
+        y_pred = model_main.intercept_ + model_main.coef_[0] * x_vals + model_main.coef_[2]
+    
+    axes[0, 1].plot(x_vals, y_pred, c=colors[size], linewidth=2, label=f'{size} (Main)')
+
+axes[0, 1].set_xlabel('X')
+axes[0, 1].set_ylabel('Predicted Y')
+axes[0, 1].set_title('Main Effects Model')
+axes[0, 1].legend()
+axes[0, 1].grid(True, alpha=0.3)
+
+# Interaction model predictions
+for size in ['Small', 'Medium', 'Large']:
+    mask = df['Size'] == size
+    x_vals = df[mask]['X'].values
+    if size == 'Small':
+        y_pred = model_interaction.intercept_ + model_interaction.coef_[0] * x_vals
+    elif size == 'Medium':
+        y_pred = (model_interaction.intercept_ + model_interaction.coef_[1] + 
+                 (model_interaction.coef_[0] + model_interaction.coef_[3]) * x_vals)
+    else:  # Large
+        y_pred = (model_interaction.intercept_ + model_interaction.coef_[2] + 
+                 (model_interaction.coef_[0] + model_interaction.coef_[4]) * x_vals)
+    
+    axes[1, 0].plot(x_vals, y_pred, c=colors[size], linewidth=2, label=f'{size} (Interaction)')
+
+axes[1, 0].set_xlabel('X')
+axes[1, 0].set_ylabel('Predicted Y')
+axes[1, 0].set_title('Interaction Model')
+axes[1, 0].legend()
+axes[1, 0].grid(True, alpha=0.3)
+
+# Residuals comparison
+residuals_main = y - model_main.predict(X_main)
+residuals_interaction = y - model_interaction.predict(X_interaction)
+
+axes[1, 1].scatter(model_main.predict(X_main), residuals_main, 
+                  alpha=0.6, label='Main Effects', color='blue')
+axes[1, 1].scatter(model_interaction.predict(X_interaction), residuals_interaction, 
+                  alpha=0.6, label='Interaction', color='red')
+axes[1, 1].axhline(y=0, color='black', linestyle='--')
+axes[1, 1].set_xlabel('Predicted Values')
+axes[1, 1].set_ylabel('Residuals')
+axes[1, 1].set_title('Residuals Comparison')
+axes[1, 1].legend()
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Statistical test for interaction
+print("\n=== INTERACTION SIGNIFICANCE TEST ===")
+from scipy import stats
+
+# F-test for interaction terms
+rss_main = np.sum(residuals_main**2)
+rss_interaction = np.sum(residuals_interaction**2)
+f_stat = ((rss_main - rss_interaction) / 2) / (rss_interaction / (n - 6))
+f_p_value = 1 - stats.f.cdf(f_stat, 2, n - 6)
+
+print(f"F-statistic for interaction: {f_stat:.3f}")
+print(f"p-value: {f_p_value:.3f}")
+print(f"Interaction significant: {'Yes' if f_p_value < 0.05 else 'No'}")
+```
 
 ### Interaction Terms with Categorical Variables
 
