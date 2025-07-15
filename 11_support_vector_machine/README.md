@@ -93,8 +93,6 @@ Dual formulation:
 - Finance and risk modeling
 - General binary and multiclass classification tasks
 
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
 ## References
 
 1. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning*. Springer.
