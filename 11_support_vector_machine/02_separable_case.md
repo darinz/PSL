@@ -27,19 +27,19 @@ where $`\beta \in \mathbb{R}^p`$ is the normal vector to the hyperplane and $`\b
 To achieve maximum margin separation, we need to:
 
 1. **Normalize the decision function**: We require that for all training points:
-   ```math
-   y_i(\beta^T x_i + \beta_0) \geq 1
-   ```
+```math
+y_i(\beta^T x_i + \beta_0) \geq 1
+```
 
 2. **Define the margin**: The margin width is $`2/\|\beta\|`$, so maximizing the margin is equivalent to minimizing $`\|\beta\|^2/2`$.
 
 3. **Formulate the optimization problem**:
-   ```math
-   \begin{aligned}
-   \min_{\beta, \beta_0} \quad & \frac{1}{2}\|\beta\|^2 \\
-   \text{subject to} \quad & y_i(\beta^T x_i + \beta_0) \geq 1, \quad i = 1, 2, \ldots, n
-   \end{aligned}
-   ```
+```math
+\begin{aligned}
+\min_{\beta, \beta_0} \quad & \frac{1}{2}\|\beta\|^2 \\
+\text{subject to} \quad & y_i(\beta^T x_i + \beta_0) \geq 1, \quad i = 1, 2, \ldots, n
+\end{aligned}
+```
 
 ### Support Vectors
 
