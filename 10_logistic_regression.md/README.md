@@ -2,7 +2,6 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
 ## Overview
@@ -93,63 +92,4 @@ $`\text{logit}(\eta(x)) = \log\frac{\eta(x)}{1 - \eta(x)} = x^T\beta`$
 ### Likelihood Function
 For binary outcomes, the likelihood is:
 
-$`L(\beta) = \prod_{i=1}^n \sigma(x_i^T\beta)^{y_i}(1 - \sigma(x_i^T\beta))^{1-y_i}`$
-
-## Key Algorithms
-
-### Newton-Raphson Method
-The iterative algorithm for finding MLE:
-
-$`\beta^{(t+1)} = \beta^{(t)} - H^{-1}(\beta^{(t)}) \nabla l(\beta^{(t)})`$
-
-### Reweighted Least Squares
-Alternative formulation for computational efficiency:
-
-$`\beta^{(t+1)} = (X^TW^{(t)}X)^{-1}X^TW^{(t)}z^{(t)}`$
-
-## Practical Considerations
-
-### Convergence Issues
-- **Separable Data**: When classes are perfectly separated, coefficients may grow without bound
-- **Solution**: Use regularization or accept that decision boundary is well-defined despite convergence warnings
-
-### Model Assessment
-- **Goodness of Fit**: Deviance, AIC, BIC
-- **Classification Performance**: Accuracy, precision, recall, ROC curves
-- **Residual Analysis**: Deviance residuals, Pearson residuals
-
-### Sampling Considerations
-- **Retrospective Sampling**: Adjust for sampling bias in case-control studies
-- **Coefficient Consistency**: Main effects remain consistent, intercept requires adjustment
-
-## Applications
-
-Logistic regression is widely used in:
-
-- **Medical Research**: Disease prediction, risk assessment
-- **Marketing**: Customer churn prediction, response modeling
-- **Finance**: Credit scoring, fraud detection
-- **Social Sciences**: Survey analysis, behavioral prediction
-
-> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
-
-## References
-
-1. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning*. Springer.
-2. James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning*. Springer.
-3. McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models*. Chapman & Hall.
-
-## Related Modules
-
-- **Linear Regression**: Foundation for understanding regression concepts
-- **Regularization**: Ridge and Lasso regression for high-dimensional data
-- **Discriminant Analysis**: Alternative classification approaches
-- **Model Selection**: Techniques for choosing optimal models
-
-## Acknowledgments
-
-This module builds upon classical statistical theory and modern machine learning practices. Special thanks to the statistical learning community for developing robust implementations and comprehensive documentation.
-
----
-
-*For questions or contributions, please refer to the main course documentation or contact the course instructors.* 
+$`L(\beta) = \prod_{i=1}^n \sigma(x_i^T\beta)^{y_i}(1 - \sigma(x_i^T\beta))^{1-y_i}`
