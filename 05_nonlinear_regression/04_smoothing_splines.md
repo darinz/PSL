@@ -179,6 +179,10 @@ The effective degrees of freedom (EDF) of a smoothing spline is defined as:
 
 The relationship between $`\lambda`$ and EDF is monotonic but nonlinear. In practice, it's often more intuitive to specify the desired EDF rather than $`\lambda`$.
 
+![Effective Degrees of Freedom for Smoothing Splines](../_images/w5_ss_DR_edf.png)
+
+*Figure: Relationship between the smoothing parameter lambda and the effective degrees of freedom (EDF) in smoothing splines.*
+
 ## 5.4.6. Complete Smoothing Spline Implementation
 
 ### Python Implementation
