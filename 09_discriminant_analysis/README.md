@@ -1,12 +1,13 @@
 # Discriminant Analysis Module
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 [![Classification](https://img.shields.io/badge/Classification-Supervised%20Learning-orange.svg)](https://en.wikipedia.org/wiki/Classification)
 [![Statistics](https://img.shields.io/badge/Statistics-Bayesian%20Methods-red.svg)](https://en.wikipedia.org/wiki/Bayesian_statistics)
 
-A comprehensive module covering discriminant analysis methods for classification problems, including theoretical foundations, practical implementations, and code examples in both Python and R.
+A comprehensive, modernized module covering discriminant analysis methods for classification problems, including theoretical foundations, practical implementations, and code examples in both Python and R. The content has been expanded and clarified for accessibility, with detailed mathematical derivations, code explanations, and improved formatting using inline ($`...`$) and display math (```math) LaTeX. Where possible, image-based equations and text have been converted to selectable, copyable LaTeX in the markdown files for clarity and accessibility.
 
 ## Table of Contents
 
@@ -20,7 +21,7 @@ A comprehensive module covering discriminant analysis methods for classification
 
 ## Overview
 
-This module introduces discriminant analysis methods for classification problems, focusing on both theoretical foundations and practical applications. The methods covered include various approaches to estimating conditional probabilities and constructing optimal classification rules.
+This module introduces discriminant analysis methods for classification problems, focusing on both theoretical foundations and practical applications. The methods covered include various approaches to estimating conditional probabilities and constructing optimal classification rules, with expanded mathematical explanations and enhanced code examples.
 
 ## Module Structure
 
@@ -31,6 +32,7 @@ This module introduces discriminant analysis methods for classification problems
   - Steps to develop a classifier
   - Optimal classifier derivation (Bayes rule)
   - Decision boundaries concept
+  - Expanded mathematical derivations and LaTeX formatting
 
 ### 2. Discriminant Analysis Fundamentals
 - **File**: `02_discriminant_analysis.md`
@@ -39,6 +41,7 @@ This module introduces discriminant analysis methods for classification problems
   - Joint distribution factorization
   - Conditional probability estimation
   - Classification rule construction
+  - Enhanced code and math explanations
 
 ### 3. Quadratic Discriminant Analysis (QDA)
 - **File**: `03_quadratic_discriminant_analysis.md`
@@ -47,6 +50,7 @@ This module introduces discriminant analysis methods for classification problems
   - Parameter estimation (means, covariances, mixing weights)
   - Mahalanobis distance computation
   - Quadratic decision boundaries
+  - Expanded code and LaTeX math explanations
 
 ### 4. Linear Discriminant Analysis (LDA)
 - **File**: `04_linear_discriminant_analysis.md`
@@ -56,6 +60,7 @@ This module introduces discriminant analysis methods for classification problems
   - Reduced rank LDA
   - Dimensionality reduction properties
   - Overfitting considerations
+  - Enhanced code and math explanations
 
 ### 5. Fisher Discriminant Analysis (FDA)
 - **File**: `05_fisher_discriminant_analysis.md`
@@ -65,6 +70,7 @@ This module introduces discriminant analysis methods for classification problems
   - Between-group vs within-group variation
   - Comparison with LDA
   - Overfitting risks and remedies
+  - Expanded code and LaTeX math explanations
 
 ### 6. Naive Bayes Classifiers
 - **File**: `06_naive_bayes_classifiers.md`
@@ -73,6 +79,7 @@ This module introduces discriminant analysis methods for classification problems
   - Parametric vs non-parametric approaches
   - Numerical implementation issues
   - Parameter estimation (2p parameters)
+  - Expanded code and math explanations
 
 ### 7. Summary and Comparison
 - **File**: `07_summary.md`
@@ -81,6 +88,15 @@ This module introduces discriminant analysis methods for classification problems
   - Binary LDA analysis
   - Parameter efficiency considerations
   - Future directions
+  - Enhanced visual and LaTeX math explanations
+
+## Recent Enhancements
+
+- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
+- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
+- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
+- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
+- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
 
 ## Topics Covered
 
@@ -122,6 +138,7 @@ Before studying this module, you should have:
 5. Explore `05_fisher_discriminant_analysis.md` for FDA
 6. Learn about `06_naive_bayes_classifiers.md` for independence-based methods
 7. Review `07_summary.md` for synthesis and comparison
+8. Reference expanded math/code explanations and LaTeX formatting throughout
 
 ### Mathematical Background
 - **Linear Algebra**: Matrix operations, eigenvalues, eigenvectors
@@ -163,12 +180,14 @@ Before studying this module, you should have:
 - **Performance Comparison**: Evaluation of different methods
 - **Implementation Details**: Code comments and explanations
 
+> **Note:** Where images previously contained mathematical expressions or text, these have been transcribed into markdown with LaTeX for clarity and accessibility. Visuals are now referenced in context to support the expanded explanations.
+
 ## References
 
 ### Textbooks
-- **Elements of Statistical Learning** - Hastie, Tibshirani, Friedman
-- **Introduction to Statistical Learning** - James, Witten, Hastie, Tibshirani
-- **Pattern Recognition and Machine Learning** - Bishop
+- **Elements of Statistical Learning** – Hastie, Tibshirani, Friedman
+- **Introduction to Statistical Learning** – James, Witten, Hastie, Tibshirani
+- **Pattern Recognition and Machine Learning** – Bishop
 
 ### Academic Papers
 - **Fisher's Original Paper**: "The Use of Multiple Measurements in Taxonomic Problems" (1936)
