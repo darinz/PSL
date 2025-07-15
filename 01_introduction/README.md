@@ -100,15 +100,6 @@ The `Rcode_W1_SimulationStudy.R` script offers:
 - Advanced plotting capabilities
 - Integration with statistical learning packages
 
-## Visual Resources
-
-The `img/` directory contains essential visualizations:
-- **supervised_learning.png** – The learning process flow
-- **bias_variance.png** – Function space perspective
-- **darts_game.png** – Intuitive bias-variance analogy
-- **model_complexity.png** – U-shaped error curves
-- **linear_function.png** – Linear model illustrations
-
 ## Advanced Topic Connections
 
 This introduction establishes the foundation for:
