@@ -2,7 +2,6 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 [![Classification](https://img.shields.io/badge/Classification-Supervised%20Learning-orange.svg)](https://en.wikipedia.org/wiki/Classification)
 [![Statistics](https://img.shields.io/badge/Statistics-Bayesian%20Methods-red.svg)](https://en.wikipedia.org/wiki/Bayesian_statistics)
