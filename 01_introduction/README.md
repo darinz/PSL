@@ -24,14 +24,6 @@ This module presents comprehensive, modernized materials covering the foundation
 ### Supplementary Materials
 - **[img/](img/)** – Supporting images and diagrams for visual learning
 
-## Recent Enhancements
-
-- **Expanded Explanations:** All modules now feature clearer, more detailed explanations of mathematical concepts and algorithms.
-- **LaTeX Math Formatting:** All math is now formatted using inline ($`...`$) and display (```math) LaTeX for readability and copy-paste support.
-- **Code Examples:** Python and R code snippets are provided and explained for all major algorithms.
-- **Image-to-Text Conversion:** PNG images containing math or text have been transcribed into markdown with LaTeX where possible, improving accessibility.
-- **Visual Aids:** Diagrams and figures are referenced and described in context to support conceptual understanding.
-
 ## Learning Objectives
 
 Upon completion of this module, students will be able to:
