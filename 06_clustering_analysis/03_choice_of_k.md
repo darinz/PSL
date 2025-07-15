@@ -42,49 +42,177 @@ $$K_{\text{opt}} = \arg\min_K \{K : G(K) \ge G(K+1) - s_{K+1} \}$$
 
 where $s_K = \text{sd}_0(\log SS(K)) \sqrt{1+1/B}$.
 
-## 6.3.3. Silhouette Statistics
+## 6.3.3. Silhouette Statistics (Expanded)
 
-The Silhouette statistic (Rousseeuw, 1987) of the i-th obs measures how well it fits in its own cluster versus how well it fits in its next closest cluster.
+The **Silhouette statistic** (Rousseeuw, 1987) provides an interpretable measure of how well each observation lies within its cluster, balancing cohesion (how close it is to its own cluster) and separation (how far it is from the next closest cluster).
 
-![Silhouette Definition](../_images/w6_sil_def.png)
+### Definition
 
-For well-clustered observations where $a_i$ is significantly smaller than $b_i$, $s_i$ approaches 1. However, if the i-th observation lies on the borderline of two clusters, both $a_i$ and $b_i$, will be similar, rendering $s_i$ close to 0.
+For each observation $`i`$:
+- $`a_i`$ = average distance from $`i`$ to all other points in its own cluster (cohesion)
+- $`b_i`$ = minimum average distance from $`i`$ to all points in any other cluster (separation)
 
-In the K-means scenario, $b_i$ should be greater than $a_i$; otherwise, the observation would belong to a different cluster. However, using other clustering algorithms, $b_i$ could be smaller than $a_i$, potentially resulting in a negative silhouette statistic. Even then, the value of $s_i$ would remain above -1. Extremely negative silhouette statistics indicate poor clustering for the i-th observation.
+The silhouette value for observation $`i`$ is:
 
-To evaluate the overall quality of the clustering, we seek a large silhouette statistic across all observations. The Silhouette Coefficient (SC), sometimes referred to as the silhouette width, is defined as the average silhouette statistic over all samples.
+```math
+s_i = \frac{b_i - a_i}{\max(a_i, b_i)}
+```
 
-There are established benchmarks for the silhouette coefficient to gauge the quality of the identified clustering. For example, a rule of thumb from Anja et al. "Clustering in an Object-Oriented Environment":
+- $`s_i \approx 1`$: well-clustered, far from other clusters
+- $`s_i \approx 0`$: on the border between clusters
+- $`s_i < 0`$: possibly misclassified
 
-- **SC > 70%**: A strong structure has been found.
-- **SC > 50%**: A reasonable structure has been found.
-- **SC > 26%**: The structure is weak and could be artificial, try additional methods.
-- **SC < 26%**: No substantial structure has been found.
+#### Visual Explanation (from image)
+- $`a_i`$: mean intra-cluster distance (to own cluster)
+- $`b_i`$: mean nearest-cluster distance (to next closest cluster)
+- $`s_i`$ is high when $`a_i`$ is much less than $`b_i`$
 
-We can also plot the silhouette coefficient against varying K values. The optimal K can either be the one yielding the largest silhouette coefficient or a K surpassing a specific threshold.
+### Silhouette Coefficient
 
-For a comprehensive look into our methodology, including the specific R commands and outputs, please refer to our code page.
+The **Silhouette Coefficient** (SC) for the clustering is the average $`s_i`$ over all samples:
 
-## 6.3.4. Prediction Strength
+```math
+SC = \frac{1}{n} \sum_{i=1}^n s_i
+```
 
-The Prediction Strength method is another strategy for choosing the optimal number of clusters K. Here's how it works:
+#### Interpretation Benchmarks
+- $`SC > 0.70`$: Strong structure
+- $`SC > 0.50`$: Reasonable structure
+- $`SC > 0.26`$: Weak structure, may be artificial
+- $`SC < 0.26`$: No substantial structure
 
-- **Step 0**: Split the dataset into two subsets: A (the training set) and B (the test set).
+### Choosing K with Silhouette
 
-- **Step 1**: Assume there are m observations in test set B. Cluster these m samples into K clusters using your chosen clustering algorithm. Label these clusters as $C_1, \dots, C_K$. Each cluster $C_j$ contains $m_j$ observations. The sum of the sizes of these clusters $m_1, \dots, m_K$ is equal to m. This step determines the **true** clustering structure for the test data.
+Compute $`SC`$ for a range of $`K`$ and select the $`K`$ with the highest $`SC`$ or above a threshold.
 
-- **Step 2**: Cluster the training data A into K clusters. Use the resultant clustering rule to allocate the m observations from test set B into these K clusters. This essentially means **predicting** the cluster membership for the test set based on the cluster centers determined from the training data. Denote these predicted clusters as $C'_1, \dots, C'_K$.
+### Python Example
 
-A direct comparison between the true clusters ($C_j$) and predicted clusters ($C'_j$) is challenging due to the relabeling problem. The identity of clusters may change between datasets, so the clusters from Step 1 and Step 2 might not correspond directly.
+```python
+from sklearn.metrics import silhouette_score
+from sklearn.cluster import KMeans
+import numpy as np
 
-A technique to address this is to assess prediction error using the association or co-membership matrix. This matrix for m observations is m-by-m. An entry in this matrix is "1" if observations 'i' and 'j' belong to the same cluster, otherwise "0". For both steps, an association matrix can be generated.
+X = ... # your data
+K_range = range(2, 10)
+sc_scores = []
+for K in K_range:
+    kmeans = KMeans(n_clusters=K, n_init=10).fit(X)
+    score = silhouette_score(X, kmeans.labels_)
+    sc_scores.append(score)
 
-### Defining Prediction Strength
+import matplotlib.pyplot as plt
+plt.plot(K_range, sc_scores, marker='o')
+plt.xlabel('Number of clusters K')
+plt.ylabel('Silhouette Coefficient')
+plt.title('Silhouette Analysis for Optimal K')
+plt.show()
+```
 
-- For each cluster $C_j$ obtained in Step 1, examine every pair of observations within that cluster. Check if those pairs remain in the same cluster in Step 2.
+### R Example
 
-- Calculate the average accuracy for each cluster, indicating how often pairs of observations remain together.
+```r
+library(cluster)
+K_range <- 2:10
+sc_scores <- numeric(length(K_range))
+for (i in seq_along(K_range)) {
+  km <- kmeans(X, centers = K_range[i], nstart = 10)
+  sc_scores[i] <- mean(silhouette(km$cluster, dist(X))[, 3])
+}
+plot(K_range, sc_scores, type = 'b', xlab = 'Number of clusters K', ylab = 'Silhouette Coefficient')
+```
 
-- The "prediction strength" (Tibshirani and Walther 2005) for K clusters is the worst (smallest) accuracy among these clusters.
+---
 
-Choosing the worst accuracy avoids potential biases. If one were to take the average accuracy, the method might be skewed by predominantly classifying many observations into one cluster, artificially inflating the average.
+## 6.3.4. Prediction Strength (Expanded)
+
+**Prediction Strength** (Tibshirani & Walther, 2005) is a stability-based method for choosing $`K`$ by measuring how reproducible the clustering is under data splitting.
+
+### Algorithm Steps
+
+1. **Split the data** into two sets: A (training) and B (test)
+2. **Cluster B** into $`K`$ clusters: $`C_1, \ldots, C_K`$
+3. **Cluster A** into $`K`$ clusters, then assign B to clusters using A's centroids (predict cluster labels for B)
+4. **Compare**: For each cluster $`C_j`$ in B, for every pair of points in $`C_j`$, check if they are also together in the predicted clustering
+5. **Prediction strength** for $`K`$ is the minimum proportion of pairs in any cluster that are together in both clusterings
+
+### Mathematical Definition
+
+Let $`M`$ be the co-membership matrix for B in the true clustering, and $`M'`$ for the predicted clustering. For each cluster $`C_j`$:
+
+```math
+PS_j = \frac{1}{\binom{m_j}{2}} \sum_{i < l, i, l \in C_j} \mathbb{I}\{M_{il} = M'_{il} = 1\}
+```
+
+where $`m_j`$ is the size of cluster $`C_j`$.
+
+The **prediction strength** for $`K`$ is:
+
+```math
+PS(K) = \min_j PS_j
+```
+
+### Choosing K
+
+Select the largest $`K`$ such that $`PS(K)`$ exceeds a threshold (e.g., 0.8).
+
+### Python Example
+
+```python
+from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances
+import numpy as np
+
+def prediction_strength(X, K, n_splits=5, threshold=0.8):
+    n = X.shape[0]
+    ps_scores = []
+    for split in range(n_splits):
+        idx = np.random.permutation(n)
+        A, B = X[idx[:n//2]], X[idx[n//2:]]
+        # Cluster B
+        kmeans_B = KMeans(n_clusters=K, n_init=10).fit(B)
+        labels_B = kmeans_B.labels_
+        # Cluster A, assign B
+        kmeans_A = KMeans(n_clusters=K, n_init=10).fit(A)
+        labels_B_pred = kmeans_A.predict(B)
+        # For each cluster in B, compute PS_j
+        ps_j = []
+        for j in range(K):
+            members = np.where(labels_B == j)[0]
+            if len(members) < 2:
+                continue
+            pairs = [(i, l) for idx, i in enumerate(members) for l in members[idx+1:]]
+            agree = sum(labels_B_pred[i] == labels_B_pred[l] for i, l in pairs)
+            ps_j.append(agree / len(pairs))
+        if ps_j:
+            ps_scores.append(min(ps_j))
+    return np.mean(ps_scores)
+
+# Example usage:
+K_range = range(2, 10)
+ps_results = [prediction_strength(X, K) for K in K_range]
+plt.plot(K_range, ps_results, marker='o')
+plt.axhline(0.8, color='red', linestyle='--', label='Threshold')
+plt.xlabel('Number of clusters K')
+plt.ylabel('Prediction Strength')
+plt.legend()
+plt.show()
+```
+
+### R Example
+
+```r
+library(fpc)
+ps <- prediction.strength(X, Gmin=2, Gmax=10, M=10, clustermethod=kmeansCBI)
+plot(2:10, ps$mean.pred, type='b', xlab='Number of clusters K', ylab='Prediction Strength')
+abline(h=0.8, col='red', lty=2)
+```
+
+---
+
+## 6.3.5. Summary and Best Practices
+
+- **Gap statistic**: Compares clustering to a null reference; robust but computationally intensive
+- **Silhouette**: Measures cohesion/separation; easy to interpret and compute
+- **Prediction strength**: Measures stability; good for practical validation
+- **No single method is perfect**; use multiple criteria and domain knowledge
+- **Visualize**: Always inspect cluster assignments and validation plots
