@@ -152,6 +152,10 @@ K-means can converge to suboptimal solutions due to poor initialization. Conside
 - Desired: 2 clusters with points (0,0), (0,1) and (2,0), (2,1)
 - Poor initialization: centroids at (0,0) and (0,1) → suboptimal clustering
 
+![K-means Local Minima](../_images/w6_kmeans_local_minimal.png)
+
+*Figure: Example of k-means converging to a local minimum, demonstrating the importance of initialization.*
+
 ### Solution: Multiple Initializations
 
 Run K-means multiple times with different initializations and choose the best result:
