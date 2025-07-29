@@ -14,6 +14,8 @@ UBCF operates on the principle that users with similar preferences in the past w
 
 IBCF operates on the principle that users will like items similar to those they have already rated positively. The algorithm finds items similar to those the target user has rated and recommends the most similar items.
 
+![IBCF](../_images/w13_IBCF.png)
+
 ## 13.4.2. Mathematical Formulation
 
 ### UBCF Prediction
