@@ -6,6 +6,8 @@ As a company, we construct a comprehensive catalog of our products, ensuring we 
 
 We might describe a movie using features such as its release date, genre, director, and lead actors, and so on. In this way, we construct an **item profile**, visualizing each item as a distinct point within a multi-dimensional feature space, represented here by blue dots.
 
+![User and Item Profile](../_images/w13_user_item_profile.png)
+
 ## 13.2.1. Introduction to Content-Based Filtering
 
 Content-based filtering is a recommendation approach that analyzes the characteristics of items and user preferences to make recommendations. Unlike collaborative filtering, which relies on user-item interaction patterns, content-based methods focus on the intrinsic properties of items and how they align with user preferences.
