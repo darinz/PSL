@@ -662,7 +662,7 @@ Recommender systems have evolved from simple popularity-based methods to sophist
 
 ### Next Steps
 
-In the following lectures, we will dive deeper into:
+In the following sections, we will dive deeper into:
 - Content-based filtering techniques
 - Collaborative filtering algorithms
 - Matrix factorization methods
