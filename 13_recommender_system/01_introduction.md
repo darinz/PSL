@@ -670,3 +670,7 @@ In the following sections, we will dive deeper into:
 - Evaluation and deployment strategies
 
 The journey into recommender systems is just beginning, and the opportunities for innovation are endless.
+
+---
+
+**Next**: [Content-Based Filtering](02_content-based.md) - Explore how item attributes and user preferences drive personalized recommendations.
