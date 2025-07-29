@@ -8,6 +8,8 @@ This section provides a detailed comparison between User-Based Collaborative Fil
 
 UBCF operates on the principle that users with similar preferences in the past will have similar preferences in the future. The algorithm finds users similar to the target user and recommends items that these similar users have liked.
 
+![UBCF](../_images/w13_UBCF.png)
+
 ### Item-Based Collaborative Filtering (IBCF)
 
 IBCF operates on the principle that users will like items similar to those they have already rated positively. The algorithm finds items similar to those the target user has rated and recommends the most similar items.
