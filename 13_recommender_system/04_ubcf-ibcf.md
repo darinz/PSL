@@ -1004,3 +1004,7 @@ where $`\alpha`$ is determined by:
 - Business constraints
 
 Both UBCF and IBCF are fundamental approaches in collaborative filtering, each with their own strengths and weaknesses. The choice between them depends on the specific characteristics of your data and application requirements. In practice, many successful recommendation systems use hybrid approaches that combine the strengths of both methods.
+
+---
+
+**Next**: [Latent Factor Models](05_latent_factor.md) - Discover how matrix factorization and latent factor models reveal hidden patterns in user-item interactions.
