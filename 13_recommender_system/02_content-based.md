@@ -943,3 +943,7 @@ Content-based filtering is a powerful and intuitive approach to recommendation s
 5. **Diversity**: Promote variety in recommendations
 
 Content-based filtering remains a fundamental approach in recommendation systems, particularly valuable for domains with rich item metadata and when interpretability is important. When combined with other techniques, it can create powerful hybrid recommendation systems that leverage the strengths of multiple approaches.
+
+---
+
+**Next**: [Collaborative Filtering](03_collaborative_filtering.md) - Discover how user-item interaction patterns drive recommendations through collective intelligence.
