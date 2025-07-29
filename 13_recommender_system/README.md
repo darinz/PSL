@@ -11,10 +11,18 @@ This section covers modern recommender systems, from fundamental approaches to c
   
   *Figure: General recommender system architecture.*
 
-## Example Implementations
+## Related Learning Resources
 
-- [Movie-Rec-Sys (Streamlit Movie Recommendation App)](https://github.com/darinz/Movie-Rec-Sys): A Streamlit-based movie recommendation system with interactive UI and content-based filtering.
-- [Movie-Recommender (Python MovieLens Recommender)](https://github.com/darinz/Movie-Recommender): A Python implementation of a recommender system using the MovieLens dataset and collaborative filtering.
+**[Recommender-Systems Repository](https://github.com/darinz/Recommender-Systems)**: Practical implementations exploring recommender systems research and applications.
+
+### Key Components
+- **Interactive App** (`app/`): Streamlit-based movie recommender with content-based filtering
+- **Bandit System** (`bandits/`): Multi-armed bandit algorithms (epsilon-greedy, UCB, Thompson sampling)
+- **IBCF Implementation** (`ibcf/`): Item-based collaborative filtering using MovieLens dataset
+
+### Dataset & Performance
+- **MovieLens**: ~1M ratings, 3.7K movies, 6K users
+- **Features**: Real-time recommendations, cold-start handling, scalable architecture
 
 ## Contents
 
