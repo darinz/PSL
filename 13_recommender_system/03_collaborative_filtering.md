@@ -326,9 +326,9 @@ By centering around user means, we focus on **relative preferences** rather than
    where $`\mathcal{I}_{uv}`$ is the set of items rated by both users $`u`$ and $`v`$.
 
 2. **Global Centering**: Center each user/item globally, then compute cosine
-   ```math
-   \bar{r}_u = \frac{1}{|\mathcal{I}_u|} \sum_{i \in \mathcal{I}_u} r_{ui}
-   ```
+```math
+\bar{r}_u = \frac{1}{|\mathcal{I}_u|} \sum_{i \in \mathcal{I}_u} r_{ui}
+```
 
 ### 4. Adjusted Cosine Similarity
 
