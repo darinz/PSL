@@ -6,9 +6,8 @@
 
 This section covers modern recommender systems, from fundamental approaches to cutting-edge deep learning methods.
 
-> A recommender system (RecSys), or a recommendation system (sometimes replacing system with terms such as platform, engine, or algorithm) and sometimes only called "the algorithm" or "algorithm",[1] is a subclass of information filtering system that provides suggestions for items that are most pertinent to a particular user.
-
 [Recommender system - Wikipedia](https://en.wikipedia.org/wiki/Recommender_system)
+> A recommender system (RecSys), or a recommendation system (sometimes replacing system with terms such as platform, engine, or algorithm) and sometimes only called "the algorithm" or "algorithm", is a subclass of information filtering system that provides suggestions for items that are most pertinent to a particular user.
 
 ## Related Learning Resources
 
