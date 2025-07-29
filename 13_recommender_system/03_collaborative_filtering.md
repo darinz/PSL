@@ -880,3 +880,7 @@ Collaborative filtering is a powerful recommendation approach that:
 5. **Evaluate Comprehensively**: Use multiple metrics
 
 Collaborative filtering remains a fundamental approach in recommendation systems, particularly effective when user-item interaction data is available and when discovering serendipitous recommendations is important. When combined with content-based methods, it can create powerful hybrid recommendation systems that leverage the strengths of both approaches.
+
+---
+
+**Next**: [User-Based vs Item-Based Collaborative Filtering](04_ubcf-ibcf.md) - Explore the differences between user-based and item-based approaches and their practical implementations.
