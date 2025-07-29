@@ -24,8 +24,7 @@ This section covers modern recommender systems, from fundamental approaches to c
 
 ## Contents
 
-### 13.1. Introduction
-- **File**: `01_introduction.md`
+### 13.1. [Introduction](01_introduction.md)
 - **Topics**:
   - Definition and applications of recommender systems
   - Real-world examples (Amazon, Netflix, YouTube, Spotify, etc.)
@@ -34,8 +33,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Modern developments with deep learning
   - Expanded mathematical derivations and LaTeX formatting
 
-### 13.2. Content-Based Methods
-- **File**: `02_content-based.md`
+### 13.2. [Content-Based Methods](02_content-based.md)
 - **Topics**:
   - Item and user profile construction
   - Feature space representation
@@ -48,8 +46,7 @@ This section covers modern recommender systems, from fundamental approaches to c
 
   *Figure: User and item profile construction in content-based recommenders.*
 
-### 13.3. Collaborative Filtering
-- **File**: `03_collaborative_filtering.md`
+### 13.3. [Collaborative Filtering](03_collaborative_filtering.md)
 - **Topics**:
   - Rating matrix and interaction data
   - Explicit vs. implicit feedback
@@ -66,8 +63,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   
   *Figure: Item-Based Collaborative Filtering (IBCF) diagram.*
 
-### 13.4. UBCF and IBCF
-- **File**: `04_ubcf-ibcf.md`
+### 13.4. [UBCF and IBCF](04_ubcf-ibcf.md)
 - **Topics**:
   - **User-Based CF (UBCF)**: Similar users like similar items
   - **Item-Based CF (IBCF)**: Users like items similar to their preferences
@@ -76,8 +72,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Computational considerations and real-world applications
   - Enhanced code and math explanations
 
-### 13.5. Latent Factor Model
-- **File**: `05_latent_factor.md`
+### 13.5. [Latent Factor Model](05_latent_factor.md)
 - **Topics**:
   - SVD-based matrix decomposition
   - User and item embedding in shared space
@@ -94,8 +89,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   
   *Figure: User and item embedding profiles in latent factor models.*
 
-### 13.6. Challenges and Strategies
-- **File**: `06_challenges.md`
+### 13.6. [Challenges and Strategies](06_challenges.md)
 - **Topics**:
   - Computational efficiency through pre-clustering
   - Combining multiple recommender systems
@@ -105,8 +99,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Cold start and scalability challenges
   - Enhanced code and math explanations
 
-### 13.7. Deep Recommender Systems
-- **File**: `07_deep_recommender_systems.md`
+### 13.7. [Deep Recommender Systems](07_deep_recommender_systems.md)
 - **Topics**:
   - Deep learning for latent feature creation
   - Autoencoders for nonlinear embedding
