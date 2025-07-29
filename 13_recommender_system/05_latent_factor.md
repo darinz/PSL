@@ -1422,7 +1422,7 @@ for k in [5, 10, 15, 20, 25]:
 
 #### Content-based Initialization
 ```math
-\mathbf{u}_u = \frac{1}{|\mathcal{I}_u|} \sum_{i \in \mathcal{I}_u} \mathbf{v}_i + \text{content_features}_u
+\mathbf{u}_u = \frac{1}{|\mathcal{I}_u|} \sum_{i \in \mathcal{I}_u} \mathbf{v}_i + \text{content\_features}_u
 ```
 
 ## 13.5.8. Practical Considerations and Best Practices
