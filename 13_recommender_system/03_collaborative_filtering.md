@@ -321,13 +321,13 @@ By centering around user means, we focus on **relative preferences** rather than
 
 1. **Pairwise Complete**: Compute centering only on shared items
    ```math
-   \bar{r}_u^{(i,j)} = \frac{1}{|\mathcal{I}_{uv}|} \sum_{k \in \mathcal{I}_{uv}} r_{uk}
+   \bar{r}_u^{(i,j)} = \frac{1}{\|\mathcal{I}_{uv}\|} \sum_{k \in \mathcal{I}_{uv}} r_{uk}
    ```
    where $`\mathcal{I}_{uv}`$ is the set of items rated by both users $`u`$ and $`v`$.
 
 2. **Global Centering**: Center each user/item globally, then compute cosine
    ```math
-   \bar{r}_u = \frac{1}{|\mathcal{I}_u|} \sum_{i \in \mathcal{I}_u} r_{ui}
+   \bar{r}_u = \frac{1}{\|\mathcal{I}_u\|} \sum_{i \in \mathcal{I}_u} r_{ui}
    ```
 
 ### 4. Adjusted Cosine Similarity
