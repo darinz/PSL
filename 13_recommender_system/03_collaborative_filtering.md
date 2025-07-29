@@ -8,7 +8,7 @@ Constructing this matrix, however, is far from trivial. Challenges arise in dist
 
 Assuming we have this interaction matrix, denoted by R, with some entries missing (indicated by question marks), the goal of a recommender system is to fill in the blanks, predicting user preferences for items they haven't interacted with. This task is akin to matrix completion, a term you'll often encounter when delving into the mechanics of recommendation systems.
 
-![](../_images/w13_UBCF.png)
+![](../_images/w13_R.png)
 
 ## 13.3.1. Introduction to Collaborative Filtering
 
