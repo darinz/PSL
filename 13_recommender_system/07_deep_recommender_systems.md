@@ -996,3 +996,7 @@ where $`f_1`$ and $`f_2`$ run on different devices.
 5. **Explainable AI**: Interpretable recommendation explanations
 
 Deep recommender systems represent the cutting edge of recommendation technology, offering unprecedented ability to model complex user-item interactions. While they require significant computational resources and expertise, they can provide substantial improvements in recommendation quality when properly implemented and tuned.
+
+---
+
+**Next**: [Introduction](01_introduction.md) - Return to the beginning to review the fundamentals of recommender systems.
