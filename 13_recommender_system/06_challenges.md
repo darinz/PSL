@@ -961,3 +961,7 @@ cat("Bottom 10% items share:", sum(tail(item_popularity$n_ratings, n_items * 0.1
 5. **Federated Learning**: Privacy-preserving distributed training
 
 Understanding and addressing these challenges is crucial for building effective, scalable, and fair recommendation systems that provide value to users while respecting their privacy and ensuring equitable treatment.
+
+---
+
+**Next**: [Deep Recommender Systems](07_deep_recommender_systems.md) - Explore how deep learning and neural networks are revolutionizing recommendation systems.
