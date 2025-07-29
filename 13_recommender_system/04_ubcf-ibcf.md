@@ -422,7 +422,7 @@ Addresses the cold start problem by using a minimum threshold:
 
 ```math
 \text{ConstrainedPearson}(u, v) = \begin{cases}
-\text{Pearson}(u, v) & \text{if } |I_{uv}| \geq \text{min_common} \\
+\text{Pearson}(u, v) & \text{if } |I_{uv}| \geq \text{min\_common} \\
 0 & \text{otherwise}
 \end{cases}
 ```
