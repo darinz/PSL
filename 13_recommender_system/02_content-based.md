@@ -466,7 +466,7 @@ For a user who rated several movies with the following interaction history:
 
 **Step 1: Feature Vector Construction**
 ```math
-\mathbf{f}_A = [1, 0, 0, 0.8, 1, 0, 0]^T \quad \text{(Action, Year_norm, Director_Spielberg)}
+\mathbf{f}_A = [1, 0, 0, 0.8, 1, 0, 0]^T \quad \text{(Action, Year\_norm, Director\_Spielberg)}
 ```
 
 **Step 2: Weighted Aggregation**
