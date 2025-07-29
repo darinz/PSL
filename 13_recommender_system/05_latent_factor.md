@@ -972,3 +972,7 @@ for k in [5, 10, 15, 20, 25]:
 5. **Monitor Performance**: Track model drift over time
 
 Latent factor models represent a powerful and flexible approach to recommendation systems, capable of discovering complex patterns in user-item interactions. When properly implemented and tuned, they can provide excellent recommendation quality while maintaining reasonable computational efficiency.
+
+---
+
+**Next**: [Challenges in Recommender Systems](06_challenges.md) - Explore the key challenges and limitations faced by modern recommendation systems.
