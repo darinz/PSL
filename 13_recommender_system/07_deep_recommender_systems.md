@@ -2852,10 +2852,10 @@ onnx.save(onnx_model, "model.onnx")
 **3. TorchServe**
 
 **Model Packaging**:
-$$python
+```python
 # Create model archive
 torch-model-archiver --model-name recommendation --version 1.0 --model-file model.pt --handler recommendation_handler.py
-$$
+```
 
 ### Scalability Solutions
 
