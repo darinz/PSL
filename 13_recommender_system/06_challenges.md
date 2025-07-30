@@ -70,7 +70,7 @@ When a new item is added to the catalog with no ratings:
 |\mathcal{U}_i| = 0 \quad \text{for new item } i
 ```
 
-where $`\mathcal{U}_i`$ is the set of users who rated item $`i``.
+where $`\mathcal{U}_i`$ is the set of users who rated item $`i`$.
 
 **Mathematical Impact:**
 - **Item Similarity**: Cannot compute item-item similarities
