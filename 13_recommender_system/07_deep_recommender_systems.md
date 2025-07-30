@@ -944,38 +944,38 @@ where $N$ and $M$ are the number of users and items, respectively.
 #### 1. Embedding Initialization
 
 **Xavier Initialization**:
-```math
+$$
 \mathbf{u}_u \sim \mathcal{N}(0, \frac{2}{K})
 \mathbf{v}_i \sim \mathcal{N}(0, \frac{2}{K})
-```
+$$
 
 **Pre-trained Initialization**: Use embeddings from traditional MF as initialization.
 
 #### 2. Activation Functions
 
 **ReLU for Hidden Layers**:
-```math
+$$
 \text{ReLU}(x) = \max(0, x)
-```
+$$
 
 **Sigmoid for Output**:
-```math
+$$
 \sigma(x) = \frac{1}{1 + e^{-x}}
-```
+$$
 
 #### 3. Regularization
 
 **Dropout**:
-```math
+$$
 \mathbf{h}_{\text{dropout}}^{(l)} = \mathbf{h}^{(l)} \odot \mathbf{m}^{(l)}
-```
+$$
 
 where $\mathbf{m}^{(l)} \sim \text{Bernoulli}(p_l)$.
 
 **Weight Decay**:
-```math
+$$
 \mathcal{L}_{\text{reg}} = \mathcal{L} + \lambda \sum_{\theta} \|\theta\|_2^2
-```
+$$
 
 ### Advanced Variants
 
@@ -983,9 +983,9 @@ where $\mathbf{m}^{(l)} \sim \text{Bernoulli}(p_l)$.
 
 DeepFM extends NeuMF by incorporating factorization machines:
 
-```math
+$$
 \hat{r}_{ui} = \sigma(\text{FM}(\mathbf{x}) + \text{Deep}(\mathbf{x}))
-```
+$$
 
 where $\text{FM}(\mathbf{x})$ is the factorization machine component.
 
@@ -993,9 +993,9 @@ where $\text{FM}(\mathbf{x})$ is the factorization machine component.
 
 xDeepFM uses compressed interaction network (CIN):
 
-```math
+$$
 \mathbf{X}^{(k)} = \text{CIN}(\mathbf{X}^{(k-1)}, \mathbf{X}^{(0)})
-```
+$$
 
 where CIN captures high-order feature interactions.
 
@@ -1003,9 +1003,9 @@ where CIN captures high-order feature interactions.
 
 AutoInt uses self-attention mechanisms:
 
-```math
+$$
 \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-```
+$$
 
 ### Practical Considerations
 
@@ -1079,7 +1079,7 @@ This comprehensive mathematical foundation provides the theoretical understandin
 
 ### Python Implementation: Deep Recommender Systems
 
-```python
+$$python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1784,9 +1784,9 @@ Attention mechanisms have revolutionized recommender systems by enabling models 
 #### Mathematical Foundation
 
 **Attention as Weighted Sum**:
-```math
+$$
 \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}
-```
+$$
 
 where:
 - $\mathbf{Q} \in \mathbb{R}^{n_q \times d_k}$: Query matrix
@@ -1800,41 +1800,41 @@ where:
 **Problem Formulation**: Given a sequence of user interactions $[r_1, r_2, \ldots, r_t]$, predict the next interaction $r_{t+1}$.
 
 **Attention Computation**:
-```math
+$$
 \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}
-```
+$$
 
 **Mathematical Components**:
 
 1. **Query, Key, Value Generation**:
-```math
+$$
 \mathbf{Q} = \mathbf{H}\mathbf{W}_Q, \quad \mathbf{K} = \mathbf{H}\mathbf{W}_K, \quad \mathbf{V} = \mathbf{H}\mathbf{W}_V
-```
+$$
    where $\mathbf{H}$ is the sequence of hidden states.
 
 2. **Attention Weights**:
-```math
+$$
 \alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k=1}^t \exp(e_{ik})}
-```
+$$
    where $e_{ij} = \frac{\mathbf{q}_i^T \mathbf{k}_j}{\sqrt{d_k}}$.
 
 3. **Output Computation**:
-```math
+$$
 \mathbf{o}_i = \sum_{j=1}^t \alpha_{ij} \mathbf{v}_j
-```
+$$
 
 #### Multi-Head Attention
 
 Multi-head attention allows the model to attend to different aspects of the input simultaneously:
 
-```math
+$$
 \text{MultiHead}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)\mathbf{W}^O
-```
+$$
 
 where each head is computed as:
-```math
+$$
 \text{head}_i = \text{Attention}(\mathbf{Q}\mathbf{W}_i^Q, \mathbf{K}\mathbf{W}_i^K, \mathbf{V}\mathbf{W}_i^V)
-```
+$$
 
 **Mathematical Properties**:
 - **Parallel Processing**: Multiple attention heads can be computed in parallel
@@ -1845,10 +1845,10 @@ where each head is computed as:
 
 Since attention is permutation-invariant, positional information must be added:
 
-```math
+$$
 \text{PE}_{(pos, 2i)} = \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
 \text{PE}_{(pos, 2i+1)} = \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right)
-```
+$$
 
 ### Graph Neural Networks for Recommendations
 
@@ -1862,33 +1862,33 @@ Graph Neural Networks (GNNs) are particularly well-suited for recommender system
 #### Mathematical Foundation
 
 **Graph Representation**:
-```math
+$$
 \mathcal{G} = (\mathcal{V}, \mathcal{E})
-```
+$$
 
 where:
 - $\mathcal{V} = \mathcal{U} \cup \mathcal{I}$: Set of users and items
 - $\mathcal{E}$: Set of edges representing interactions
 
 **Adjacency Matrix**:
-```math
+$$
 \mathbf{A}_{ij} = \begin{cases}
 1 & \text{if } (i,j) \in \mathcal{E} \\
 0 & \text{otherwise}
 \end{cases}
-```
+$$
 
 #### Graph Convolutional Networks (GCN)
 
 **Message Passing Framework**:
-```math
+$$
 \mathbf{h}_i^{(l+1)} = \sigma\left(\mathbf{W}^{(l)} \sum_{j \in \mathcal{N}(i)} \frac{1}{\sqrt{|\mathcal{N}(i)||\mathcal{N}(j)|}} \mathbf{h}_j^{(l)}\right)
-```
+$$
 
 **Matrix Form**:
-```math
+$$
 \mathbf{H}^{(l+1)} = \sigma\left(\tilde{\mathbf{D}}^{-\frac{1}{2}}\tilde{\mathbf{A}}\tilde{\mathbf{D}}^{-\frac{1}{2}}\mathbf{H}^{(l)}\mathbf{W}^{(l)}\right)
-```
+$$
 
 where:
 - $\tilde{\mathbf{A}} = \mathbf{A} + \mathbf{I}$: Adjacency matrix with self-loops
@@ -1905,28 +1905,28 @@ where:
 GAT introduces learnable attention weights for neighbor aggregation:
 
 **Attention Mechanism**:
-```math
+$$
 \alpha_{ij} = \frac{\exp(\text{LeakyReLU}(\mathbf{a}^T[\mathbf{W}\mathbf{h}_i \| \mathbf{W}\mathbf{h}_j]))}{\sum_{k \in \mathcal{N}_i} \exp(\text{LeakyReLU}(\mathbf{a}^T[\mathbf{W}\mathbf{h}_i \| \mathbf{W}\mathbf{h}_k]))}
-```
+$$
 
 **Node Update**:
-```math
+$$
 \mathbf{h}_i^{(l+1)} = \sigma\left(\sum_{j \in \mathcal{N}_i} \alpha_{ij}^{(l)} \mathbf{W}^{(l)} \mathbf{h}_j^{(l)}\right)
-```
+$$
 
 **Multi-head Attention**:
-```math
+$$
 \mathbf{h}_i^{(l+1)} = \sigma\left(\frac{1}{K} \sum_{k=1}^K \sum_{j \in \mathcal{N}_i} \alpha_{ij}^{(l,k)} \mathbf{W}^{(l,k)} \mathbf{h}_j^{(l)}\right)
-```
+$$
 
 #### GraphSAGE
 
 GraphSAGE uses a different aggregation strategy:
 
-```math
+$$
 \mathbf{h}_{\mathcal{N}(i)}^{(l)} = \text{AGGREGATE}^{(l)}\left(\{\mathbf{h}_j^{(l-1)}, \forall j \in \mathcal{N}(i)\}\right)
 \mathbf{h}_i^{(l)} = \sigma\left(\mathbf{W}^{(l)} \cdot [\mathbf{h}_i^{(l-1)} \| \mathbf{h}_{\mathcal{N}(i)}^{(l)}]\right)
-```
+$$
 
 **Aggregation Functions**:
 - **Mean**: $\text{AGGREGATE} = \frac{1}{|\mathcal{N}(i)|} \sum_{j \in \mathcal{N}(i)} \mathbf{h}_j$
@@ -1940,43 +1940,43 @@ GraphSAGE uses a different aggregation strategy:
 BERT4Rec adapts the BERT architecture for sequential recommendation:
 
 **Input Representation**:
-```math
+$$
 \mathbf{x}_t = \text{Embedding}(r_t) + \text{PositionalEncoding}(t)
-```
+$$
 
 **Multi-Head Self-Attention**:
-```math
+$$
 \text{MultiHead}(\mathbf{X}) = \text{Concat}(\text{head}_1, \ldots, \text{head}_h)\mathbf{W}^O
-```
+$$
 
 **Feed-Forward Network**:
-```math
+$$
 \text{FFN}(\mathbf{x}) = \mathbf{W}_2 \text{ReLU}(\mathbf{W}_1 \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2
-```
+$$
 
 **Layer Normalization**:
-```math
+$$
 \text{LayerNorm}(\mathbf{x}) = \gamma \frac{\mathbf{x} - \mu}{\sqrt{\sigma^2 + \epsilon}} + \beta
-```
+$$
 
 **Prediction**:
-```math
+$$
 P(r_t | r_1, \ldots, r_{t-1}) = \text{softmax}(\mathbf{W}\mathbf{h}_t + \mathbf{b})
-```
+$$
 
 #### Training Strategy
 
 **Masked Language Modeling**:
-```math
+$$
 \mathcal{L} = -\sum_{t \in \mathcal{M}} \log P(r_t | r_1, \ldots, r_{t-1})
-```
+$$
 
 where $\mathcal{M}$ is the set of masked positions.
 
 **Next Sentence Prediction** (adapted):
-```math
+$$
 \mathcal{L}_{\text{NSP}} = -\log P(\text{IsNext} | \text{sequence}_1, \text{sequence}_2)
-```
+$$
 
 ### Advanced Attention Variants
 
@@ -1984,9 +1984,9 @@ where $\mathcal{M}$ is the set of masked positions.
 
 Instead of absolute positions, use relative positions:
 
-```math
+$$
 e_{ij} = \frac{\mathbf{q}_i^T \mathbf{k}_j}{\sqrt{d_k}} + \mathbf{q}_i^T \mathbf{r}_{i-j}
-```
+$$
 
 where $\mathbf{r}_{i-j}$ is the relative position embedding.
 
@@ -1994,9 +1994,9 @@ where $\mathbf{r}_{i-j}$ is the relative position embedding.
 
 For efficiency, use sparse attention patterns:
 
-```math
+$$
 \text{SparseAttention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}} \odot \mathbf{M}\right)\mathbf{V}
-```
+$$
 
 where $\mathbf{M}$ is a sparse mask.
 
@@ -2004,12 +2004,12 @@ where $\mathbf{M}$ is a sparse mask.
 
 Restrict attention to a local window:
 
-```math
+$$
 \alpha_{ij} = \begin{cases}
 \frac{\exp(e_{ij})}{\sum_{k \in \mathcal{W}_i} \exp(e_{ik})} & \text{if } j \in \mathcal{W}_i \\
 0 & \text{otherwise}
 \end{cases}
-```
+$$
 
 where $\mathcal{W}_i$ is the local window around position $i$.
 
@@ -2097,172 +2097,172 @@ Multi-modal deep learning in recommender systems addresses the challenge of inte
 where $\mathcal{X}_i$ represents the space of modality $i$.
 
 **Feature Extraction**:
-```math
+$$
 \mathbf{f}_i = \text{Encoder}_i(\mathbf{x}_i) \in \mathbb{R}^{d_i}
-```
+$$
 
 where $\text{Encoder}_i$ is a neural network for modality $i$.
 
 #### Fusion Strategies
 
 **1. Early Fusion (Feature-level)**:
-```math
+$$
 \mathbf{f}_{\text{fused}} = \text{Fusion}([\mathbf{f}_1, \mathbf{f}_2, \ldots, \mathbf{f}_M])
-```
+$$
 
 **2. Late Fusion (Decision-level)**:
-```math
+$$
 \hat{r}_{ui} = \sum_{i=1}^M \alpha_i \cdot \text{Predictor}_i(\mathbf{f}_i)
-```
+$$
 
 **3. Hybrid Fusion**:
-```math
+$$
 \mathbf{f}_{\text{fused}} = \text{Fusion}(\text{Encoder}_1(\mathbf{x}_1), \ldots, \text{Encoder}_M(\mathbf{x}_M))
-```
+$$
 
 ### Text + Image Recommendations
 
 #### Multi-modal Fusion
 
 **Weighted Sum Fusion**:
-```math
+$$
 \mathbf{f}_{\text{fused}} = \alpha \cdot \mathbf{f}_{\text{text}} + (1-\alpha) \cdot \mathbf{f}_{\text{image}}
-```
+$$
 
 where $\alpha$ is learned during training.
 
 **Concatenation Fusion**:
-```math
+$$
 \mathbf{f}_{\text{fused}} = [\mathbf{f}_{\text{text}}; \mathbf{f}_{\text{image}}]
-```
+$$
 
 **Bilinear Fusion**:
-```math
+$$
 \mathbf{f}_{\text{fused}} = \mathbf{f}_{\text{text}}^T \mathbf{W} \mathbf{f}_{\text{image}}
-```
+$$
 
 where $\mathbf{W}$ is a learnable bilinear transformation matrix.
 
 #### Cross-modal Attention
 
 **Attention Mechanism**:
-```math
+$$
 \text{Attention}_{\text{cross}}(\mathbf{q}, \mathbf{K}) = \text{softmax}\left(\frac{\mathbf{q}\mathbf{K}^T}{\sqrt{d_k}}\right)
-```
+$$
 
 **Cross-modal Attention**:
-```math
+$$
 \alpha_{ij} = \frac{\exp(\mathbf{q}_i^T \mathbf{k}_j / \sqrt{d_k})}{\sum_{l=1}^N \exp(\mathbf{q}_i^T \mathbf{k}_l / \sqrt{d_k})}
-```
+$$
 
 where $\mathbf{q}_i$ is a query from one modality and $\mathbf{k}_j$ is a key from another modality.
 
 #### Text Encoding
 
 **BERT for Text**:
-```math
+$$
 \mathbf{f}_{\text{text}} = \text{BERT}(\text{tokenize}(\text{description}))
-```
+$$
 
 **Word Embeddings**:
-```math
+$$
 \mathbf{f}_{\text{text}} = \frac{1}{L} \sum_{i=1}^L \mathbf{e}_i
-```
+$$
 
 where $\mathbf{e}_i$ is the embedding of word $i$ and $L$ is the sequence length.
 
 #### Image Encoding
 
 **CNN for Images**:
-```math
+$$
 \mathbf{f}_{\text{image}} = \text{CNN}(\text{image})
-```
+$$
 
 **Pre-trained Models**:
-```math
+$$
 \mathbf{f}_{\text{image}} = \text{ResNet}(\text{image}) \text{ or } \text{ViT}(\text{image})
-```
+$$
 
 ### Audio + Visual Recommendations
 
 #### Temporal Fusion
 
 **LSTM-based Fusion**:
-```math
+$$
 \mathbf{h}_t = \text{LSTM}([\mathbf{a}_t; \mathbf{v}_t], \mathbf{h}_{t-1})
-```
+$$
 
 where $\mathbf{a}_t$ and $\mathbf{v}_t$ are audio and visual features at time $t$.
 
 **Attention-based Fusion**:
-```math
+$$
 \alpha_t = \text{softmax}(\mathbf{W}_a \mathbf{a}_t + \mathbf{W}_v \mathbf{v}_t)
 \mathbf{h}_t = \alpha_t \cdot \mathbf{a}_t + (1-\alpha_t) \cdot \mathbf{v}_t
-```
+$$
 
 #### Audio Feature Extraction
 
 **Mel-frequency Cepstral Coefficients (MFCC)**:
-```math
+$$
 \mathbf{f}_{\text{audio}} = \text{MFCC}(\text{audio\_signal})
-```
+$$
 
 **Spectrogram Features**:
-```math
+$$
 \mathbf{f}_{\text{audio}} = \text{CNN}(\text{spectrogram})
-```
+$$
 
 #### Video Feature Extraction
 
 **3D CNN**:
-```math
+$$
 \mathbf{f}_{\text{video}} = \text{3D-CNN}(\text{video\_frames})
-```
+$$
 
 **Two-stream Architecture**:
-```math
+$$
 \mathbf{f}_{\text{video}} = \text{Fusion}(\text{Spatial-CNN}(\text{frames}), \text{Temporal-CNN}(\text{optical\_flow}))
-```
+$$
 
 ### Advanced Multi-modal Architectures
 
 #### 1. Cross-modal Transformer
 
 **Cross-modal Attention**:
-```math
+$$
 \text{CrossAttention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}
-```
+$$
 
 where $\mathbf{Q}$ comes from one modality and $\mathbf{K}, \mathbf{V}$ come from another.
 
 **Multi-modal Transformer**:
-```math
+$$
 \mathbf{h}_{\text{mm}} = \text{Transformer}(\text{Concat}(\mathbf{f}_{\text{text}}, \mathbf{f}_{\text{image}}))
-```
+$$
 
 #### 2. Multi-modal Variational Autoencoder (MMVAE)
 
 **Encoder**:
-```math
+$$
 q(\mathbf{z} | \mathbf{x}_1, \mathbf{x}_2) = \mathcal{N}(\mu_{\text{mm}}, \sigma_{\text{mm}}^2)
-```
+$$
 
 **Decoder**:
-```math
+$$
 p(\mathbf{x}_i | \mathbf{z}) = \text{Decoder}_i(\mathbf{z})
-```
+$$
 
 **Loss Function**:
-```math
+$$
 \mathcal{L} = \mathbb{E}_{q(\mathbf{z})}[\log p(\mathbf{x}_1, \mathbf{x}_2 | \mathbf{z})] - \text{KL}(q(\mathbf{z}) \| p(\mathbf{z}))
-```
+$$
 
 #### 3. Contrastive Learning
 
 **Multi-modal Contrastive Loss**:
-```math
+$$
 \mathcal{L}_{\text{contrastive}} = -\log \frac{\exp(\text{sim}(\mathbf{f}_1, \mathbf{f}_2) / \tau)}{\sum_{i=1}^N \exp(\text{sim}(\mathbf{f}_1, \mathbf{f}_2^{(i)}) / \tau)}
-```
+$$
 
 where $\text{sim}(\cdot, \cdot)$ is a similarity function and $\tau$ is the temperature parameter.
 
@@ -2271,35 +2271,35 @@ where $\text{sim}(\cdot, \cdot)$ is a similarity function and $\tau$ is the temp
 #### 1. Modality Alignment
 
 **Alignment Loss**:
-```math
+$$
 \mathcal{L}_{\text{align}} = \|\mathbf{f}_1 - \mathbf{f}_2\|_2^2
-```
+$$
 
 **Canonical Correlation Analysis (CCA)**:
-```math
+$$
 \max_{\mathbf{w}_1, \mathbf{w}_2} \frac{\mathbf{w}_1^T \mathbf{C}_{12} \mathbf{w}_2}{\sqrt{\mathbf{w}_1^T \mathbf{C}_{11} \mathbf{w}_1 \mathbf{w}_2^T \mathbf{C}_{22} \mathbf{w}_2}}
-```
+$$
 
 where $\mathbf{C}_{ij}$ is the cross-covariance matrix between modalities $i$ and $j$.
 
 #### 2. Modality-specific Losses
 
 **Reconstruction Loss**:
-```math
+$$
 \mathcal{L}_{\text{recon}} = \sum_{i=1}^M \|\mathbf{x}_i - \text{Decoder}_i(\mathbf{f}_{\text{fused}})\|_2^2
-```
+$$
 
 **Classification Loss**:
-```math
+$$
 \mathcal{L}_{\text{class}} = -\sum_{c=1}^C y_c \log(\hat{y}_c)
-```
+$$
 
 #### 3. Multi-task Learning
 
 **Joint Loss**:
-```math
+$$
 \mathcal{L}_{\text{total}} = \sum_{i=1}^M \lambda_i \mathcal{L}_i
-```
+$$
 
 where $\lambda_i$ are task-specific weights.
 
@@ -2405,9 +2405,9 @@ The choice of loss function is crucial for deep recommender systems as it direct
 #### Mathematical Foundation
 
 **General Loss Function**:
-```math
+$$
 \mathcal{L}(\theta) = \frac{1}{N} \sum_{i=1}^N \ell(f_\theta(\mathbf{x}_i), y_i) + \lambda R(\theta)
-```
+$$
 
 where:
 - $f_\theta$ is the model with parameters $\theta$
@@ -2418,9 +2418,9 @@ where:
 ### Rating Prediction Losses
 
 #### Mean Squared Error (MSE)
-```math
+$$
 \mathcal{L}_{\text{MSE}} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui})^2
-```
+$$
 
 **Properties**:
 - **Convex**: Guarantees convergence to global minimum
@@ -2428,9 +2428,9 @@ where:
 - **Scale-dependent**: Sensitive to the scale of ratings
 
 #### Mean Absolute Error (MAE)
-```math
+$$
 \mathcal{L}_{\text{MAE}} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} |r_{ui} - \hat{r}_{ui}|
-```
+$$
 
 **Properties**:
 - **Robust to Outliers**: Less sensitive to extreme values
@@ -2438,12 +2438,12 @@ where:
 - **Scale-invariant**: Relative to the rating scale
 
 #### Huber Loss
-```math
+$$
 \mathcal{L}_{\text{Huber}} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} \begin{cases}
 \frac{1}{2}(r_{ui} - \hat{r}_{ui})^2 & \text{if } |r_{ui} - \hat{r}_{ui}| \leq \delta \\
 \delta(|r_{ui} - \hat{r}_{ui}| - \frac{1}{2}\delta) & \text{otherwise}
 \end{cases}
-```
+$$
 
 **Properties**:
 - **Robust**: Combines benefits of MSE and MAE
@@ -2453,9 +2453,9 @@ where:
 ### Binary Classification Losses
 
 #### Binary Cross-Entropy (BCE)
-```math
+$$
 \mathcal{L}_{\text{BCE}} = -\frac{1}{N} \sum_{(u,i) \in \mathcal{R}} [r_{ui} \log(\hat{r}_{ui}) + (1-r_{ui}) \log(1-\hat{r}_{ui})]
-```
+$$
 
 **Properties**:
 - **Probabilistic**: Outputs can be interpreted as probabilities
@@ -2463,9 +2463,9 @@ where:
 - **Class-balanced**: Handles imbalanced data well
 
 #### Focal Loss
-```math
+$$
 \mathcal{L}_{\text{Focal}} = -\frac{1}{N} \sum_{(u,i) \in \mathcal{R}} \alpha_t (1-\hat{r}_{ui})^\gamma \log(\hat{r}_{ui})
-```
+$$
 
 where $\alpha_t$ is the class weight and $\gamma$ is the focusing parameter.
 
@@ -2477,9 +2477,9 @@ where $\alpha_t$ is the class weight and $\gamma$ is the focusing parameter.
 ### Ranking Losses
 
 #### Ranking Loss (Hinge Loss)
-```math
+$$
 \mathcal{L}_{\text{ranking}} = \sum_{(u,i,j) \in \mathcal{D}} \max(0, \hat{r}_{uj} - \hat{r}_{ui} + \gamma)
-```
+$$
 
 where $(u,i,j)$ represents user $u$ prefers item $i$ over item $j$.
 
@@ -2489,9 +2489,9 @@ where $(u,i,j)$ represents user $u$ prefers item $i$ over item $j$.
 - **Non-smooth**: Has non-differentiable points
 
 #### Bayesian Personalized Ranking (BPR)
-```math
+$$
 \mathcal{L}_{\text{BPR}} = -\sum_{(u,i,j) \in \mathcal{D}} \log(\sigma(\hat{r}_{ui} - \hat{r}_{uj}))
-```
+$$
 
 where $\mathcal{D}$ contains triples $(u,i,j)$ where user $u$ prefers item $i$ over item $j$.
 
@@ -2503,41 +2503,41 @@ where $\mathcal{D}$ contains triples $(u,i,j)$ where user $u$ prefers item $i$ o
 #### List-wise Ranking Losses
 
 **ListNet Loss**:
-```math
+$$
 \mathcal{L}_{\text{ListNet}} = -\sum_{u=1}^N \sum_{i=1}^{n_u} P(i) \log(\hat{P}(i))
-```
+$$
 
 where $P(i)$ and $\hat{P}(i)$ are the true and predicted ranking distributions.
 
 **LambdaRank Loss**:
-```math
+$$
 \mathcal{L}_{\text{LambdaRank}} = \sum_{(u,i,j) \in \mathcal{D}} \lambda_{ij} \log(\sigma(\hat{r}_{ui} - \hat{r}_{uj}))
-```
+$$
 
 where $\lambda_{ij}$ is the lambda gradient that considers ranking metrics.
 
 ### Multi-task Learning Losses
 
 #### Weighted Sum
-```math
+$$
 \mathcal{L}_{\text{total}} = \sum_{k=1}^K \lambda_k \mathcal{L}_k
-```
+$$
 
 where $\lambda_k$ are task-specific weights.
 
 #### Uncertainty Weighting
-```math
+$$
 \mathcal{L}_{\text{total}} = \sum_{k=1}^K \frac{1}{2\sigma_k^2} \mathcal{L}_k + \log(\sigma_k)
-```
+$$
 
 where $\sigma_k$ is the uncertainty for task $k$.
 
 ### Regularization Techniques
 
 #### L1 Regularization (Lasso)
-```math
+$$
 R_{\text{L1}}(\theta) = \sum_{i=1}^p |\theta_i|
-```
+$$
 
 **Properties**:
 - **Sparsity**: Encourages sparse solutions
@@ -2545,9 +2545,9 @@ R_{\text{L1}}(\theta) = \sum_{i=1}^p |\theta_i|
 - **Non-differentiable**: Requires special optimization
 
 #### L2 Regularization (Ridge)
-```math
+$$
 R_{\text{L2}}(\theta) = \sum_{i=1}^p \theta_i^2
-```
+$$
 
 **Properties**:
 - **Smooth**: Differentiable everywhere
@@ -2555,25 +2555,25 @@ R_{\text{L2}}(\theta) = \sum_{i=1}^p \theta_i^2
 - **Stability**: Improves numerical stability
 
 #### Elastic Net
-```math
+$$
 R_{\text{Elastic}}(\theta) = \alpha \sum_{i=1}^p |\theta_i| + (1-\alpha) \sum_{i=1}^p \theta_i^2
-```
+$$
 
 where $\alpha \in [0,1]$ controls the balance between L1 and L2.
 
 #### Dropout Regularization
 
 **Training**:
-```math
+$$
 \mathbf{h}_{\text{dropout}} = \mathbf{h} \odot \mathbf{m}
-```
+$$
 
 where $\mathbf{m} \sim \text{Bernoulli}(p)$.
 
 **Inference**:
-```math
+$$
 \mathbf{h}_{\text{inference}} = p \cdot \mathbf{h}
-```
+$$
 
 **Mathematical Properties**:
 - **Stochastic**: Introduces randomness during training
@@ -2583,25 +2583,25 @@ where $\mathbf{m} \sim \text{Bernoulli}(p)$.
 #### Batch Normalization
 
 **Training**:
-```math
+$$
 \text{BN}(\mathbf{x}) = \gamma \frac{\mathbf{x} - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}} + \beta
-```
+$$
 
 where $\mu_B$ and $\sigma_B^2$ are batch statistics.
 
 **Inference**:
-```math
+$$
 \text{BN}(\mathbf{x}) = \gamma \frac{\mathbf{x} - \mu_{\text{pop}}}{\sqrt{\sigma_{\text{pop}}^2 + \epsilon}} + \beta
-```
+$$
 
 where $\mu_{\text{pop}}$ and $\sigma_{\text{pop}}^2$ are population statistics.
 
 ### Optimization Algorithms
 
 #### Stochastic Gradient Descent (SGD)
-```math
+$$
 \theta_{t+1} = \theta_t - \alpha_t \nabla \mathcal{L}(\theta_t)
-```
+$$
 
 **Properties**:
 - **Simple**: Easy to implement and understand
@@ -2609,11 +2609,11 @@ where $\mu_{\text{pop}}$ and $\sigma_{\text{pop}}^2$ are population statistics.
 - **Memory Efficient**: Low memory requirements
 
 #### Adam Optimizer
-```math
+$$
 m_t = \beta_1 m_{t-1} + (1-\beta_1) \nabla \mathcal{L}(\theta_t)
 v_t = \beta_2 v_{t-1} + (1-\beta_2) (\nabla \mathcal{L}(\theta_t))^2
 \theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{v_t} + \epsilon} m_t
-```
+$$
 
 **Properties**:
 - **Adaptive**: Learning rate adapts to each parameter
@@ -2621,10 +2621,10 @@ v_t = \beta_2 v_{t-1} + (1-\beta_2) (\nabla \mathcal{L}(\theta_t))^2
 - **Robust**: Works well across different architectures
 
 #### RMSprop
-```math
+$$
 v_t = \rho v_{t-1} + (1-\rho) (\nabla \mathcal{L}(\theta_t))^2
 \theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{v_t} + \epsilon} \nabla \mathcal{L}(\theta_t)
-```
+$$
 
 **Properties**:
 - **Adaptive**: Learning rate adapts to gradient magnitude
@@ -2634,23 +2634,23 @@ v_t = \rho v_{t-1} + (1-\rho) (\nabla \mathcal{L}(\theta_t))^2
 ### Learning Rate Scheduling
 
 #### Exponential Decay
-```math
+$$
 \alpha_t = \alpha_0 \cdot \gamma^t
-```
+$$
 
 where $\gamma \in (0,1)$ is the decay rate.
 
 #### Cosine Annealing
-```math
+$$
 \alpha_t = \alpha_{\min} + \frac{1}{2}(\alpha_{\max} - \alpha_{\min})(1 + \cos(\frac{t}{T}\pi))
-```
+$$
 
 where $T$ is the total number of steps.
 
 #### Step Decay
-```math
+$$
 \alpha_t = \alpha_0 \cdot \gamma^{\lfloor t/s \rfloor}
-```
+$$
 
 where $s$ is the step size.
 
@@ -2659,41 +2659,41 @@ where $s$ is the step size.
 #### Rating Prediction Metrics
 
 **Mean Absolute Error (MAE)**:
-```math
+$$
 \text{MAE} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} |r_{ui} - \hat{r}_{ui}|
-```
+$$
 
 **Root Mean Square Error (RMSE)**:
-```math
+$$
 \text{RMSE} = \sqrt{\frac{1}{N} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui})^2}
-```
+$$
 
 **Mean Absolute Percentage Error (MAPE)**:
-```math
+$$
 \text{MAPE} = \frac{100\%}{N} \sum_{(u,i) \in \mathcal{R}} \left|\frac{r_{ui} - \hat{r}_{ui}}{r_{ui}}\right|
-```
+$$
 
 #### Ranking Metrics
 
 **Precision@k**:
-```math
+$$
 \text{Precision@k} = \frac{|\text{relevant items in top-k}|}{k}
-```
+$$
 
 **Recall@k**:
-```math
+$$
 \text{Recall@k} = \frac{|\text{relevant items in top-k}|}{|\text{total relevant items}|}
-```
+$$
 
 **Normalized Discounted Cumulative Gain (NDCG@k)**:
-```math
+$$
 \text{NDCG@k} = \frac{\text{DCG@k}}{\text{IDCG@k}}
-```
+$$
 
 where:
-```math
+$$
 \text{DCG@k} = \sum_{i=1}^k \frac{2^{rel_i} - 1}{\log_2(i+1)}
-```
+$$
 
 **Mean Reciprocal Rank (MRR)**:
 $$
@@ -2717,23 +2717,23 @@ where $p(i)$ is the popularity of item $i$.
 ### Hyperparameter Optimization
 
 #### Grid Search
-```math
+$$
 \mathcal{H}^* = \arg\max_{\mathcal{H} \in \mathcal{S}} \text{Performance}(\mathcal{H})
-```
+$$
 
 where $\mathcal{S}$ is the grid of hyperparameter combinations.
 
 #### Random Search
-```math
+$$
 \mathcal{H}^* = \arg\max_{\mathcal{H} \sim p(\mathcal{H})} \text{Performance}(\mathcal{H})
-```
+$$
 
 where $p(\mathcal{H})$ is the prior distribution over hyperparameters.
 
 #### Bayesian Optimization
-```math
+$$
 \mathcal{H}^* = \arg\max_{\mathcal{H}} \text{Acquisition}(\mathcal{H} | \mathcal{D})
-```
+$$
 
 where $\text{Acquisition}$ is the acquisition function (e.g., Expected Improvement).
 
@@ -2771,14 +2771,14 @@ This comprehensive mathematical foundation provides the theoretical understandin
 ### Hyperparameter Optimization
 
 #### Bayesian Optimization
-```math
+$$
 \alpha^* = \arg\max_{\alpha} \text{Acquisition}(\alpha | \mathcal{D})
-```
+$$
 
 #### Neural Architecture Search (NAS)
-```math
+$$
 \mathcal{A}^* = \arg\max_{\mathcal{A}} \text{Performance}(\mathcal{A})
-```
+$$
 
 ## 13.7.9. Production Considerations
 
@@ -2797,9 +2797,9 @@ Deploying deep recommender systems in production environments presents unique ch
 #### Mathematical Foundation
 
 **Inference Pipeline**:
-```math
+$$
 \mathbf{y} = f_{\text{model}}(\mathbf{x}) = f_{\text{post}}(f_{\text{model}}(f_{\text{pre}}(\mathbf{x})))
-```
+$$
 
 where:
 - $f_{\text{pre}}$: Preprocessing function
@@ -2807,9 +2807,9 @@ where:
 - $f_{\text{post}}$: Post-processing function
 
 **Batch Processing**:
-```math
+$$
 \mathbf{Y} = f_{\text{model}}(\mathbf{X}) \in \mathbb{R}^{B \times d_{\text{out}}}
-```
+$$
 
 where $B$ is the batch size.
 
@@ -2835,14 +2835,14 @@ loaded_model = tf.keras.models.load_model('recommendation_model')
 **2. ONNX Export**
 
 **Conversion Process**:
-```python
+$$python
 import onnx
 import tf2onnx
 
 # Convert to ONNX
 onnx_model, _ = tf2onnx.convert.from_keras(model)
 onnx.save(onnx_model, "model.onnx")
-```
+$$
 
 **Mathematical Properties**:
 - **Interoperability**: Works across different frameworks
@@ -2852,26 +2852,26 @@ onnx.save(onnx_model, "model.onnx")
 **3. TorchServe**
 
 **Model Packaging**:
-```python
+$$python
 # Create model archive
 torch-model-archiver --model-name recommendation --version 1.0 --model-file model.pt --handler recommendation_handler.py
-```
+$$
 
 ### Scalability Solutions
 
 #### Model Parallelism
 
 **Mathematical Formulation**:
-```math
+$$
 \mathbf{y} = f_2(f_1(\mathbf{x}))
-```
+$$
 
 where $f_1$ and $f_2$ run on different devices.
 
 **Pipeline Parallelism**:
-```math
+$$
 \mathbf{y}_i = f_i(\mathbf{y}_{i-1})
-```
+$$
 
 where each $f_i$ runs on a different device.
 
@@ -2883,14 +2883,14 @@ where each $f_i$ runs on a different device.
 #### Data Parallelism
 
 **Gradient Aggregation**:
-```math
+$$
 \nabla \mathcal{L} = \frac{1}{N} \sum_{i=1}^N \nabla \mathcal{L}_i
-```
+$$
 
 **Inference Parallelism**:
-```math
+$$
 \mathbf{Y} = [f(\mathbf{x}_1), f(\mathbf{x}_2), \ldots, f(\mathbf{x}_N)]
-```
+$$
 
 where each $f(\mathbf{x}_i)$ runs on a different device.
 
@@ -2902,49 +2902,49 @@ where each $f(\mathbf{x}_i)$ runs on a different device.
 #### Distributed Training
 
 **AllReduce Algorithm**:
-```math
+$$
 \mathbf{g}_{\text{global}} = \frac{1}{N} \sum_{i=1}^N \mathbf{g}_i
-```
+$$
 
 where $\mathbf{g}_i$ is the gradient from device $i$.
 
 **Ring AllReduce**:
-```math
+$$
 \mathbf{g}_{\text{global}} = \text{ReduceScatter}(\text{AllGather}(\mathbf{g}_{\text{local}}))
-```
+$$
 
 ### Real-time Recommendations
 
 #### Online Learning
 
 **Mathematical Formulation**:
-```math
+$$
 \theta_{t+1} = \theta_t - \eta_t \nabla \mathcal{L}(\theta_t, \mathbf{x}_t, y_t)
-```
+$$
 
 **Stochastic Gradient Descent**:
-```math
+$$
 \theta_{t+1} = \theta_t - \alpha \nabla \mathcal{L}(\theta_t, \mathbf{x}_t, y_t)
-```
+$$
 
 **Adaptive Learning Rate**:
-```math
+$$
 \theta_{t+1} = \theta_t - \frac{\alpha}{\sqrt{v_t} + \epsilon} \nabla \mathcal{L}(\theta_t, \mathbf{x}_t, y_t)
-```
+$$
 
 where $v_t = \beta v_{t-1} + (1-\beta) \nabla \mathcal{L}(\theta_t)^2$.
 
 #### Incremental Updates
 
 **Exponential Moving Average**:
-```math
+$$
 \mathbf{h}_{t+1} = \beta \mathbf{h}_t + (1-\beta) \text{update}(\mathbf{x}_{t+1})
-```
+$$
 
 **Kalman Filter**:
-```math
+$$
 \mathbf{h}_{t+1} = \mathbf{h}_t + \mathbf{K}_t (\mathbf{z}_t - \mathbf{H}_t \mathbf{h}_t)
-```
+$$
 
 where $\mathbf{K}_t$ is the Kalman gain.
 
@@ -2953,65 +2953,65 @@ where $\mathbf{K}_t$ is the Kalman gain.
 #### Embedding Caching
 
 **Cache Hit Rate**:
-```math
+$$
 \text{Hit Rate} = \frac{\text{Cache Hits}}{\text{Total Requests}}
-```
+$$
 
 **Cache Size Optimization**:
-```math
+$$
 \text{Memory Usage} = \sum_{i=1}^N d_i \cdot \text{sizeof}(\text{float})
-```
+$$
 
 where $d_i$ is the embedding dimension for item $i$.
 
 #### Quantization
 
 **Post-training Quantization**:
-```math
+$$
 \mathbf{W}_{\text{quantized}} = \text{round}\left(\frac{\mathbf{W} - \min(\mathbf{W})}{\max(\mathbf{W}) - \min(\mathbf{W})} \cdot (2^b - 1)\right)
-```
+$$
 
 where $b$ is the number of bits.
 
 **Dynamic Quantization**:
-```math
+$$
 \mathbf{x}_{\text{quantized}} = \text{round}\left(\frac{\mathbf{x}}{\text{scale}} + \text{zero\_point}\right)
-```
+$$
 
 ### Monitoring and Observability
 
 #### Performance Metrics
 
 **Latency**:
-```math
+$$
 \text{Latency} = \frac{1}{N} \sum_{i=1}^N t_i
-```
+$$
 
 where $t_i$ is the response time for request $i$.
 
 **Throughput**:
-```math
+$$
 \text{Throughput} = \frac{\text{Number of Requests}}{\text{Time Period}}
-```
+$$
 
 **Error Rate**:
-```math
+$$
 \text{Error Rate} = \frac{\text{Number of Errors}}{\text{Total Requests}}
-```
+$$
 
 #### Model Performance Monitoring
 
 **Prediction Drift**:
-```math
+$$
 \text{Drift} = \|\mu_{\text{training}} - \mu_{\text{production}}\|_2
-```
+$$
 
 where $\mu$ represents the mean of predictions.
 
 **Data Drift**:
-```math
+$$
 \text{Data Drift} = \text{KL}(P_{\text{training}} \| P_{\text{production}})
-```
+$$
 
 where $\text{KL}$ is the Kullback-Leibler divergence.
 
@@ -3020,32 +3020,32 @@ where $\text{KL}$ is the Kullback-Leibler divergence.
 #### Statistical Testing
 
 **T-test for Mean Comparison**:
-```math
+$$
 t = \frac{\bar{x}_A - \bar{x}_B}{\sqrt{\frac{s_A^2}{n_A} + \frac{s_B^2}{n_B}}}
-```
+$$
 
 where $\bar{x}_A, \bar{x}_B$ are sample means and $s_A^2, s_B^2$ are sample variances.
 
 **Chi-square Test for Proportions**:
-```math
+$$
 \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
-```
+$$
 
 where $O_i$ and $E_i$ are observed and expected frequencies.
 
 #### Multi-armed Bandit Testing
 
 **Upper Confidence Bound (UCB)**:
-```math
+$$
 \text{UCB}_i = \bar{x}_i + \sqrt{\frac{2 \log(t)}{n_i}}
-```
+$$
 
 where $\bar{x}_i$ is the sample mean of arm $i$ and $n_i$ is the number of pulls.
 
 **Thompson Sampling**:
-```math
+$$
 \theta_i \sim \text{Beta}(\alpha_i, \beta_i)
-```
+$$
 
 where $\alpha_i, \beta_i$ are the parameters of the Beta distribution.
 
@@ -3054,53 +3054,53 @@ where $\alpha_i, \beta_i$ are the parameters of the Beta distribution.
 #### Computational Cost
 
 **FLOPs Calculation**:
-```math
+$$
 \text{FLOPs} = \sum_{l=1}^L (2 \cdot d_{l-1} \cdot d_l + d_l)
-```
+$$
 
 where $d_l$ is the dimension of layer $l$.
 
 **Memory Usage**:
-```math
+$$
 \text{Memory} = \sum_{l=1}^L (4 \cdot d_{l-1} \cdot d_l + 4 \cdot d_l) \text{ bytes}
-```
+$$
 
 #### Cost-Effective Training
 
 **Gradient Accumulation**:
-```math
+$$
 \mathbf{g}_{\text{accumulated}} = \sum_{i=1}^k \mathbf{g}_i
-```
+$$
 
 where $k$ is the accumulation steps.
 
 **Mixed Precision Training**:
-```math
+$$
 \mathbf{g}_{\text{fp16}} = \text{cast\_to\_fp16}(\mathbf{g}_{\text{fp32}})
-```
+$$
 
 ### Security and Privacy
 
 #### Differential Privacy
 
 **Laplace Mechanism**:
-```math
+$$
 f_{\text{DP}}(\mathbf{x}) = f(\mathbf{x}) + \text{Lap}\left(\frac{\Delta f}{\epsilon}\right)
-```
+$$
 
 where $\Delta f$ is the sensitivity and $\epsilon$ is the privacy parameter.
 
 **Gaussian Mechanism**:
-```math
+$$
 f_{\text{DP}}(\mathbf{x}) = f(\mathbf{x}) + \mathcal{N}\left(0, \frac{\Delta f^2 \log(1/\delta)}{2\epsilon^2}\right)
-```
+$$
 
 #### Federated Learning
 
 **Federated Averaging**:
-```math
+$$
 \mathbf{w}_{\text{global}} = \sum_{i=1}^N \frac{n_i}{n} \mathbf{w}_i
-```
+$$
 
 where $n_i$ is the number of samples for client $i$.
 
@@ -3109,49 +3109,49 @@ where $n_i$ is the number of samples for client $i$.
 #### Blue-Green Deployment
 
 **Traffic Splitting**:
-```math
+$$
 \text{Traffic}_A = \alpha \cdot \text{Total Traffic}
 \text{Traffic}_B = (1-\alpha) \cdot \text{Total Traffic}
-```
+$$
 
 where $\alpha$ is the traffic split ratio.
 
 #### Canary Deployment
 
 **Gradual Rollout**:
-```math
+$$
 \text{Canary Traffic} = \text{Total Traffic} \cdot \text{rollout\_percentage}
-```
+$$
 
 #### Rolling Updates
 
 **Batch Update**:
-```math
+$$
 \text{Update Batch} = \frac{\text{Total Instances}}{\text{Number of Batches}}
-```
+$$
 
 ### Theoretical Guarantees
 
 #### 1. Latency Bounds
 
 **Theorem**: Under certain conditions, the inference latency is bounded by:
-```math
+$$
 \text{Latency} \leq O(\text{model\_complexity} + \text{data\_size})
-```
+$$
 
 #### 2. Throughput Analysis
 
 **Theorem**: The maximum throughput is given by:
-```math
+$$
 \text{Throughput} = \frac{\text{Number of Workers}}{\text{Latency per Request}}
-```
+$$
 
 #### 3. Cost Analysis
 
 **Theorem**: The total cost is bounded by:
-```math
+$$
 \text{Cost} = O(\text{compute\_cost} + \text{memory\_cost} + \text{network\_cost})
-```
+$$
 
 This comprehensive mathematical foundation provides the theoretical understanding and practical guidance needed to deploy deep recommender systems in production environments effectively.
 
@@ -3164,64 +3164,64 @@ This comprehensive mathematical foundation provides the theoretical understandin
 Deep recommender systems are built on several fundamental mathematical principles:
 
 1. **Universal Approximation**: Neural networks can approximate any continuous function
-   ```math
+   $$
    |f(\mathbf{x}) - \sum_{i=1}^N \alpha_i \sigma(\mathbf{w}_i^T \mathbf{x} + b_i)| < \epsilon
-   ```
+   $$
 
 2. **Representation Learning**: Hierarchical feature learning through multiple layers
-   ```math
+   $$
    \mathbf{h}^{(l+1)} = \sigma(\mathbf{W}^{(l)} \mathbf{h}^{(l)} + \mathbf{b}^{(l)})
-   ```
+   $$
 
 3. **Attention Mechanisms**: Weighted aggregation of information
-   ```math
+   $$
    \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}
-   ```
+   $$
 
 4. **Graph Neural Networks**: Message passing on structured data
-   ```math
+   $$
    \mathbf{h}_i^{(l+1)} = \sigma\left(\mathbf{W}^{(l)} \sum_{j \in \mathcal{N}(i)} \frac{1}{\sqrt{|\mathcal{N}(i)||\mathcal{N}(j)|}} \mathbf{h}_j^{(l)}\right)
-   ```
+   $$
 
 ### Key Advantages
 
 #### 1. Non-linear Modeling
 **Mathematical Foundation**: Captures complex interaction patterns that linear models cannot
-```math
+$$
 \hat{r}_{ui} = f_{\text{non-linear}}(\mathbf{u}_u, \mathbf{v}_i) \neq \mathbf{u}_u^T \mathbf{v}_i
-```
+$$
 
 **Practical Impact**: Can model complex user preferences and item characteristics
 
 #### 2. Automatic Feature Learning
 **Mathematical Foundation**: Discovers optimal representations automatically
-```math
+$$
 \mathbf{f}_{\text{learned}} = \text{Encoder}(\mathbf{x}_{\text{raw}}) \in \mathbb{R}^d
-```
+$$
 
 **Practical Impact**: Reduces manual feature engineering effort
 
 #### 3. Multi-modal Integration
 **Mathematical Foundation**: Combines various data types in unified framework
-```math
+$$
 \mathbf{f}_{\text{fused}} = \text{Fusion}(\mathbf{f}_{\text{text}}, \mathbf{f}_{\text{image}}, \mathbf{f}_{\text{audio}})
-```
+$$
 
 **Practical Impact**: Leverages all available information for better recommendations
 
 #### 4. End-to-end Learning
 **Mathematical Foundation**: Optimizes entire pipeline jointly
-```math
+$$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recommendation}} + \lambda \mathcal{L}_{\text{auxiliary}}
-```
+$$
 
 **Practical Impact**: Better performance through joint optimization
 
 #### 5. Scalability
 **Mathematical Foundation**: Can handle large-scale data efficiently
-```math
+$$
 \text{Complexity} = O(n \log n) \text{ vs } O(n^2) \text{ for traditional methods}
-```
+$$
 
 **Practical Impact**: Can process millions of users and items
 
@@ -3229,9 +3229,9 @@ Deep recommender systems are built on several fundamental mathematical principle
 
 #### 1. Computational Cost
 **Mathematical Challenge**: Training deep models is computationally expensive
-```math
+$$
 \text{FLOPs} = \sum_{l=1}^L (2 \cdot d_{l-1} \cdot d_l + d_l)
-```
+$$
 
 **Solutions**:
 - Model compression and quantization
@@ -3240,9 +3240,9 @@ Deep recommender systems are built on several fundamental mathematical principle
 
 #### 2. Interpretability
 **Mathematical Challenge**: Black-box nature makes explanations difficult
-```math
+$$
 \text{Interpretability} = f(\text{Model Complexity}, \text{Feature Importance})
-```
+$$
 
 **Solutions**:
 - Attention mechanisms for feature importance
@@ -3251,9 +3251,9 @@ Deep recommender systems are built on several fundamental mathematical principle
 
 #### 3. Data Requirements
 **Mathematical Challenge**: Needs large amounts of training data
-```math
+$$
 n \geq O\left(\frac{W \log(W)}{\epsilon^2}\right)
-```
+$$
 
 where $W$ is the number of parameters and $\epsilon$ is the desired accuracy.
 
@@ -3264,9 +3264,9 @@ where $W$ is the number of parameters and $\epsilon$ is the desired accuracy.
 
 #### 4. Hyperparameter Tuning
 **Mathematical Challenge**: Many parameters to optimize
-```math
+$$
 |\mathcal{H}| = \prod_{i=1}^k |\mathcal{H}_i|
-```
+$$
 
 where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
@@ -3277,9 +3277,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 5. Overfitting
 **Mathematical Challenge**: Risk of memorizing training data
-```math
+$$
 \mathbb{E}[\mathcal{L}(\hat{f})] \leq \hat{\mathcal{L}}(\hat{f}) + O\left(\sqrt{\frac{W \log(W)}{n}}\right)
-```
+$$
 
 **Solutions**:
 - Regularization techniques (dropout, weight decay)
@@ -3290,9 +3290,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 1. Start Simple
 **Mathematical Principle**: Begin with basic architectures and gradually increase complexity
-```math
+$$
 \text{Model Complexity} = f(\text{Data Size}, \text{Problem Complexity})
-```
+$$
 
 **Implementation**:
 - Start with NCF or simple MLP
@@ -3301,9 +3301,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 2. Use Pre-trained Models
 **Mathematical Principle**: Leverage transfer learning for better initialization
-```math
+$$
 \theta_{\text{init}} = \theta_{\text{pre-trained}} + \Delta\theta
-```
+$$
 
 **Implementation**:
 - Use pre-trained embeddings (Word2Vec, BERT)
@@ -3312,9 +3312,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 3. Regularize Properly
 **Mathematical Principle**: Prevent overfitting through regularization
-```math
+$$
 \mathcal{L}_{\text{reg}} = \mathcal{L} + \lambda \sum_{\theta} \|\theta\|_2^2
-```
+$$
 
 **Implementation**:
 - Use dropout (p = 0.1-0.5)
@@ -3323,9 +3323,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 4. Monitor Training
 **Mathematical Principle**: Track loss and metrics carefully
-```math
+$$
 \text{Convergence} = \frac{|\mathcal{L}_t - \mathcal{L}_{t-1}|}{|\mathcal{L}_{t-1}|} < \epsilon
-```
+$$
 
 **Implementation**:
 - Monitor training and validation loss
@@ -3334,9 +3334,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 5. Validate Thoroughly
 **Mathematical Principle**: Use multiple evaluation metrics
-```math
+$$
 \text{Performance} = \text{aggregate}(\text{Accuracy}, \text{Diversity}, \text{Novelty})
-```
+$$
 
 **Implementation**:
 - Use cross-validation
@@ -3347,9 +3347,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 1. Self-supervised Learning
 **Mathematical Foundation**: Learning without explicit labels
-```math
+$$
 \mathcal{L}_{\text{self-supervised}} = \mathcal{L}_{\text{pretext}} + \mathcal{L}_{\text{downstream}}
-```
+$$
 
 **Applications**:
 - Contrastive learning for user-item representations
@@ -3358,9 +3358,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 2. Meta-learning
 **Mathematical Foundation**: Learning to learn recommendation patterns
-```math
+$$
 \theta^* = \arg\min_\theta \mathbb{E}_{\mathcal{T}} [\mathcal{L}_{\mathcal{T}}(\theta)]
-```
+$$
 
 **Applications**:
 - Few-shot learning for cold-start users
@@ -3369,9 +3369,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 3. Federated Learning
 **Mathematical Foundation**: Privacy-preserving distributed training
-```math
+$$
 \mathbf{w}_{\text{global}} = \sum_{i=1}^N \frac{n_i}{n} \mathbf{w}_i
-```
+$$
 
 **Applications**:
 - Privacy-preserving recommendations
@@ -3380,9 +3380,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 4. AutoML
 **Mathematical Foundation**: Automated architecture and hyperparameter search
-```math
+$$
 \mathcal{A}^* = \arg\max_{\mathcal{A}} \text{Performance}(\mathcal{A})
-```
+$$
 
 **Applications**:
 - Neural architecture search for recommendation models
@@ -3391,9 +3391,9 @@ where $\mathcal{H}_i$ is the set of values for hyperparameter $i$.
 
 #### 5. Explainable AI
 **Mathematical Foundation**: Interpretable recommendation explanations
-```math
+$$
 \text{Explanation} = f(\text{Model}, \text{Input}, \text{Output})
-```
+$$
 
 **Applications**:
 - Attention-based explanations
