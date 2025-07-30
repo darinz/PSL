@@ -3150,7 +3150,7 @@ $$
 
 **Theorem**: The total cost is bounded by:
 $$
-\text{Cost} = O(\text{compute\_cost} + \text{memory\_cost} + \text{network\_cost})
+\text{Cost} = O(\text{compute\_cost} + \text{memory_cost} + \text{network_cost})
 $$
 
 This comprehensive mathematical foundation provides the theoretical understanding and practical guidance needed to deploy deep recommender systems in production environments effectively.
