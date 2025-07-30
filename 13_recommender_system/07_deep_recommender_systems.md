@@ -2835,14 +2835,14 @@ loaded_model = tf.keras.models.load_model('recommendation_model')
 **2. ONNX Export**
 
 **Conversion Process**:
-$$python
+```python
 import onnx
 import tf2onnx
 
 # Convert to ONNX
 onnx_model, _ = tf2onnx.convert.from_keras(model)
 onnx.save(onnx_model, "model.onnx")
-$$
+```
 
 **Mathematical Properties**:
 - **Interoperability**: Works across different frameworks
