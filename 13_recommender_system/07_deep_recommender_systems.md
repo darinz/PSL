@@ -1807,9 +1807,9 @@ where:
    where $`\mathbf{H}`$ is the sequence of hidden states.
 
 2. **Attention Weights**:
-   ```math
-   \alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k=1}^t \exp(e_{ik})}
-   ```
+```math
+\alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k=1}^t \exp(e_{ik})}
+```
    where $`e_{ij} = \frac{\mathbf{q}_i^T \mathbf{k}_j}{\sqrt{d_k}}`$.
 
 3. **Output Computation**:
