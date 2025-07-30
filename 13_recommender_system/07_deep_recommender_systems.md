@@ -3120,7 +3120,7 @@ where $\alpha$ is the traffic split ratio.
 
 **Gradual Rollout**:
 $$
-\text{Canary Traffic} = \text{Total Traffic} \cdot \text{rollout\_percentage}
+\text{Canary Traffic} = \text{Total Traffic} \cdot \text{rollout_percentage}
 $$
 
 #### Rolling Updates
