@@ -568,12 +568,12 @@ $$
 
 **Wide Features** (sparse, categorical):
 $$
-\mathbf{x}_{\text{wide}} = [\text{user\_id}, \text{item\_id}, \text{category}, \text{time\_slot}]
+\mathbf{x}_{\text{wide}} = [\text{user_id}, \text{item_id}, \text{category}, \text{time_slot}]
 $$
 
 **Deep Features** (dense, continuous):
 $$
-\mathbf{x}_{\text{deep}} = [\text{user\_embedding}, \text{item\_embedding}, \text{context\_features}]
+\mathbf{x}_{\text{deep}} = [\text{user_embedding}, \text{item_embedding}, \text{context_features}]
 $$
 
 #### 2. Wide Component Implementation
