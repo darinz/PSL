@@ -885,27 +885,27 @@ $$
 where $\hat{r}_{ui}^{\text{GMF}} = \sigma(\mathbf{h}_{\text{GMF}}^T (\mathbf{u}_u \odot \mathbf{v}_i))$.
 
 **MLP Pre-training**:
-```math
+$$
 \mathcal{L}_{\text{MLP}} = \frac{1}{|\mathcal{R}|} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui}^{\text{MLP}})^2
-```
+$$
 
 where $\hat{r}_{ui}^{\text{MLP}} = \sigma(\mathbf{h}_{\text{MLP}}^T \phi_{\text{MLP}}(\mathbf{u}_u, \mathbf{v}_i))$.
 
 #### 2. Fine-tuning Phase
 
 **Joint Training**:
-```math
+$$
 \mathcal{L}_{\text{NeuMF}} = \frac{1}{|\mathcal{R}|} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui})^2 + \lambda \sum_{\theta} \|\theta\|_2^2
-```
+$$
 
 where $\hat{r}_{ui}$ is the NeuMF prediction.
 
 #### 3. Ensemble Strategy
 
 **Weighted Ensemble**:
-```math
+$$
 \hat{r}_{ui} = \alpha \cdot \hat{r}_{ui}^{\text{GMF}} + (1-\alpha) \cdot \hat{r}_{ui}^{\text{MLP}}
-```
+$$
 
 where $\alpha$ is learned during training.
 
