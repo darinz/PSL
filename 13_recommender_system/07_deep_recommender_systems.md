@@ -2703,14 +2703,14 @@ $$
 #### Diversity and Novelty Metrics
 
 **Intra-list Diversity**:
-```math
+$$
 \text{Diversity@k} = \frac{2}{k(k-1)} \sum_{i=1}^k \sum_{j=i+1}^k (1 - \text{sim}(i,j))
-```
+$$
 
 **Novelty**:
-```math
+$$
 \text{Novelty@k} = -\frac{1}{k} \sum_{i=1}^k \log_2(p(i))
-```
+$$
 
 where $p(i)$ is the popularity of item $i$.
 
