@@ -281,8 +281,11 @@ $$
 
 1. **Embedding Layer**: 
    $$
-   \mathbf{u}_u = \text{Embedding}_u(\text{user\_id}_u) \in \mathbb{R}^K
-   \mathbf{v}_i = \text{Embedding}_i(\text{item\_id}_i) \in \mathbb{R}^K
+   \mathbf{u}_u = \text{Embedding}_u(\text{user_id}_u) \in \mathbb{R}^K
+   $$
+
+   $$
+   \mathbf{v}_i = \text{Embedding}_i(\text{item_id}_i) \in \mathbb{R}^K
    $$
 
 2. **Concatenation**:
