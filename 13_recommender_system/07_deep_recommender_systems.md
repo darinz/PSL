@@ -1813,9 +1813,9 @@ where:
    where $`e_{ij} = \frac{\mathbf{q}_i^T \mathbf{k}_j}{\sqrt{d_k}}`$.
 
 3. **Output Computation**:
-   ```math
-   \mathbf{o}_i = \sum_{j=1}^t \alpha_{ij} \mathbf{v}_j
-   ```
+```math
+\mathbf{o}_i = \sum_{j=1}^t \alpha_{ij} \mathbf{v}_j
+```
 
 #### Multi-Head Attention
 
