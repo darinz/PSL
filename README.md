@@ -17,7 +17,6 @@ A comprehensive collection of course materials covering fundamental concepts in 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 - [References](#references)
 
 ## Overview
