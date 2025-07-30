@@ -3136,7 +3136,7 @@ $$
 
 **Theorem**: Under certain conditions, the inference latency is bounded by:
 $$
-\text{Latency} \leq O(\text{model\_complexity} + \text{data\_size})
+\text{Latency} \leq O(\text{model_complexity} + \text{data_size})
 $$
 
 #### 2. Throughput Analysis
