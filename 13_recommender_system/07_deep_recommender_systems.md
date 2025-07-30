@@ -2975,7 +2975,7 @@ where $b$ is the number of bits.
 
 **Dynamic Quantization**:
 $$
-\mathbf{x}_{\text{quantized}} = \text{round}\left(\frac{\mathbf{x}}{\text{scale}} + \text{zero\_point}\right)
+\mathbf{x}_{\text{quantized}} = \text{round}\left(\frac{\mathbf{x}}{\text{scale}} + \text{zero_point}\right)
 $$
 
 ### Monitoring and Observability
