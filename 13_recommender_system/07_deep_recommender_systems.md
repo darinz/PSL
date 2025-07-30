@@ -3076,7 +3076,7 @@ where $k$ is the accumulation steps.
 
 **Mixed Precision Training**:
 $$
-\mathbf{g}_{\text{fp16}} = \text{cast\_to\_fp16}(\mathbf{g}_{\text{fp32}})
+\mathbf{g}_{\text{fp16}} = \text{cast_to_fp16}(\mathbf{g}_{\text{fp32}})
 $$
 
 ### Security and Privacy
