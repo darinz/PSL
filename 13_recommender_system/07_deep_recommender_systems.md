@@ -2691,7 +2691,7 @@ where:
 
 **Mean Reciprocal Rank (MRR)**:
 ```math
-\text{MRR} = \frac{1}{N} \sum_{i=1}^N \frac{1}{\text{rank}_i}
+MRR = \frac{1}{N} \sum_{i=1}^N \frac{1}{\text{rank}_i}
 ```
 
 #### Diversity and Novelty Metrics
