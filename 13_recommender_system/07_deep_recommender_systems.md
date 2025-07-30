@@ -93,19 +93,19 @@ where $`\mathbf{h}^{(l)}`$ is the representation at layer $`l`$.
 The choice of loss function depends on the recommendation task:
 
 1. **Rating Prediction** (Regression):
-   ```math
-   \mathcal{L}_{\text{MSE}} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui})^2
-   ```
+```math
+\mathcal{L}_{\text{MSE}} = \frac{1}{N} \sum_{(u,i) \in \mathcal{R}} (r_{ui} - \hat{r}_{ui})^2
+```
 
 2. **Click Prediction** (Binary Classification):
-   ```math
-   \mathcal{L}_{\text{BCE}} = -\frac{1}{N} \sum_{(u,i) \in \mathcal{R}} [r_{ui} \log(\hat{r}_{ui}) + (1-r_{ui}) \log(1-\hat{r}_{ui})]
-   ```
+```math
+\mathcal{L}_{\text{BCE}} = -\frac{1}{N} \sum_{(u,i) \in \mathcal{R}} [r_{ui} \log(\hat{r}_{ui}) + (1-r_{ui}) \log(1-\hat{r}_{ui})]
+```
 
 3. **Ranking** (Pairwise Learning):
-   ```math
-   \mathcal{L}_{\text{BPR}} = -\sum_{(u,i,j) \in \mathcal{D}} \log(\sigma(\hat{r}_{ui} - \hat{r}_{uj}))
-   ```
+```math
+\mathcal{L}_{\text{BPR}} = -\sum_{(u,i,j) \in \mathcal{D}} \log(\sigma(\hat{r}_{ui} - \hat{r}_{uj}))
+```
 
 where $`\mathcal{D}`$ contains triples $(u,i,j)$ where user $`u`$ prefers item $`i`$ over item $`j`$.
 
@@ -2690,9 +2690,10 @@ where:
 ```
 
 **Mean Reciprocal Rank (MRR)**:
-$$
-\text{MRR} = \frac{1}{N} \sum_{i\=1}^N \frac{1}{\text{rank} _i}
-$$
+
+```math
+\text{MRR} = \frac{1}{N} \sum _{i=1} ^N \frac{1}{\text{rank} _i}
+```
 
 #### Diversity and Novelty Metrics
 
