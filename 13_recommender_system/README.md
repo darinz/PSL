@@ -99,7 +99,7 @@ This section covers modern recommender systems, from fundamental approaches to c
   - Cold start and scalability challenges
   - Enhanced code and math explanations
 
-### 13.7. [Deep Recommender Systems](07_deep_recommender_systems.md)
+### 13.7. [Deep Recommender Systems](07_deep_recommender_systems.ipynb)
 - **Topics**:
   - Deep learning for latent feature creation
   - Autoencoders for nonlinear embedding
