@@ -1801,9 +1801,9 @@ where:
 **Mathematical Components**:
 
 1. **Query, Key, Value Generation**:
-   ```math
-   \mathbf{Q} = \mathbf{H}\mathbf{W}_Q, \quad \mathbf{K} = \mathbf{H}\mathbf{W}_K, \quad \mathbf{V} = \mathbf{H}\mathbf{W}_V
-   ```
+```math
+\mathbf{Q} = \mathbf{H}\mathbf{W}_Q, \quad \mathbf{K} = \mathbf{H}\mathbf{W}_K, \quad \mathbf{V} = \mathbf{H}\mathbf{W}_V
+```
    where $`\mathbf{H}`$ is the sequence of hidden states.
 
 2. **Attention Weights**:
