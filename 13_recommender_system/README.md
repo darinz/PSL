@@ -13,15 +13,6 @@ This section covers modern recommender systems, from fundamental approaches to c
 
 **[Recommender-Systems Repository](https://github.com/darinz/Recommender-Systems)**: Practical implementations exploring recommender systems research and applications.
 
-### Key Components
-- **Interactive App** (`app/`): Streamlit-based movie recommender with content-based filtering
-- **Bandit System** (`bandits/`): Multi-armed bandit algorithms (epsilon-greedy, UCB, Thompson sampling)
-- **IBCF Implementation** (`ibcf/`): Item-based collaborative filtering using MovieLens dataset
-
-### Dataset & Performance
-- **MovieLens**: ~1M ratings, 3.7K movies, 6K users
-- **Features**: Real-time recommendations, cold-start handling, scalable architecture
-
 ## Contents
 
 ### 13.1. [Introduction](01_introduction.md)
