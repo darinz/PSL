@@ -20,6 +20,8 @@ This folder contains Python code examples that demonstrate the concepts covered 
 
 - **`regularization_comparison.py`** - Demonstrates ridge vs lasso regularization comparison with comprehensive analysis and visualization.
 
+- **`regularization_comparison.R`** - Demonstrates ridge vs lasso regularization comparison using the glmnet package with comprehensive analysis and visualization.
+
 - **`cross_validation_selection.py`** - Demonstrates cross-validation for regularization parameter selection with comprehensive analysis and visualization.
 
 ### Existing Files
