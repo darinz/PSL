@@ -1,35 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 
-# Generate synthetic data
-def generate_data(n_samples, n_features, n_classes=2):
-    X = np.random.randn(n_samples, n_features)
-    y = np.random.randint(0, n_classes, n_samples)
-    return X, y
-
-# Test kNN performance across dimensions
+# Demonstrate curse of dimensionality
 n_samples = 1000
-n_features_list = [1, 2, 5, 10, 20, 50, 100]
-accuracies = []
+dimensions = [1, 2, 5, 10, 20, 50, 100]
+distances = []
 
-for n_features in n_features_list:
-    X, y = generate_data(n_samples, n_features)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+for p in dimensions:
+    X = np.random.randn(n_samples, p)
     
-    knn = KNeighborsClassifier(n_neighbors=5)
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    accuracies.append(accuracy)
+    # Calculate distances from first point to all others
+    dists = np.sqrt(np.sum((X - X[0])**2, axis=1))
+    
+    # Calculate coefficient of variation
+    cv = np.std(dists) / np.mean(dists)
+    distances.append(cv)
 
-# Plot results
 plt.figure(figsize=(10, 6))
-plt.plot(n_features_list, accuracies, 'bo-')
-plt.xlabel('Number of Features')
-plt.ylabel('Test Accuracy')
-plt.title('kNN Performance vs. Dimensionality')
+plt.plot(dimensions, distances, 'bo-', linewidth=2)
+plt.xlabel('Number of Dimensions')
+plt.ylabel('Coefficient of Variation of Distances')
+plt.title('Curse of Dimensionality: Distance Concentration')
 plt.grid(True)
 plt.show()
+
+# Print results
+for p, cv in zip(dimensions, distances):
+    print(f"Dimensions: {p}, CV: {cv:.4f}")
