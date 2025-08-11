@@ -457,26 +457,7 @@ where $`f^{-k}`$ is trained on data excluding fold $`k`$.
 
 **Example: 5-Fold Cross-Validation**
 
-```python
-from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import Ridge
-
-# Generate synthetic data
-X, y = generate_data(n_samples=1000, n_features=10)
-
-# Cross-validation with different regularization strengths
-alphas = [0.001, 0.01, 0.1, 1, 10, 100]
-cv_scores = []
-
-for alpha in alphas:
-    ridge = Ridge(alpha=alpha)
-    scores = cross_val_score(ridge, X, y, cv=5, scoring='neg_mean_squared_error')
-    cv_scores.append(-scores.mean())  # Convert to positive MSE
-
-# Find best alpha
-best_alpha = alphas[np.argmin(cv_scores)]
-print(f"Best alpha: {best_alpha}")
-```
+See the complete implementation in [`code/cross_validation_learning_theory.py`](code/cross_validation_learning_theory.py) which demonstrates 5-fold cross-validation with Ridge regression for different regularization strengths.
 
 ## Advanced Topics in Learning Theory
 
