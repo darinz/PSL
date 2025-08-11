@@ -150,41 +150,7 @@ The optimal $`k`$ depends on:
 
 **Example: k Selection via Cross-Validation**
 
-```python
-import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import cross_val_score
-from sklearn.datasets import make_classification
-
-# Generate data
-X, y = make_classification(n_samples=1000, n_features=2, n_redundant=0, 
-                         n_informative=2, random_state=42)
-
-# Test different k values
-k_values = [1, 3, 5, 7, 9, 11, 15, 21, 31, 51, 101]
-cv_scores = []
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors=k)
-    scores = cross_val_score(knn, X, y, cv=5)
-    cv_scores.append(scores.mean())
-
-# Find optimal k
-optimal_k = k_values[np.argmax(cv_scores)]
-print(f"Optimal k: {optimal_k}")
-
-# Plot results
-import matplotlib.pyplot as plt
-plt.figure(figsize=(10, 6))
-plt.plot(k_values, cv_scores, 'bo-', linewidth=2)
-plt.axvline(x=optimal_k, color='r', linestyle='--', label=f'Optimal k = {optimal_k}')
-plt.xlabel('k (Number of Neighbors)')
-plt.ylabel('Cross-Validation Accuracy')
-plt.title('kNN: k Selection via Cross-Validation')
-plt.legend()
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/knn_k_selection.py`](code/knn_k_selection.py) which demonstrates how to select the optimal k value for kNN using cross-validation.
 
 ### Distance Metrics
 
@@ -386,51 +352,7 @@ where $`\text{SE}(\hat{\beta}_j) = \sqrt{\sigma^2 (X^T X)^{-1}_{jj}}`$
 
 **Example: Linear vs. Non-linear Relationship**
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-
-# Generate non-linear data
-X = np.linspace(0, 10, 100).reshape(-1, 1)
-y = 2 * X.flatten() + 0.5 * X.flatten()**2 + np.random.normal(0, 1, 100)
-
-# Fit linear regression
-linear = LinearRegression()
-linear.fit(X, y)
-y_linear = linear.predict(X)
-
-# Fit polynomial regression (degree 2)
-poly = PolynomialFeatures(degree=2)
-X_poly = poly.fit_transform(X)
-poly_model = LinearRegression()
-poly_model.fit(X_poly, y)
-y_poly = poly_model.predict(X_poly)
-
-# Plot results
-plt.figure(figsize=(12, 5))
-plt.subplot(1, 2, 1)
-plt.scatter(X, y, alpha=0.6, label='Data')
-plt.plot(X, y_linear, 'r-', linewidth=2, label='Linear Fit')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Linear Regression on Non-linear Data')
-plt.legend()
-plt.grid(True)
-
-plt.subplot(1, 2, 2)
-plt.scatter(X, y, alpha=0.6, label='Data')
-plt.plot(X, y_poly, 'g-', linewidth=2, label='Polynomial Fit')
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('Polynomial Regression (Degree 2)')
-plt.legend()
-plt.grid(True)
-
-plt.tight_layout()
-plt.show()
-```
+See the complete implementation in [`code/linear_vs_polynomial_regression.py`](code/linear_vs_polynomial_regression.py) which demonstrates how linear regression fails on non-linear data while polynomial regression can capture the relationship.
 
 ### kNN Advantages
 
@@ -441,36 +363,7 @@ plt.show()
 
 **Example: kNN Capturing Non-linear Boundaries**
 
-```python
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.datasets import make_moons
-
-# Generate non-linear data
-X, y = make_moons(n_samples=200, noise=0.3, random_state=42)
-
-# Fit kNN
-knn = KNeighborsClassifier(n_neighbors=5)
-knn.fit(X, y)
-
-# Create mesh for visualization
-x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
-y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
-xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
-                     np.arange(y_min, y_max, 0.02))
-
-# Predict on mesh
-Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
-Z = Z.reshape(xx.shape)
-
-# Plot decision boundary
-plt.figure(figsize=(10, 8))
-plt.contourf(xx, yy, Z, alpha=0.4)
-plt.scatter(X[:, 0], X[:, 1], c=y, alpha=0.8)
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.title('kNN Decision Boundary on Non-linear Data')
-plt.show()
-```
+See the complete implementation in [`code/knn_nonlinear_boundary.py`](code/knn_nonlinear_boundary.py) which demonstrates how kNN can capture complex non-linear decision boundaries.
 
 ### kNN Drawbacks
 
@@ -488,30 +381,7 @@ In high dimensions, all points become approximately equidistant:
 
 **Example: Curse of Dimensionality**
 
-```python
-# Demonstrate curse of dimensionality
-n_samples = 1000
-dimensions = [1, 2, 5, 10, 20, 50, 100]
-distances = []
-
-for p in dimensions:
-    X = np.random.randn(n_samples, p)
-    
-    # Calculate distances from first point to all others
-    dists = np.sqrt(np.sum((X - X[0])**2, axis=1))
-    
-    # Calculate coefficient of variation
-    cv = np.std(dists) / np.mean(dists)
-    distances.append(cv)
-
-plt.figure(figsize=(10, 6))
-plt.plot(dimensions, distances, 'bo-', linewidth=2)
-plt.xlabel('Number of Dimensions')
-plt.ylabel('Coefficient of Variation of Distances')
-plt.title('Curse of Dimensionality: Distance Concentration')
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/curse_of_dimensionality_demo.py`](code/curse_of_dimensionality_demo.py) which demonstrates how distances become less meaningful as dimensionality increases.
 
 ## Model Complexity Analysis
 
@@ -717,60 +587,7 @@ f(x, z) = f(z) f(x | z) = w_z f_z(x)
 
 **Example: Gaussian Mixture Model**
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.mixture import GaussianMixture
-
-# Generate mixture data
-np.random.seed(42)
-n_samples = 1000
-
-# Component parameters
-means = [[0, 0], [4, 4], [0, 4]]
-covariances = [np.eye(2), np.eye(2), np.eye(2)]
-weights = [0.4, 0.3, 0.3]
-
-# Generate data
-X = np.zeros((n_samples, 2))
-for i in range(n_samples):
-    # Choose component
-    component = np.random.choice(3, p=weights)
-    # Generate from chosen component
-    X[i] = np.random.multivariate_normal(means[component], covariances[component])
-
-# Fit Gaussian Mixture Model
-gmm = GaussianMixture(n_components=3, random_state=42)
-gmm.fit(X)
-
-# Plot results
-plt.figure(figsize=(12, 5))
-plt.subplot(1, 2, 1)
-plt.scatter(X[:, 0], X[:, 1], alpha=0.6)
-plt.title('Generated Mixture Data')
-plt.xlabel('X1')
-plt.ylabel('X2')
-
-plt.subplot(1, 2, 2)
-# Generate points for contour plot
-x = np.linspace(-2, 6, 100)
-y = np.linspace(-2, 6, 100)
-X_grid, Y_grid = np.meshgrid(x, y)
-XY = np.column_stack([X_grid.ravel(), Y_grid.ravel()])
-
-# Calculate density
-density = np.exp(gmm.score_samples(XY))
-density = density.reshape(X_grid.shape)
-
-plt.contour(X_grid, Y_grid, density, levels=20)
-plt.scatter(X[:, 0], X[:, 1], alpha=0.6)
-plt.title('Fitted Mixture Model')
-plt.xlabel('X1')
-plt.ylabel('X2')
-
-plt.tight_layout()
-plt.show()
-```
+See the complete implementation in [`code/gaussian_mixture_model.py`](code/gaussian_mixture_model.py) which demonstrates fitting a Gaussian Mixture Model to multi-modal data.
 
 ## Implementation Strategy
 
@@ -789,36 +606,7 @@ plt.show()
 
 **Example: kNN Implementation**
 
-```python
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
-
-def evaluate_knn(X_train, y_train, X_test, y_test, k_values):
-    """Evaluate kNN for different k values"""
-    train_errors = []
-    test_errors = []
-    
-    for k in k_values:
-        # Fit kNN
-        knn = KNeighborsClassifier(n_neighbors=k)
-        knn.fit(X_train, y_train)
-        
-        # Calculate errors
-        train_pred = knn.predict(X_train)
-        test_pred = knn.predict(X_test)
-        
-        train_error = 1 - accuracy_score(y_train, train_pred)
-        test_error = 1 - accuracy_score(y_test, test_pred)
-        
-        train_errors.append(train_error)
-        test_errors.append(test_error)
-    
-    return train_errors, test_errors
-
-# Example usage
-k_values = [1, 3, 5, 7, 9, 11, 15, 21, 31, 51, 101, 201]
-train_errors, test_errors = evaluate_knn(X_train, y_train, X_test, y_test, k_values)
-```
+See the complete implementation in [`code/knn_implementation.py`](code/knn_implementation.py) which provides a function to evaluate kNN for different k values.
 
 ### Linear Regression Implementation
 
@@ -840,33 +628,7 @@ train_errors, test_errors = evaluate_knn(X_train, y_train, X_test, y_test, k_val
 
 **Example: Linear Regression Implementation**
 
-```python
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import accuracy_score
-
-def evaluate_linear_regression(X_train, y_train, X_test, y_test):
-    """Evaluate linear regression for classification"""
-    # Fit linear regression
-    lr = LinearRegression()
-    lr.fit(X_train, y_train)
-    
-    # Make predictions
-    train_pred_proba = lr.predict(X_train)
-    test_pred_proba = lr.predict(X_test)
-    
-    # Convert to binary predictions
-    train_pred = (train_pred_proba > 0.5).astype(int)
-    test_pred = (test_pred_proba > 0.5).astype(int)
-    
-    # Calculate errors
-    train_error = 1 - accuracy_score(y_train, train_pred)
-    test_error = 1 - accuracy_score(y_test, test_pred)
-    
-    return train_error, test_error
-
-# Example usage
-train_error, test_error = evaluate_linear_regression(X_train, y_train, X_test, y_test)
-```
+See the complete implementation in [`code/linear_regression_implementation.py`](code/linear_regression_implementation.py) which provides a function to evaluate linear regression for classification tasks.
 
 ### Performance Evaluation
 
@@ -878,37 +640,7 @@ train_error, test_error = evaluate_linear_regression(X_train, y_train, X_test, y
 
 **Example: Performance Visualization**
 
-```python
-def plot_performance_comparison(k_values, knn_train_errors, knn_test_errors, 
-                               lr_train_error, lr_test_error):
-    """Plot performance comparison between kNN and linear regression"""
-    plt.figure(figsize=(12, 5))
-    
-    # kNN performance
-    plt.subplot(1, 2, 1)
-    plt.plot(k_values, knn_train_errors, 'b-', label='Training Error', linewidth=2)
-    plt.plot(k_values, knn_test_errors, 'r-', label='Test Error', linewidth=2)
-    plt.xlabel('k (Number of Neighbors)')
-    plt.ylabel('Error Rate')
-    plt.title('kNN Performance')
-    plt.legend()
-    plt.grid(True)
-    
-    # Linear regression performance
-    plt.subplot(1, 2, 2)
-    plt.bar(['Training', 'Test'], [lr_train_error, lr_test_error], 
-            color=['blue', 'red'], alpha=0.7)
-    plt.ylabel('Error Rate')
-    plt.title('Linear Regression Performance')
-    plt.grid(True)
-    
-    plt.tight_layout()
-    plt.show()
-
-# Example usage
-plot_performance_comparison(k_values, train_errors, test_errors, 
-                           lr_train_error, lr_test_error)
-```
+See the complete implementation in [`code/performance_comparison.py`](code/performance_comparison.py) which provides functions to visualize and compare the performance of kNN and linear regression.
 
 ## Expected Results
 
