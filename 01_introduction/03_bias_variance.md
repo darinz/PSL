@@ -268,52 +268,7 @@ Regularization techniques add constraints to reduce model complexity:
 
 **Example: Regularization Effect**
 
-```python
-from sklearn.linear_model import Ridge, Lasso
-from sklearn.model_selection import train_test_split
-
-# Generate data
-X = np.random.randn(100, 20)
-y = X[:, 0] + 0.5 * X[:, 1] + 0.1 * np.random.randn(100)
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-
-# Test different regularization strengths
-alphas = np.logspace(-3, 3, 20)
-ridge_scores = []
-lasso_scores = []
-
-for alpha in alphas:
-    # Ridge regression
-    ridge = Ridge(alpha=alpha)
-    ridge.fit(X_train, y_train)
-    ridge_scores.append(ridge.score(X_test, y_test))
-    
-    # Lasso regression
-    lasso = Lasso(alpha=alpha)
-    lasso.fit(X_train, y_train)
-    lasso_scores.append(lasso.score(X_test, y_test))
-
-plt.figure(figsize=(12, 5))
-plt.subplot(1, 2, 1)
-plt.semilogx(alphas, ridge_scores, 'b-', label='Ridge')
-plt.xlabel('Alpha (Regularization Strength)')
-plt.ylabel('R² Score')
-plt.title('Ridge Regression')
-plt.legend()
-plt.grid(True)
-
-plt.subplot(1, 2, 2)
-plt.semilogx(alphas, lasso_scores, 'r-', label='Lasso')
-plt.xlabel('Alpha (Regularization Strength)')
-plt.ylabel('R² Score')
-plt.title('Lasso Regression')
-plt.legend()
-plt.grid(True)
-
-plt.tight_layout()
-plt.show()
-```
+See the complete implementation in [`code/regularization_effect.py`](code/regularization_effect.py) which demonstrates the effect of different regularization strengths on Ridge and Lasso regression performance.
 
 ### 2. Cross-Validation for Model Selection
 
@@ -333,34 +288,7 @@ where $`\hat{f}^{(-k)}_{\lambda}`$ is trained on data excluding fold $`k`$ with 
 
 **Example: Cross-Validation for Model Selection**
 
-```python
-from sklearn.model_selection import cross_val_score, GridSearchCV
-from sklearn.linear_model import Ridge
-
-# Grid search with cross-validation
-param_grid = {'alpha': np.logspace(-3, 3, 20)}
-ridge = Ridge()
-grid_search = GridSearchCV(ridge, param_grid, cv=5, scoring='neg_mean_squared_error')
-grid_search.fit(X_train, y_train)
-
-print(f"Best alpha: {grid_search.best_params_['alpha']}")
-print(f"Best CV score: {-grid_search.best_score_:.4f}")
-
-# Plot CV scores
-alphas = param_grid['alpha']
-cv_scores = -grid_search.cv_results_['mean_test_score']
-
-plt.figure(figsize=(10, 6))
-plt.semilogx(alphas, cv_scores, 'b-', linewidth=2)
-plt.axvline(x=grid_search.best_params_['alpha'], color='r', linestyle='--', 
-           label=f'Best α = {grid_search.best_params_["alpha"]:.3f}')
-plt.xlabel('Alpha (Regularization Strength)')
-plt.ylabel('Cross-Validation MSE')
-plt.title('Cross-Validation for Ridge Regression')
-plt.legend()
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/cross_validation_model_selection.py`](code/cross_validation_model_selection.py) which demonstrates how to use cross-validation for hyperparameter tuning with Ridge regression.
 
 ### 3. Ensemble Methods
 
@@ -384,27 +312,7 @@ where $`\alpha_b`$ are learned weights.
 
 **Example: Bagging vs. Single Model**
 
-```python
-from sklearn.ensemble import BaggingRegressor
-from sklearn.tree import DecisionTreeRegressor
-
-# Single decision tree
-single_tree = DecisionTreeRegressor(max_depth=10)
-single_tree.fit(X_train, y_train)
-single_score = single_tree.score(X_test, y_test)
-
-# Bagging ensemble
-bagging = BaggingRegressor(
-    DecisionTreeRegressor(max_depth=10),
-    n_estimators=100,
-    random_state=42
-)
-bagging.fit(X_train, y_train)
-bagging_score = bagging.score(X_test, y_test)
-
-print(f"Single Tree R²: {single_score:.4f}")
-print(f"Bagging R²: {bagging_score:.4f}")
-```
+See the complete implementation in [`code/bagging_vs_single_model.py`](code/bagging_vs_single_model.py) which compares the performance of a single decision tree versus a bagging ensemble.
 
 ### 4. Early Stopping
 
@@ -416,27 +324,7 @@ For iterative algorithms (e.g., gradient descent), stop training before converge
 
 **Example: Early Stopping in Neural Networks**
 
-```python
-from sklearn.neural_network import MLPRegressor
-from sklearn.model_selection import train_test_split
-
-# Split data into train, validation, and test
-X_temp, X_test, y_temp, y_test = train_test_split(X, y, test_size=0.2)
-X_train, X_val, y_train, y_val = train_test_split(X_temp, y_temp, test_size=0.25)
-
-# Train with early stopping
-mlp = MLPRegressor(
-    hidden_layer_sizes=(100, 50),
-    max_iter=1000,
-    early_stopping=True,
-    validation_fraction=0.1,
-    random_state=42
-)
-
-mlp.fit(X_train, y_train)
-print(f"Best validation score: {mlp.best_validation_score_:.4f}")
-print(f"Number of iterations: {mlp.n_iter_}")
-```
+See the complete implementation in [`code/early_stopping_neural_network.py`](code/early_stopping_neural_network.py) which demonstrates early stopping in neural networks to prevent overfitting.
 
 ## Mathematical Analysis of the Tradeoff
 
@@ -495,20 +383,7 @@ This bound shows that:
 
 **Example: Complexity Bounds for Different Models**
 
-```python
-# Calculate complexity bounds for different models
-n_samples = 100
-complexities = {
-    'Linear': 10,
-    'Polynomial (degree 3)': 4,
-    'Polynomial (degree 5)': 6,
-    'Neural Network': 100
-}
-
-for model_name, complexity in complexities.items():
-    bound = np.sqrt(complexity / n_samples)
-    print(f"{model_name}: Complexity = {complexity}, Bound = {bound:.3f}")
-```
+See the complete implementation in [`code/complexity_bounds.py`](code/complexity_bounds.py) which calculates complexity bounds for different types of models.
 
 ## Practical Guidelines
 
@@ -520,24 +395,7 @@ for model_name, complexity in complexities.items():
 
 **Example: Linear Models for Small Datasets**
 
-```python
-# When n < p, use simple models
-n_samples, n_features = 50, 100
-X = np.random.randn(n_samples, n_features)
-y = np.random.randn(n_samples)
-
-# Linear model with regularization
-from sklearn.linear_model import Ridge
-ridge = Ridge(alpha=1.0)
-ridge.fit(X, y)
-print(f"Ridge R²: {ridge.score(X, y):.4f}")
-
-# Compare with complex model (likely to overfit)
-from sklearn.ensemble import RandomForestRegressor
-rf = RandomForestRegressor(n_estimators=100)
-rf.fit(X, y)
-print(f"Random Forest R²: {rf.score(X, y):.4f}")
-```
+See the complete implementation in [`code/simple_vs_complex_models.py`](code/simple_vs_complex_models.py) which demonstrates when to use simple vs complex models based on dataset size.
 
 ### When to Use Complex Models
 - Abundant training data ($`n \gg p`$)
@@ -547,18 +405,7 @@ print(f"Random Forest R²: {rf.score(X, y):.4f}")
 
 **Example: Deep Learning for Large Datasets**
 
-```python
-# When n >> p, complex models can work well
-n_samples, n_features = 10000, 100
-X = np.random.randn(n_samples, n_features)
-y = np.random.randn(n_samples)
-
-# Complex model with large dataset
-from sklearn.neural_network import MLPRegressor
-mlp = MLPRegressor(hidden_layer_sizes=(200, 100, 50), max_iter=500)
-mlp.fit(X, y)
-print(f"Neural Network R²: {mlp.score(X, y):.4f}")
-```
+See the complete implementation in [`code/simple_vs_complex_models.py`](code/simple_vs_complex_models.py) which also demonstrates when complex models work well with large datasets.
 
 ### Model Selection Strategy
 1. **Start Simple**: Begin with linear models
@@ -568,35 +415,7 @@ print(f"Neural Network R²: {mlp.score(X, y):.4f}")
 
 **Example: Systematic Model Selection**
 
-```python
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import Pipeline
-
-# Define models of increasing complexity
-models = {
-    'Linear': LinearRegression(),
-    'Quadratic': Pipeline([
-        ('poly', PolynomialFeatures(degree=2)),
-        ('linear', LinearRegression())
-    ]),
-    'Cubic': Pipeline([
-        ('poly', PolynomialFeatures(degree=3)),
-        ('linear', LinearRegression())
-    ])
-}
-
-# Evaluate each model
-results = {}
-for name, model in models.items():
-    scores = cross_val_score(model, X, y, cv=5, scoring='neg_mean_squared_error')
-    results[name] = -scores.mean()
-
-# Find best model
-best_model = min(results, key=results.get)
-print(f"Best model: {best_model}")
-print(f"Best CV MSE: {results[best_model]:.4f}")
-```
+See the complete implementation in [`code/systematic_model_selection.py`](code/systematic_model_selection.py) which demonstrates systematic model selection with increasing complexity.
 
 ## Summary
 
