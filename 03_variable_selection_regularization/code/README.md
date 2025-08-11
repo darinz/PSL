@@ -28,6 +28,10 @@ This folder contains Python code examples that demonstrate the concepts covered 
 
 - **`ridge_regression_detailed.R`** - Demonstrates comprehensive ridge regression with multicollinearity handling using the glmnet package.
 
+- **`lasso_regression_detailed.py`** - Demonstrates comprehensive lasso regression with coordinate descent, soft thresholding, and variable selection analysis.
+
+- **`lasso_regression_detailed.R`** - Demonstrates comprehensive lasso regression with coordinate descent and variable selection using the glmnet package.
+
 ### Existing Files
 
 - **`Python_W3_VarSel_SubsetSelection.py`** - Original subset selection implementation.
