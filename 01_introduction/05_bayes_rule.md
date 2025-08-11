@@ -277,143 +277,15 @@ The resulting decision boundary is typically non-linear due to the complex mixtu
 
 ### Example 1 Implementation
 
-For the simple Gaussian case:
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import multivariate_normal
-
-def bayes_classifier(x, mu0, mu1, sigma2, p):
-    """
-    Compute Bayes classifier for simple Gaussian case
-    
-    Parameters:
-    x: input point (2D array)
-    mu0: mean of class 0 (2D array)
-    mu1: mean of class 1 (2D array)
-    sigma2: variance (scalar)
-    p: prior probability of class 1
-    
-    Returns:
-    prob: probability of class 1
-    decision: predicted class (0 or 1)
-    """
-    # Compute class-conditional densities
-    f0 = np.exp(-0.5 * np.sum((x - mu0)**2) / sigma2) / (2*np.pi*sigma2)
-    f1 = np.exp(-0.5 * np.sum((x - mu1)**2) / sigma2) / (2*np.pi*sigma2)
-    
-    # Apply Bayes' theorem
-    numerator = p * f1
-    denominator = p * f1 + (1-p) * f0
-    
-    # Return probability and decision
-    prob = numerator / denominator
-    decision = 1 if prob > 0.5 else 0
-    
-    return prob, decision
-
-# Example usage
-mu0 = np.array([0, 0])
-mu1 = np.array([2, 2])
-sigma2 = 1.0
-p = 0.5
-
-# Test point
-x_test = np.array([1, 1])
-prob, decision = bayes_classifier(x_test, mu0, mu1, sigma2, p)
-print(f"Probability of class 1: {prob:.3f}")
-print(f"Predicted class: {decision}")
-```
+For the simple Gaussian case, see the complete implementation in [`code/bayes_classifier_simple.py`](code/bayes_classifier_simple.py) which demonstrates the Bayes classifier for simple Gaussian distributions.
 
 ### Example 2 Implementation
 
-For the mixture case, we need to sum over mixture components:
-```python
-def mixture_bayes_classifier(x, mu0_list, mu1_list, sigma2, p, weights):
-    """
-    Compute Bayes classifier for mixture Gaussian case
-    
-    Parameters:
-    x: input point (2D array)
-    mu0_list: list of means for class 0 components
-    mu1_list: list of means for class 1 components
-    sigma2: variance (scalar)
-    p: prior probability of class 1
-    weights: mixture weights
-    
-    Returns:
-    prob: probability of class 1
-    decision: predicted class (0 or 1)
-    """
-    # Compute mixture densities
-    f0 = sum(w * np.exp(-0.5 * np.sum((x - mu)**2) / sigma2) 
-             for w, mu in zip(weights, mu0_list)) / (2*np.pi*sigma2)
-    f1 = sum(w * np.exp(-0.5 * np.sum((x - mu)**2) / sigma2) 
-             for w, mu in zip(weights, mu1_list)) / (2*np.pi*sigma2)
-    
-    # Apply Bayes' theorem
-    numerator = p * f1
-    denominator = p * f1 + (1-p) * f0
-    
-    prob = numerator / denominator
-    decision = 1 if prob > 0.5 else 0
-    
-    return prob, decision
-
-# Example usage for mixture case
-def generate_mixture_parameters(n_components=10):
-    """Generate random mixture parameters"""
-    np.random.seed(42)
-    mu0_list = [np.random.randn(2) for _ in range(n_components)]
-    mu1_list = [np.random.randn(2) + np.array([2, 2]) for _ in range(n_components)]
-    weights = np.random.dirichlet(np.ones(n_components))
-    return mu0_list, mu1_list, weights
-
-mu0_list, mu1_list, weights = generate_mixture_parameters()
-x_test = np.array([1, 1])
-prob, decision = mixture_bayes_classifier(x_test, mu0_list, mu1_list, 1.0, 0.5, weights)
-print(f"Mixture probability of class 1: {prob:.3f}")
-print(f"Predicted class: {decision}")
-```
+For the mixture case, see the complete implementation in [`code/bayes_classifier_mixture.py`](code/bayes_classifier_mixture.py) which demonstrates the Bayes classifier for mixture Gaussian distributions.
 
 ### Visualization of Decision Boundaries
 
-```python
-def plot_bayes_decision_boundary(mu0, mu1, sigma2, p, title="Bayes Decision Boundary"):
-    """Plot the Bayes decision boundary for Example 1"""
-    # Create grid
-    x_min, x_max = -3, 5
-    y_min, y_max = -3, 5
-    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
-                         np.linspace(y_min, y_max, 100))
-    
-    # Compute decisions for each grid point
-    decisions = np.zeros_like(xx)
-    for i in range(xx.shape[0]):
-        for j in range(xx.shape[1]):
-            x = np.array([xx[i,j], yy[i,j]])
-            _, decision = bayes_classifier(x, mu0, mu1, sigma2, p)
-            decisions[i,j] = decision
-    
-    # Plot
-    plt.figure(figsize=(10, 8))
-    plt.contourf(xx, yy, decisions, alpha=0.3, levels=[0, 0.5, 1])
-    plt.contour(xx, yy, decisions, levels=[0.5], colors='red', linewidths=2)
-    
-    # Plot class means
-    plt.plot(mu0[0], mu0[1], 'bo', markersize=10, label='Class 0 Mean')
-    plt.plot(mu1[0], mu1[1], 'ro', markersize=10, label='Class 1 Mean')
-    
-    plt.xlabel('X1')
-    plt.ylabel('X2')
-    plt.title(title)
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
-
-# Plot decision boundary
-plot_bayes_decision_boundary(mu0, mu1, sigma2, p)
-```
+See the complete implementation in [`code/bayes_decision_boundary.py`](code/bayes_decision_boundary.py) which demonstrates how to visualize the Bayes decision boundary for different scenarios.
 
 ## 8. Theoretical Properties
 
