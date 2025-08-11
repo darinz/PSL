@@ -599,43 +599,7 @@ K(x_i, x_j) = \phi(x_i)^T \phi(x_j)
 
 ### Code Example: Demonstrating the Curse of Dimensionality
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-
-# Generate synthetic data
-def generate_data(n_samples, n_features, n_classes=2):
-    X = np.random.randn(n_samples, n_features)
-    y = np.random.randint(0, n_classes, n_samples)
-    return X, y
-
-# Test kNN performance across dimensions
-n_samples = 1000
-n_features_list = [1, 2, 5, 10, 20, 50, 100]
-accuracies = []
-
-for n_features in n_features_list:
-    X, y = generate_data(n_samples, n_features)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    
-    knn = KNeighborsClassifier(n_neighbors=5)
-    knn.fit(X_train, y_train)
-    y_pred = knn.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    accuracies.append(accuracy)
-
-# Plot results
-plt.figure(figsize=(10, 6))
-plt.plot(n_features_list, accuracies, 'bo-')
-plt.xlabel('Number of Features')
-plt.ylabel('Test Accuracy')
-plt.title('kNN Performance vs. Dimensionality')
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/curse_of_dimensionality_demo.py`](code/curse_of_dimensionality_demo.py) which demonstrates how kNN performance degrades as the number of features increases, illustrating the curse of dimensionality.
 
 The curse of dimensionality is a fundamental challenge in statistical learning that requires careful consideration of the trade-off between model complexity and available data. Understanding this phenomenon is crucial for developing effective learning algorithms and interpreting their performance.
 
@@ -701,16 +665,8 @@ Randomly sample from the hyperparameter space.
 Use probabilistic models to guide the search efficiently.
 
 **Example: Grid Search for Ridge Regression**
-```python
-from sklearn.linear_model import Ridge
-from sklearn.model_selection import GridSearchCV
 
-param_grid = {'alpha': [0.001, 0.01, 0.1, 1, 10, 100]}
-ridge = Ridge()
-grid_search = GridSearchCV(ridge, param_grid, cv=5)
-grid_search.fit(X_train, y_train)
-best_alpha = grid_search.best_params_['alpha']
-```
+See the implementation in [`code/ridge_regression_grid_search.py`](code/ridge_regression_grid_search.py) which demonstrates how to use GridSearchCV for hyperparameter tuning with Ridge regression.
 
 ### Interpretability and Explainability
 
