@@ -24,6 +24,10 @@ This folder contains Python code examples that demonstrate the concepts covered 
 
 - **`cross_validation_selection.py`** - Demonstrates cross-validation for regularization parameter selection with comprehensive analysis and visualization.
 
+- **`ridge_regression_detailed.py`** - Demonstrates comprehensive ridge regression with multicollinearity handling, SVD analysis, and augmented data interpretation.
+
+- **`ridge_regression_detailed.R`** - Demonstrates comprehensive ridge regression with multicollinearity handling using the glmnet package.
+
 ### Existing Files
 
 - **`Python_W3_VarSel_SubsetSelection.py`** - Original subset selection implementation.
