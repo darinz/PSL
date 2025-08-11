@@ -224,59 +224,7 @@ See the complete implementation in [`code/regularization_comparison.py`](code/re
 
 ### R Implementation
 
-```r
-# Load libraries
-library(glmnet)
-library(ggplot2)
-library(dplyr)
-
-# Generate synthetic data
-set.seed(42)
-n <- 100
-p <- 20
-X <- matrix(rnorm(n * p), n, p)
-true_beta <- rep(0, p)
-true_beta[1:5] <- c(2, -1.5, 1, -0.8, 0.6)
-y <- X %*% true_beta + 0.5 * rnorm(n)
-
-# Split data
-train_idx <- sample(1:n, 0.7 * n)
-X_train <- X[train_idx, ]
-X_test <- X[-train_idx, ]
-y_train <- y[train_idx]
-y_test <- y[-train_idx]
-
-# Fit ridge regression
-ridge_cv <- cv.glmnet(X_train, y_train, alpha = 0, standardize = TRUE)
-ridge_fit <- glmnet(X_train, y_train, alpha = 0, lambda = ridge_cv$lambda.min)
-
-# Fit lasso regression
-lasso_cv <- cv.glmnet(X_train, y_train, alpha = 1, standardize = TRUE)
-lasso_fit <- glmnet(X_train, y_train, alpha = 1, lambda = lasso_cv$lambda.min)
-
-# Plot coefficient paths
-par(mfrow = c(1, 2))
-
-# Ridge coefficient paths
-plot(ridge_cv$glmnet.fit, xvar = "lambda", main = "Ridge: Coefficient Paths")
-abline(v = log(ridge_cv$lambda.min), col = "red", lty = 2)
-
-# Lasso coefficient paths
-plot(lasso_cv$glmnet.fit, xvar = "lambda", main = "Lasso: Coefficient Paths")
-abline(v = log(lasso_cv$lambda.min), col = "red", lty = 2)
-
-# Model comparison
-ridge_pred <- predict(ridge_fit, newx = X_test)
-lasso_pred <- predict(lasso_fit, newx = X_test)
-
-ridge_r2 <- 1 - sum((y_test - ridge_pred)^2) / sum((y_test - mean(y_test))^2)
-lasso_r2 <- 1 - sum((y_test - lasso_pred)^2) / sum((y_test - mean(y_test))^2)
-
-cat("Ridge R²:", round(ridge_r2, 4), "\n")
-cat("Lasso R²:", round(lasso_r2, 4), "\n")
-cat("Ridge non-zero coefficients:", sum(coef(ridge_fit) != 0), "\n")
-cat("Lasso non-zero coefficients:", sum(coef(lasso_fit) != 0), "\n")
-```
+See the complete R implementation in [`code/regularization_comparison.R`](code/regularization_comparison.R) which demonstrates ridge vs lasso regularization comparison using the glmnet package with comprehensive analysis and visualization.
 
 ## 3.2.7 Theoretical Properties
 
