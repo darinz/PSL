@@ -266,58 +266,7 @@ If $`\mathbf{X}^T\mathbf{X}`$ is invertible, the unique solution is:
 
 ### Computational Implementation
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy import stats
-
-def least_squares_estimation(X, y):
-    """
-    Compute least squares estimates using the normal equation
-    
-    Parameters:
-    X: design matrix (n x (p+1)) including intercept column
-    y: response vector (n x 1)
-    
-    Returns:
-    beta_hat: estimated coefficients
-    """
-    # Check if X^T X is invertible
-    XtX = X.T @ X
-    if np.linalg.matrix_rank(XtX) < XtX.shape[0]:
-        print("Warning: X^T X is not full rank. Solution may not be unique.")
-    
-    # Compute least squares estimate
-    beta_hat = np.linalg.inv(XtX) @ X.T @ y
-    return beta_hat
-
-# Example usage
-def create_example_data(n=100, p=2, noise_std=0.5):
-    """Create synthetic data for demonstration"""
-    np.random.seed(42)
-    
-    # Generate predictors
-    X_raw = np.random.randn(n, p)
-    
-    # Add intercept column
-    X = np.column_stack([np.ones(n), X_raw])
-    
-    # True coefficients
-    beta_true = np.array([1.0, 2.0, -1.5])
-    
-    # Generate response
-    y = X @ beta_true + noise_std * np.random.randn(n)
-    
-    return X, y, beta_true
-
-# Generate data and fit model
-X, y, beta_true = create_example_data()
-beta_hat = least_squares_estimation(X, y)
-
-print("True coefficients:", beta_true)
-print("Estimated coefficients:", beta_hat)
-print("Estimation error:", np.linalg.norm(beta_hat - beta_true))
-```
+See the complete implementation in [`code/least_squares_estimation.py`](code/least_squares_estimation.py) which demonstrates least squares estimation using the normal equation.
 
 ### Numerical Stability Considerations
 
@@ -382,116 +331,13 @@ The error variance $`\sigma^2`$ is estimated by:
 
 ### Comprehensive Implementation
 
-```python
-def linear_regression_analysis(X, y):
-    """
-    Complete linear regression analysis
-    
-    Parameters:
-    X: design matrix (n x (p+1)) including intercept column
-    y: response vector (n x 1)
-    
-    Returns:
-    Dictionary containing all regression results
-    """
-    n, p_plus_1 = X.shape
-    p = p_plus_1 - 1  # Number of predictors (excluding intercept)
-    
-    # Compute least squares estimates
-    beta_hat = least_squares_estimation(X, y)
-    
-    # Compute fitted values
-    y_hat = X @ beta_hat
-    
-    # Compute residuals
-    residuals = y - y_hat
-    
-    # Compute RSS and error variance
-    RSS = np.sum(residuals**2)
-    sigma2_hat = RSS / (n - p - 1)
-    
-    # Compute coefficient standard errors
-    XtX_inv = np.linalg.inv(X.T @ X)
-    se_beta = np.sqrt(sigma2_hat * np.diag(XtX_inv))
-    
-    # Compute t-statistics and p-values
-    t_stats = beta_hat / se_beta
-    p_values = 2 * (1 - stats.t.cdf(np.abs(t_stats), n - p - 1))
-    
-    # Compute R-squared
-    y_mean = np.mean(y)
-    TSS = np.sum((y - y_mean)**2)  # Total sum of squares
-    R_squared = 1 - RSS / TSS
-    
-    # Compute adjusted R-squared
-    R_squared_adj = 1 - (RSS / (n - p - 1)) / (TSS / (n - 1))
-    
-    return {
-        'coefficients': beta_hat,
-        'standard_errors': se_beta,
-        't_statistics': t_stats,
-        'p_values': p_values,
-        'fitted_values': y_hat,
-        'residuals': residuals,
-        'RSS': RSS,
-        'sigma2_hat': sigma2_hat,
-        'R_squared': R_squared,
-        'R_squared_adj': R_squared_adj,
-        'degrees_of_freedom': n - p - 1
-    }
-
-# Run complete analysis
-results = linear_regression_analysis(X, y)
-
-print("=== Linear Regression Results ===")
-print(f"Coefficients: {results['coefficients']}")
-print(f"Standard Errors: {results['standard_errors']}")
-print(f"R-squared: {results['R_squared']:.4f}")
-print(f"Adjusted R-squared: {results['R_squared_adj']:.4f}")
-print(f"Error variance estimate: {results['sigma2_hat']:.4f}")
-```
+See the complete implementation in [`code/linear_regression_analysis.py`](code/linear_regression_analysis.py) which demonstrates complete linear regression analysis including coefficient estimation, standard errors, and goodness-of-fit measures.
 
 ### Model Diagnostics
 
 **Residual Analysis**:
-```python
-def diagnostic_plots(X, y, results):
-    """Create diagnostic plots for linear regression"""
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    # 1. Residuals vs Fitted
-    axes[0,0].scatter(results['fitted_values'], results['residuals'], alpha=0.6)
-    axes[0,0].axhline(y=0, color='red', linestyle='--')
-    axes[0,0].set_xlabel('Fitted Values')
-    axes[0,0].set_ylabel('Residuals')
-    axes[0,0].set_title('Residuals vs Fitted')
-    
-    # 2. Q-Q Plot
-    stats.probplot(results['residuals'], dist="norm", plot=axes[0,1])
-    axes[0,1].set_title('Normal Q-Q Plot')
-    
-    # 3. Scale-Location Plot
-    standardized_residuals = results['residuals'] / np.sqrt(results['sigma2_hat'])
-    axes[1,0].scatter(results['fitted_values'], np.abs(standardized_residuals), alpha=0.6)
-    axes[1,0].set_xlabel('Fitted Values')
-    axes[1,0].set_ylabel('|Standardized Residuals|')
-    axes[1,0].set_title('Scale-Location Plot')
-    
-    # 4. Residuals vs Leverage
-    # Compute leverage (hat matrix diagonal)
-    H = X @ np.linalg.inv(X.T @ X) @ X.T
-    leverage = np.diag(H)
-    axes[1,1].scatter(leverage, standardized_residuals, alpha=0.6)
-    axes[1,1].set_xlabel('Leverage')
-    axes[1,1].set_ylabel('Standardized Residuals')
-    axes[1,1].set_title('Residuals vs Leverage')
-    
-    plt.tight_layout()
-    plt.show()
 
-# Create diagnostic plots
-diagnostic_plots(X, y, results)
-```
+See the complete implementation in [`code/diagnostic_plots.py`](code/diagnostic_plots.py) which creates diagnostic plots for linear regression including residuals vs fitted, Q-Q plots, scale-location plots, and residuals vs leverage.
 
 ## 2.1.6. Statistical Inference and Hypothesis Testing
 
@@ -529,63 +375,7 @@ F = \frac{(\text{TSS} - \text{RSS})/p}{\text{RSS}/(n-p-1)} \sim F_{p, n-p-1}
 
 ### Implementation of Statistical Tests
 
-```python
-def statistical_inference(X, y, results, alpha=0.05):
-    """
-    Perform statistical inference for linear regression
-    
-    Parameters:
-    X: design matrix
-    y: response vector
-    results: regression results dictionary
-    alpha: significance level
-    
-    Returns:
-    Dictionary with inference results
-    """
-    n, p_plus_1 = X.shape
-    p = p_plus_1 - 1
-    df = n - p - 1
-    
-    # Critical values
-    t_critical = stats.t.ppf(1 - alpha/2, df)
-    f_critical = stats.f.ppf(1 - alpha, p, df)
-    
-    # Confidence intervals
-    ci_lower = results['coefficients'] - t_critical * results['standard_errors']
-    ci_upper = results['coefficients'] + t_critical * results['standard_errors']
-    
-    # Significance indicators
-    significant = results['p_values'] < alpha
-    
-    # F-test for overall model
-    y_mean = np.mean(y)
-    TSS = np.sum((y - y_mean)**2)
-    MSR = (TSS - results['RSS']) / p  # Mean square regression
-    MSE = results['RSS'] / df  # Mean square error
-    f_stat = MSR / MSE
-    f_p_value = 1 - stats.f.cdf(f_stat, p, df)
-    
-    return {
-        'confidence_intervals': list(zip(ci_lower, ci_upper)),
-        'significant_coefficients': significant,
-        'f_statistic': f_stat,
-        'f_p_value': f_p_value,
-        'model_significant': f_p_value < alpha
-    }
-
-# Perform statistical inference
-inference_results = statistical_inference(X, y, results)
-
-print("\n=== Statistical Inference ===")
-print("Confidence Intervals (95%):")
-for i, (lower, upper) in enumerate(inference_results['confidence_intervals']):
-    print(f"  β_{i}: [{lower:.4f}, {upper:.4f}]")
-
-print(f"\nF-statistic: {inference_results['f_statistic']:.4f}")
-print(f"F-test p-value: {inference_results['f_p_value']:.4f}")
-print(f"Model significant: {inference_results['model_significant']}")
-```
+See the complete implementation in [`code/statistical_inference.py`](code/statistical_inference.py) which performs statistical inference including confidence intervals, hypothesis tests, and F-tests for linear regression.
 
 ## 2.1.7. Model Assessment and Validation
 
@@ -611,179 +401,27 @@ R^2_{adj} = 1 - \frac{\text{RSS}/(n-p-1)}{\text{TSS}/(n-1)} = 1 - (1-R^2)\frac{n
 
 ### Cross-Validation
 
-```python
-from sklearn.model_selection import cross_val_score
-from sklearn.linear_model import LinearRegression
-
-def cross_validation_assessment(X, y, cv_folds=5):
-    """
-    Perform cross-validation assessment
-    
-    Parameters:
-    X: design matrix (without intercept)
-    y: response vector
-    cv_folds: number of cross-validation folds
-    
-    Returns:
-    Dictionary with CV results
-    """
-    # Create linear regression model
-    model = LinearRegression()
-    
-    # Perform cross-validation
-    cv_scores = cross_val_score(model, X, y, cv=cv_folds, scoring='r2')
-    cv_mse = -cross_val_score(model, X, y, cv=cv_folds, scoring='neg_mean_squared_error')
-    
-    return {
-        'cv_r2_mean': np.mean(cv_scores),
-        'cv_r2_std': np.std(cv_scores),
-        'cv_mse_mean': np.mean(cv_mse),
-        'cv_mse_std': np.std(cv_mse)
-    }
-
-# Perform cross-validation (using X without intercept column)
-X_no_intercept = X[:, 1:]  # Remove intercept column for sklearn
-cv_results = cross_validation_assessment(X_no_intercept, y)
-
-print("\n=== Cross-Validation Results ===")
-print(f"CV R²: {cv_results['cv_r2_mean']:.4f} ± {cv_results['cv_r2_std']:.4f}")
-print(f"CV MSE: {cv_results['cv_mse_mean']:.4f} ± {cv_results['cv_mse_std']:.4f}")
-```
+See the complete implementation in [`code/cross_validation_assessment.py`](code/cross_validation_assessment.py) which demonstrates cross-validation assessment for linear regression using scikit-learn.
 
 ## 2.1.8. Practical Considerations and Best Practices
 
 ### Data Preprocessing
 
 **Centering and Scaling**:
-```python
-def preprocess_data(X_raw):
-    """
-    Preprocess data for linear regression
-    
-    Parameters:
-    X_raw: raw predictor matrix (without intercept)
-    
-    Returns:
-    X_processed: processed design matrix
-    """
-    # Center predictors
-    X_centered = X_raw - np.mean(X_raw, axis=0)
-    
-    # Scale predictors (optional)
-    X_scaled = X_centered / np.std(X_centered, axis=0)
-    
-    # Add intercept column
-    X_processed = np.column_stack([np.ones(X_scaled.shape[0]), X_scaled])
-    
-    return X_processed
 
-# Example with preprocessing
-X_raw = np.random.randn(100, 3)
-X_processed = preprocess_data(X_raw)
-```
+See the complete implementation in [`code/data_preprocessing.py`](code/data_preprocessing.py) which shows data preprocessing techniques including centering and scaling for linear regression.
 
 ### Handling Multicollinearity
 
 **Variance Inflation Factor (VIF)**:
-```python
-def compute_vif(X):
-    """
-    Compute Variance Inflation Factors
-    
-    Parameters:
-    X: design matrix (with intercept)
-    
-    Returns:
-    vif_values: VIF for each predictor
-    """
-    n, p = X.shape
-    vif_values = []
-    
-    for j in range(1, p):  # Skip intercept
-        # Regress predictor j on all other predictors
-        X_j = X[:, j].reshape(-1, 1)
-        X_others = np.delete(X, j, axis=1)
-        
-        # Fit regression
-        beta_j = least_squares_estimation(X_others, X_j.flatten())
-        y_j_hat = X_others @ beta_j
-        rss_j = np.sum((X_j.flatten() - y_j_hat)**2)
-        tss_j = np.sum((X_j.flatten() - np.mean(X_j))**2)
-        
-        # Compute VIF
-        vif = 1 / (1 - (1 - rss_j/tss_j))
-        vif_values.append(vif)
-    
-    return vif_values
 
-# Check for multicollinearity
-vif_values = compute_vif(X)
-print("\n=== Multicollinearity Check ===")
-for i, vif in enumerate(vif_values):
-    print(f"VIF for predictor {i+1}: {vif:.2f}")
-    if vif > 10:
-        print(f"  Warning: High multicollinearity detected!")
-```
+See the complete implementation in [`code/multicollinearity_check.py`](code/multicollinearity_check.py) which computes Variance Inflation Factors (VIF) to detect multicollinearity.
 
 ### Model Selection
 
 **Stepwise Selection**:
-```python
-def forward_selection(X, y, max_predictors=None):
-    """
-    Forward stepwise selection
-    
-    Parameters:
-    X: design matrix (without intercept)
-    y: response vector
-    max_predictors: maximum number of predictors to include
-    
-    Returns:
-    selected_predictors: indices of selected predictors
-    """
-    n, p = X.shape
-    if max_predictors is None:
-        max_predictors = p
-    
-    selected = []
-    remaining = list(range(p))
-    
-    for step in range(max_predictors):
-        best_score = -np.inf
-        best_predictor = None
-        
-        for j in remaining:
-            # Add predictor j to current model
-            current_predictors = selected + [j]
-            X_current = np.column_stack([np.ones(n), X[:, current_predictors]])
-            
-            # Fit model and compute score
-            beta_hat = least_squares_estimation(X_current, y)
-            y_hat = X_current @ beta_hat
-            rss = np.sum((y - y_hat)**2)
-            
-            # Use adjusted R-squared as selection criterion
-            tss = np.sum((y - np.mean(y))**2)
-            r_squared = 1 - rss / tss
-            adj_r_squared = 1 - (1 - r_squared) * (n - 1) / (n - len(current_predictors) - 1)
-            
-            if adj_r_squared > best_score:
-                best_score = adj_r_squared
-                best_predictor = j
-        
-        if best_predictor is not None:
-            selected.append(best_predictor)
-            remaining.remove(best_predictor)
-            print(f"Step {step+1}: Added predictor {best_predictor}, Adj R² = {best_score:.4f}")
-        else:
-            break
-    
-    return selected
 
-# Perform forward selection
-selected_predictors = forward_selection(X_no_intercept, y)
-print(f"\nSelected predictors: {selected_predictors}")
-```
+See the complete implementation in [`code/forward_selection.py`](code/forward_selection.py) which implements forward stepwise selection for variable selection in linear regression.
 
 ## 2.1.9. Advanced Topics
 
@@ -809,32 +447,8 @@ For feature selection:
 ### Polynomial Regression
 
 Extend linear regression to capture non-linear relationships:
-```python
-def polynomial_regression(X, y, degree=2):
-    """
-    Fit polynomial regression
-    
-    Parameters:
-    X: predictor matrix (single predictor)
-    y: response vector
-    degree: polynomial degree
-    
-    Returns:
-    Polynomial regression results
-    """
-    # Create polynomial features
-    X_poly = np.ones((X.shape[0], degree + 1))
-    for d in range(1, degree + 1):
-        X_poly[:, d] = X[:, 0] ** d
-    
-    # Fit linear regression
-    return linear_regression_analysis(X_poly, y)
 
-# Example: Quadratic regression
-X_single = X[:, 1:2]  # Use only first predictor
-poly_results = polynomial_regression(X_single, y, degree=2)
-print(f"Polynomial R²: {poly_results['R_squared']:.4f}")
-```
+See the complete implementation in [`code/polynomial_regression.py`](code/polynomial_regression.py) which demonstrates polynomial regression to capture non-linear relationships.
 
 ## 2.1.10. Summary and Key Takeaways
 
