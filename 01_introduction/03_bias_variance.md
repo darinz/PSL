@@ -186,51 +186,7 @@ As model complexity increases, we observe:
 
 **Example: Polynomial Regression**
 
-Consider fitting polynomials of different degrees to noisy data:
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-
-# Generate data
-np.random.seed(42)
-X = np.linspace(0, 1, 100).reshape(-1, 1)
-y_true = np.sin(2 * np.pi * X).flatten()
-y_noisy = y_true + 0.3 * np.random.randn(100)
-
-# Fit polynomials of different degrees
-degrees = [1, 3, 5, 10, 15]
-models = []
-predictions = []
-
-for degree in degrees:
-    poly = PolynomialFeatures(degree=degree)
-    X_poly = poly.fit_transform(X)
-    
-    model = LinearRegression()
-    model.fit(X_poly, y_noisy)
-    
-    models.append(model)
-    predictions.append(model.predict(X_poly))
-
-# Plot results
-plt.figure(figsize=(15, 10))
-
-for i, degree in enumerate(degrees):
-    plt.subplot(2, 3, i+1)
-    plt.scatter(X, y_noisy, alpha=0.5, label='Data')
-    plt.plot(X, y_true, 'g-', label='True Function', linewidth=2)
-    plt.plot(X, predictions[i], 'r-', label=f'Degree {degree}')
-    plt.title(f'Polynomial Degree {degree}')
-    plt.legend()
-    plt.grid(True)
-
-plt.tight_layout()
-plt.show()
-```
+Consider fitting polynomials of different degrees to noisy data. See the complete implementation in [`code/polynomial_regression_bias_variance.py`](code/polynomial_regression_bias_variance.py) which demonstrates how different polynomial degrees affect the bias-variance tradeoff.
 
 **Analysis of Results:**
 - **Degree 1 (Linear)**: High bias (can't fit sine wave), low variance
@@ -255,60 +211,7 @@ The test error typically follows a U-shaped curve with respect to model complexi
 
 **Example: Finding Optimal Complexity**
 
-```python
-# Calculate bias and variance for different polynomial degrees
-def calculate_bias_variance(X, y_true, y_noisy, degrees):
-    bias_squared = []
-    variance = []
-    total_error = []
-    
-    for degree in degrees:
-        # Generate multiple datasets by adding noise
-        predictions = []
-        for _ in range(100):
-            y_sample = y_true + 0.3 * np.random.randn(len(y_true))
-            
-            poly = PolynomialFeatures(degree=degree)
-            X_poly = poly.fit_transform(X)
-            
-            model = LinearRegression()
-            model.fit(X_poly, y_sample)
-            pred = model.predict(X_poly)
-            predictions.append(pred)
-        
-        predictions = np.array(predictions)
-        
-        # Calculate bias^2
-        mean_pred = np.mean(predictions, axis=0)
-        bias_sq = np.mean((mean_pred - y_true)**2)
-        
-        # Calculate variance
-        var = np.mean(np.var(predictions, axis=0))
-        
-        # Calculate total error
-        total = bias_sq + var
-        
-        bias_squared.append(bias_sq)
-        variance.append(var)
-        total_error.append(total)
-    
-    return bias_squared, variance, total_error
-
-degrees = range(1, 16)
-bias_sq, var, total = calculate_bias_variance(X, y_true, y_noisy, degrees)
-
-# Plot bias-variance decomposition
-plt.figure(figsize=(12, 8))
-plt.plot(degrees, bias_sq, 'b-', label='Bias²', linewidth=2)
-plt.plot(degrees, var, 'r-', label='Variance', linewidth=2)
-plt.plot(degrees, total, 'g-', label='Total Error', linewidth=2)
-plt.xlabel('Polynomial Degree')
-plt.ylabel('Error')
-plt.title('Bias-Variance Decomposition')
-plt.legend()
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/bias_variance_decomposition.py`](code/bias_variance_decomposition.py) which calculates and visualizes the bias-variance decomposition for different polynomial degrees.
 
 ### The Double Descent Phenomenon
 
@@ -332,39 +235,7 @@ For overparameterized models ($`p > n`$):
 
 **Example: Double Descent in Linear Regression**
 
-```python
-# Demonstrate double descent with linear regression
-n_samples = 50
-n_features_range = range(10, 200, 10)
-test_errors = []
-
-for n_features in n_features_range:
-    # Generate data
-    X = np.random.randn(n_samples, n_features)
-    y = np.random.randn(n_samples)
-    
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-    
-    # Fit model
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-    
-    # Calculate test error
-    y_pred = model.predict(X_test)
-    test_error = mean_squared_error(y_test, y_pred)
-    test_errors.append(test_error)
-
-plt.figure(figsize=(10, 6))
-plt.plot(n_features_range, test_errors, 'b-', linewidth=2)
-plt.axvline(x=n_samples, color='r', linestyle='--', label='n = p')
-plt.xlabel('Number of Features')
-plt.ylabel('Test Error')
-plt.title('Double Descent Phenomenon')
-plt.legend()
-plt.grid(True)
-plt.show()
-```
+See the complete implementation in [`code/double_descent_phenomenon.py`](code/double_descent_phenomenon.py) which demonstrates the double descent phenomenon in linear regression as the number of features increases.
 
 ## Practical Strategies for Managing the Tradeoff
 
