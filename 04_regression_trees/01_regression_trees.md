@@ -390,3 +390,9 @@ Each file includes comprehensive examples, demonstrations, and analysis tools to
 
 - Breiman, L., Friedman, J., Stone, C. J., & Olshen, R. A. (1984). Classification and regression trees. CRC press.
 - Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Random Forest](02_random_forest.md) - Ensemble methods and bootstrap aggregation
+- **Previous Topic:** [Regression Trees Overview](README.md) - Overview of tree-based regression methods
