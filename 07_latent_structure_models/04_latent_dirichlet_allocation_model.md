@@ -279,3 +279,9 @@ The LDA concepts have been implemented in the following code files:
 - **Visualization**: Topic visualization using wordclouds
 
 Both implementations provide comprehensive coverage of LDA concepts with practical examples and demonstrate the relationship between theoretical foundations and practical applications in topic modeling.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Hidden Markov Models](05_hidden_markov_models.md) - Sequential data and temporal dependencies
+- **Previous Topic:** [The EM Algorithm](03_em_algorithm.md) - Expectation-Maximization for latent variables
