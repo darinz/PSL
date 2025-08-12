@@ -494,9 +494,3 @@ This foundation in linear regression prepares us for:
 4. **Advanced Topics**: Mixed models, time series, and causal inference
 
 Linear regression remains one of the most important tools in statistical learning, providing both practical utility and theoretical insights that extend to more complex modeling approaches.
-
----
-
-**Navigation:**
-- **Next Topic:** [Geometric Interpretation](02_geometric_interpretation.md) - Visual and mathematical foundation of linear regression through vector spaces and projection
-- **Previous Topic:** [Linear Regression Overview](README.md) - Overview of linear regression materials and learning objectives
