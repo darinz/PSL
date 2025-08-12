@@ -776,3 +776,21 @@ Outlier detection and analysis is included in [`code/model_assumptions_diagnosti
 6. **Outliers** should be investigated but not automatically removed without justification
 
 Understanding these practical issues is essential for building reliable and interpretable linear regression models. The key is to combine statistical rigor with practical judgment and domain knowledge.
+
+---
+
+## Code Files Summary
+
+This chapter includes several Python code files that demonstrate the practical implementation of linear regression concepts:
+
+- **`code/frisch_waugh_lovell.py`**: Demonstrates the Frisch-Waugh-Lovell theorem implementation with comprehensive visualization and verification of the partialling out process.
+
+- **`code/hypothesis_testing.py`**: Provides comprehensive hypothesis testing including F-tests, t-tests, confidence intervals, and the distinction between statistical and practical significance.
+
+- **`code/categorical_variables.py`**: Demonstrates comprehensive categorical variable handling including one-hot encoding, interaction terms, model comparison, and significance testing.
+
+- **`code/collinearity_analysis.py`**: Provides comprehensive collinearity detection and analysis including VIF calculation, correlation analysis, and remedies for collinearity.
+
+- **`code/model_assumptions_diagnostics.py`**: Offers comprehensive diagnostic tools for checking linear regression assumptions including linearity, normality, homoscedasticity, and outlier detection.
+
+Each code file is self-contained and includes detailed documentation, examples, and visualizations to help understand the practical implementation of these concepts.
