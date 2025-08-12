@@ -61,7 +61,7 @@ The Discriminant Analysis framework can be visualized as follows:
 ```
 Data Generation Process:
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Class Prior   │    │ Class-Conditional│    │   Joint Dist.   │
+│   Class Prior   │    │ Class-Conditional│   │   Joint Dist.   │
 │   P(Y=k)        │───▶│   P(X|Y=k)      │───▶│   P(X,Y)        │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
                                 │
@@ -74,7 +74,7 @@ Data Generation Process:
                                 ▼
                        ┌─────────────────┐
                        │ Decision Rule   │
-                       │ argmax_k P(Y=k|X)│
+                       │argmax_k P(Y=k|X)│
                        └─────────────────┘
 ```
 
