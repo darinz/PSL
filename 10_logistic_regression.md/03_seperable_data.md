@@ -198,452 +198,34 @@ So the decision boundary $x^T \beta = 0$ is invariant to scaling of $\beta$.
 
 ## Implementation and Demonstration
 
-### Python Implementation
+The complete implementation and demonstration of the separable data problem is provided in the code files:
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-import warnings
-warnings.filterwarnings('ignore')
+**Python Implementation:** See `SeparableDataDemo` class and comprehensive demonstrations in [`code/separable_data_implementation.py`](code/separable_data_implementation.py)
 
-class SeparableDataDemo:
-    def __init__(self):
-        # Create separable toy data
-        self.X = np.array([
-            [1, 1],    # Red point 1
-            [2, 2],    # Red point 2
-            [-1, -1],  # Blue point 1
-            [-2, -2]   # Blue point 2
-        ])
-        self.y = np.array([1, 1, 0, 0])  # 1 for red, 0 for blue
-        
-    def sigmoid(self, z):
-        """Sigmoid function with numerical stability"""
-        z = np.clip(z, -500, 500)
-        return 1 / (1 + np.exp(-z))
-    
-    def log_likelihood(self, beta):
-        """Compute log-likelihood for given coefficients"""
-        z = self.X @ beta
-        p = self.sigmoid(z)
-        p = np.clip(p, 1e-15, 1-1e-15)  # Prevent log(0)
-        
-        ll = 0
-        for i in range(len(self.y)):
-            if self.y[i] == 1:
-                ll += np.log(p[i])
-            else:
-                ll += np.log(1 - p[i])
-        return ll
-    
-    def compute_probabilities(self, beta):
-        """Compute probabilities for all points"""
-        z = self.X @ beta
-        return self.sigmoid(z)
-    
-    def analyze_coefficients(self, beta_values):
-        """Analyze behavior for different coefficient values"""
-        results = []
-        
-        for beta_val in beta_values:
-            beta = np.array([beta_val, beta_val])
-            
-            # Compute probabilities
-            probs = self.compute_probabilities(beta)
-            
-            # Compute log-likelihood
-            ll = self.log_likelihood(beta)
-            
-            # Compute accuracy
-            predictions = (probs >= 0.5).astype(int)
-            accuracy = accuracy_score(self.y, predictions)
-            
-            results.append({
-                'beta': beta_val,
-                'probabilities': probs,
-                'log_likelihood': ll,
-                'accuracy': accuracy
-            })
-        
-        return results
-    
-    def visualize_data_and_boundary(self, beta=None):
-        """Visualize data points and decision boundary"""
-        fig, ax = plt.subplots(figsize=(10, 8))
-        
-        # Plot data points
-        red_points = self.X[self.y == 1]
-        blue_points = self.X[self.y == 0]
-        
-        ax.scatter(red_points[:, 0], red_points[:, 1], c='red', s=100, label='Class 1', alpha=0.7)
-        ax.scatter(blue_points[:, 0], blue_points[:, 1], c='blue', s=100, label='Class 0', alpha=0.7)
-        
-        # Plot decision boundary if beta is provided
-        if beta is not None:
-            x_min, x_max = -3, 3
-            y_min, y_max = -3, 3
-            
-            # Create grid
-            xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
-                               np.linspace(y_min, y_max, 100))
-            
-            # Compute decision boundary
-            Z = beta[0] * xx + beta[1] * yy
-            Z = Z.reshape(xx.shape)
-            
-            # Plot contour
-            ax.contour(xx, yy, Z, levels=[0], colors='black', linewidths=2, label='Decision Boundary')
-        
-        ax.set_xlabel('X1')
-        ax.set_ylabel('X2')
-        ax.set_title('Separable Data with Decision Boundary')
-        ax.legend()
-        ax.grid(True, alpha=0.3)
-        ax.set_xlim(-3, 3)
-        ax.set_ylim(-3, 3)
-        plt.show()
-    
-    def demonstrate_convergence_issue(self):
-        """Demonstrate the convergence issue with sklearn"""
-        print("=== Demonstrating Convergence Issue ===\n")
-        
-        # Try different solvers and max_iter values
-        solvers = ['lbfgs', 'liblinear', 'newton-cg', 'sag', 'saga']
-        max_iters = [100, 1000, 10000]
-        
-        for solver in solvers:
-            print(f"Solver: {solver}")
-            for max_iter in max_iters:
-                try:
-                    model = LogisticRegression(solver=solver, max_iter=max_iter, random_state=42)
-                    model.fit(self.X, self.y)
-                    
-                    # Check if coefficients are reasonable
-                    coef_norm = np.linalg.norm(model.coef_[0])
-                    
-                    if coef_norm > 100:
-                        print(f"  Max iter {max_iter}: Coefficients explode! Norm: {coef_norm:.2f}")
-                    else:
-                        print(f"  Max iter {max_iter}: Coefficients stable. Norm: {coef_norm:.2f}")
-                        
-                except Exception as e:
-                    print(f"  Max iter {max_iter}: Failed - {str(e)}")
-            print()
+**R Implementation:** See analysis functions and demonstrations in [`code/r_separable_data_implementation.R`](code/r_separable_data_implementation.R)
 
-# Create demonstration
-demo = SeparableDataDemo()
+These implementations include:
 
-# Analyze different coefficient values
-beta_values = [0.1, 1, 5, 10, 50, 100, 500]
-results = demo.analyze_coefficients(beta_values)
+- **SeparableDataDemo Class**: Complete implementation for analyzing separable data
+- **Coefficient Analysis**: Systematic analysis of behavior for different coefficient values
+- **Visualization Tools**: Data visualization and decision boundary plotting
+- **Convergence Analysis**: Demonstration of convergence issues with different solvers
+- **Log-likelihood Tracking**: Analysis of log-likelihood behavior as coefficients increase
+- **Comprehensive Demonstrations**: 
+  - Basic separable data analysis
+  - Decision boundary visualization for different coefficient magnitudes
+  - Convergence issue demonstration with sklearn solvers
+  - Log-likelihood convergence analysis
+  - Regularization limitations demonstration
+  - Bayesian solution implementation
+  - Firth's method implementation
+  - Exact logistic regression demonstration
+  - Mathematical properties analysis
+  - Practical implications demonstration
 
-print("=== Coefficient Analysis ===\n")
-print("Beta\tLog-Likelihood\tAccuracy\tProbabilities")
-print("-" * 60)
-for result in results:
-    beta = result['beta']
-    ll = result['log_likelihood']
-    acc = result['accuracy']
-    probs = result['probabilities']
-    
-    print(f"{beta}\t{ll:.6f}\t{acc:.3f}\t{probs}")
+The implementations provide hands-on experience with the separable data problem, demonstrating both the mathematical foundations and practical computational challenges.
 
-# Visualize data
-demo.visualize_data_and_boundary()
 
-# Show decision boundaries for different coefficients
-fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-beta_values_plot = [0.1, 1, 5, 10, 50, 100]
-
-for i, beta_val in enumerate(beta_values_plot):
-    row, col = i // 3, i % 3
-    ax = axes[row, col]
-    
-    beta = np.array([beta_val, beta_val])
-    
-    # Plot data points
-    red_points = demo.X[demo.y == 1]
-    blue_points = demo.X[demo.y == 0]
-    
-    ax.scatter(red_points[:, 0], red_points[:, 1], c='red', s=50, alpha=0.7)
-    ax.scatter(blue_points[:, 0], blue_points[:, 1], c='blue', s=50, alpha=0.7)
-    
-    # Plot decision boundary
-    x_min, x_max = -3, 3
-    y_min, y_max = -3, 3
-    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 50),
-                       np.linspace(y_min, y_max, 50))
-    
-    Z = beta[0] * xx + beta[1] * yy
-    Z = Z.reshape(xx.shape)
-    
-    ax.contour(xx, yy, Z, levels=[0], colors='black', linewidths=1)
-    ax.set_title(f'β = ({beta_val}, {beta_val})')
-    ax.set_xlim(-3, 3)
-    ax.set_ylim(-3, 3)
-    ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-
-# Demonstrate convergence issue
-demo.demonstrate_convergence_issue()
-
-# Plot log-likelihood vs coefficient magnitude
-beta_magnitudes = np.linspace(0.1, 100, 100)
-log_likelihoods = []
-
-for mag in beta_magnitudes:
-    beta = np.array([mag, mag])
-    ll = demo.log_likelihood(beta)
-    log_likelihoods.append(ll)
-
-plt.figure(figsize=(10, 6))
-plt.plot(beta_magnitudes, log_likelihoods)
-plt.xlabel('Coefficient Magnitude (β₁ = β₂)')
-plt.ylabel('Log-Likelihood')
-plt.title('Log-Likelihood vs Coefficient Magnitude')
-plt.grid(True, alpha=0.3)
-plt.axhline(y=0, color='red', linestyle='--', alpha=0.7, label='Perfect Fit (LL = 0)')
-plt.legend()
-plt.show()
-
-print("=== Key Observations ===")
-print("1. As coefficients increase, log-likelihood approaches 0 (perfect fit)")
-print("2. All probabilities approach 1 for their respective classes")
-print("3. Decision boundary remains stable despite coefficient explosion")
-print("4. Standard logistic regression solvers may fail to converge")
-print("5. The model is still useful for prediction despite convergence issues")
-```
-
-### R Implementation
-
-```r
-# Separable Data Problem in Logistic Regression
-
-# Load required libraries
-library(ggplot2)
-library(gridExtra)
-
-# Create separable toy data
-X <- matrix(c(
-  1, 1,    # Red point 1
-  2, 2,    # Red point 2
-  -1, -1,  # Blue point 1
-  -2, -2   # Blue point 2
-), ncol = 2, byrow = TRUE)
-
-y <- c(1, 1, 0, 0)  # 1 for red, 0 for blue
-
-# Sigmoid function with numerical stability
-sigmoid <- function(z) {
-  z <- pmin(pmax(z, -500), 500)
-  return(1 / (1 + exp(-z)))
-}
-
-# Log-likelihood function
-log_likelihood <- function(beta) {
-  z <- X %*% beta
-  p <- sigmoid(z)
-  p <- pmin(pmax(p, 1e-15), 1-1e-15)
-  
-  ll <- 0
-  for (i in 1:length(y)) {
-    if (y[i] == 1) {
-      ll <- ll + log(p[i])
-    } else {
-      ll <- ll + log(1 - p[i])
-    }
-  }
-  return(ll)
-}
-
-# Compute probabilities
-compute_probabilities <- function(beta) {
-  z <- X %*% beta
-  return(sigmoid(z))
-}
-
-# Analyze different coefficient values
-analyze_coefficients <- function(beta_values) {
-  results <- list()
-  
-  for (i in 1:length(beta_values)) {
-    beta_val <- beta_values[i]
-    beta <- c(beta_val, beta_val)
-    
-    # Compute probabilities
-    probs <- compute_probabilities(beta)
-    
-    # Compute log-likelihood
-    ll <- log_likelihood(beta)
-    
-    # Compute accuracy
-    predictions <- ifelse(probs >= 0.5, 1, 0)
-    accuracy <- mean(predictions == y)
-    
-    results[[i]] <- list(
-      beta = beta_val,
-      probabilities = probs,
-      log_likelihood = ll,
-      accuracy = accuracy
-    )
-  }
-  
-  return(results)
-}
-
-# Test different coefficient values
-beta_values <- c(0.1, 1, 5, 10, 50, 100, 500)
-results <- analyze_coefficients(beta_values)
-
-# Display results
-cat("=== Coefficient Analysis ===\n\n")
-cat("Beta\tLog-Likelihood\tAccuracy\tProbabilities\n")
-cat(paste(rep("-", 60), collapse = ""), "\n")
-
-for (result in results) {
-  cat(sprintf("%.1f\t%.6f\t%.3f\t[%.3f, %.3f, %.3f, %.3f]\n",
-              result$beta, result$log_likelihood, result$accuracy,
-              result$probabilities[1], result$probabilities[2],
-              result$probabilities[3], result$probabilities[4]))
-}
-
-# Visualize data and decision boundaries
-visualize_data_and_boundaries <- function() {
-  # Create data frame for plotting
-  plot_data <- data.frame(
-    x1 = X[, 1],
-    x2 = X[, 2],
-    class = factor(y)
-  )
-  
-  # Create grid for decision boundaries
-  x1_range <- seq(-3, 3, length.out = 100)
-  x2_range <- seq(-3, 3, length.out = 100)
-  grid_data <- expand.grid(x1 = x1_range, x2 = x2_range)
-  
-  # Plot data points
-  p_base <- ggplot(plot_data, aes(x = x1, y = x2, color = class)) +
-    geom_point(size = 4, alpha = 0.7) +
-    scale_color_manual(values = c("0" = "blue", "1" = "red"),
-                       labels = c("Class 0", "Class 1")) +
-    labs(title = "Separable Data Points",
-         x = "X1", y = "X2") +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    coord_fixed(ratio = 1)
-  
-  print(p_base)
-  
-  # Create multiple plots with different decision boundaries
-  plots <- list()
-  beta_values_plot <- c(0.1, 1, 5, 10, 50, 100)
-  
-  for (i in 1:length(beta_values_plot)) {
-    beta_val <- beta_values_plot[i]
-    beta <- c(beta_val, beta_val)
-    
-    # Compute decision boundary
-    grid_data$z <- beta[1] * grid_data$x1 + beta[2] * grid_data$x2
-    
-    p <- ggplot() +
-      geom_point(data = plot_data, aes(x = x1, y = x2, color = class), 
-                 size = 3, alpha = 0.7) +
-      geom_contour(data = grid_data, aes(x = x1, y = x2, z = z), 
-                   breaks = 0, color = "black", size = 1) +
-      scale_color_manual(values = c("0" = "blue", "1" = "red"),
-                         labels = c("Class 0", "Class 1")) +
-      labs(title = paste("β = (", beta_val, ", ", beta_val, ")", sep = ""),
-           x = "X1", y = "X2") +
-      theme_minimal() +
-      theme(plot.title = element_text(hjust = 0.5)) +
-      coord_fixed(ratio = 1) +
-      xlim(-3, 3) + ylim(-3, 3)
-    
-    plots[[i]] <- p
-  }
-  
-  # Display plots in a grid
-  do.call(grid.arrange, c(plots, ncol = 3))
-}
-
-# Demonstrate convergence issue with glm
-demonstrate_convergence_issue <- function() {
-  cat("\n=== Demonstrating Convergence Issue ===\n\n")
-  
-  # Try different control parameters
-  control_params <- list(
-    epsilon = c(1e-8, 1e-10, 1e-12),
-    maxit = c(25, 50, 100)
-  )
-  
-  for (epsilon in control_params$epsilon) {
-    for (maxit in control_params$maxit) {
-      tryCatch({
-        model <- glm(y ~ X - 1, family = binomial, 
-                     control = list(epsilon = epsilon, maxit = maxit))
-        
-        coef_norm <- sqrt(sum(coef(model)^2))
-        
-        if (coef_norm > 100) {
-          cat(sprintf("Epsilon: %.0e, Max iter: %d - Coefficients explode! Norm: %.2f\n",
-                      epsilon, maxit, coef_norm))
-        } else {
-          cat(sprintf("Epsilon: %.0e, Max iter: %d - Coefficients stable. Norm: %.2f\n",
-                      epsilon, maxit, coef_norm))
-        }
-      }, error = function(e) {
-        cat(sprintf("Epsilon: %.0e, Max iter: %d - Failed: %s\n",
-                    epsilon, maxit, e$message))
-      })
-    }
-  }
-}
-
-# Plot log-likelihood vs coefficient magnitude
-plot_log_likelihood_convergence <- function() {
-  beta_magnitudes <- seq(0.1, 100, length.out = 100)
-  log_likelihoods <- numeric(length(beta_magnitudes))
-  
-  for (i in 1:length(beta_magnitudes)) {
-    beta <- c(beta_magnitudes[i], beta_magnitudes[i])
-    log_likelihoods[i] <- log_likelihood(beta)
-  }
-  
-  plot_data <- data.frame(
-    magnitude = beta_magnitudes,
-    log_likelihood = log_likelihoods
-  )
-  
-  p <- ggplot(plot_data, aes(x = magnitude, y = log_likelihood)) +
-    geom_line(size = 1) +
-    geom_hline(yintercept = 0, color = "red", linestyle = "dashed", alpha = 0.7) +
-    labs(title = "Log-Likelihood vs Coefficient Magnitude",
-         x = "Coefficient Magnitude (β₁ = β₂)",
-         y = "Log-Likelihood") +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    annotate("text", x = 50, y = -0.5, 
-             label = "Perfect Fit (LL = 0)", color = "red")
-  
-  print(p)
-}
-
-# Run demonstrations
-visualize_data_and_boundaries()
-demonstrate_convergence_issue()
-plot_log_likelihood_convergence()
-
-cat("\n=== Key Observations ===\n")
-cat("1. As coefficients increase, log-likelihood approaches 0 (perfect fit)\n")
-cat("2. All probabilities approach 1 for their respective classes\n")
-cat("3. Decision boundary remains stable despite coefficient explosion\n")
-cat("4. Standard logistic regression solvers may fail to converge\n")
-cat("5. The model is still useful for prediction despite convergence issues\n")
-```
 
 ## Why Regularization Doesn't Help
 
@@ -689,114 +271,42 @@ Therefore, the coefficients will still grow without bound, just more slowly.
 
 ### Practical Demonstration
 
-```python
-# Demonstrate that regularization doesn't solve the problem
-from sklearn.linear_model import LogisticRegression
-import numpy as np
+The practical demonstration of regularization limitations is implemented in the code files:
 
-# Create separable data
-X = np.array([[1, 1], [2, 2], [-1, -1], [-2, -2]])
-y = np.array([1, 1, 0, 0])
+**Python Implementation:** See `demonstrate_regularization_limitations()` function in [`code/separable_data_implementation.py`](code/separable_data_implementation.py)
 
-# Try different regularization strengths
-C_values = [1.0, 0.1, 0.01, 0.001]  # C = 1/lambda
+**R Implementation:** See `demonstrate_regularization_limitations()` function in [`code/r_separable_data_implementation.R`](code/r_separable_data_implementation.R)
 
-print("=== Regularization Analysis ===\n")
-print("C (1/λ)\tCoefficient Norm\tConverged")
-print("-" * 40)
-
-for C in C_values:
-    try:
-        model = LogisticRegression(C=C, max_iter=10000, random_state=42)
-        model.fit(X, y)
-        
-        coef_norm = np.linalg.norm(model.coef_[0])
-        converged = model.n_iter_ < 10000
-        
-        print(f"{C}\t{coef_norm:.2f}\t\t{converged}")
-        
-    except Exception as e:
-        print(f"{C}\tFailed\t\t{str(e)}")
-
-print("\nEven with strong regularization, coefficients can still explode!")
-```
+These functions demonstrate that even with strong regularization (L1/L2 penalties), coefficients can still explode for separable data, showing that regularization doesn't solve the fundamental problem of perfect separation.
 
 ## Solutions and Workarounds
 
 ### 1. **Bayesian Approach**
-Use informative priors to constrain the parameter space:
+Use informative priors to constrain the parameter space. The Bayesian solution is implemented in the code files:
 
-```python
-# Bayesian logistic regression with priors
-import pymc3 as pm
+**Python Implementation:** See `demonstrate_bayesian_solution()` function in [`code/separable_data_implementation.py`](code/separable_data_implementation.py)
 
-with pm.Model() as model:
-    # Informative priors
-    beta = pm.Normal('beta', mu=0, sd=1, shape=2)
-    
-    # Likelihood
-    p = pm.math.sigmoid(pm.math.dot(X, beta))
-    y_obs = pm.Bernoulli('y_obs', p=p, observed=y)
-    
-    # Sample from posterior
-    trace = pm.sample(1000, tune=1000)
-```
+**R Implementation:** See `demonstrate_bayesian_solution()` function in [`code/r_separable_data_implementation.R`](code/r_separable_data_implementation.R)
+
+These functions implement Bayesian logistic regression with informative priors to constrain the parameter space and prevent coefficient explosion.
 
 ### 2. **Firth's Method**
-Use Jeffreys prior to prevent separation:
+Use Jeffreys prior to prevent separation. Firth's method is implemented in the code files:
 
-```python
-# Firth's logistic regression
-def firth_logistic(X, y, max_iter=100, tol=1e-6):
-    n, p = X.shape
-    beta = np.zeros(p)
-    
-    for iteration in range(max_iter):
-        # Compute current probabilities
-        z = X @ beta
-        p = 1 / (1 + np.exp(-z))
-        
-        # Compute weights and working response
-        W = np.diag(p * (1-p))
-        z_working = z + (y - p) / (p * (1-p) + 1e-15)
-        
-        # Add Jeffreys prior correction
-        H = X.T @ W @ X
-        correction = 0.5 * np.diag(H)
-        
-        # Update
-        beta_new = np.linalg.solve(H, X.T @ W @ z_working + correction)
-        
-        if np.linalg.norm(beta_new - beta) < tol:
-            break
-            
-        beta = beta_new
-    
-    return beta
-```
+**Python Implementation:** See `demonstrate_firth_method()` function in [`code/separable_data_implementation.py`](code/separable_data_implementation.py)
+
+**R Implementation:** See `demonstrate_firth_method()` function in [`code/r_separable_data_implementation.R`](code/r_separable_data_implementation.R)
+
+These functions implement Firth's logistic regression with Jeffreys prior correction to prevent coefficient explosion and provide stable parameter estimates.
 
 ### 3. **Exact Logistic Regression**
-Use exact methods for small datasets:
+Use exact methods for small datasets. Exact logistic regression is implemented in the code files:
 
-```python
-# Exact logistic regression (for small datasets)
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-import statsmodels.api as sm
+**Python Implementation:** See `demonstrate_exact_logistic_regression()` function in [`code/separable_data_implementation.py`](code/separable_data_implementation.py)
 
-# Add constant for intercept
-X_with_const = sm.add_constant(X)
-model = sm.Logit(y, X_with_const)
+**R Implementation:** See `demonstrate_exact_logistic_regression()` function in [`code/r_separable_data_implementation.R`](code/r_separable_data_implementation.R)
 
-# Use exact method if available
-try:
-    result = model.fit(method='exact')
-    print("Exact logistic regression results:")
-    print(result.summary())
-except:
-    print("Exact method not available, using standard approach")
-    result = model.fit()
-    print(result.summary())
-```
+These functions implement exact logistic regression methods suitable for small datasets where standard methods may fail due to separation issues.
 
 ## Summary
 
