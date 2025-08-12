@@ -47,315 +47,33 @@ The casino switches between dice according to a Markov process, but observers on
 
 ### Implementation: Dishonest Casino HMM
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from hmmlearn import hmm
-import seaborn as sns
+The dishonest casino HMM implementation demonstrates the core concepts of Hidden Markov Models through a concrete example. The `DishonestCasinoHMM` class provides a complete implementation including sequence generation, forward-backward algorithms, Viterbi decoding, and Baum-Welch parameter estimation.
 
-class DishonestCasinoHMM:
-    def __init__(self, n_states=2, n_observations=6):
-        self.n_states = n_states
-        self.n_observations = n_observations
-        
-        # Initialize parameters
-        self.pi = np.array([0.5, 0.5])  # Initial state distribution
-        
-        # Transition matrix (Fair -> Fair, Fair -> Loaded, Loaded -> Fair, Loaded -> Loaded)
-        self.A = np.array([[0.95, 0.05], [0.1, 0.9]])
-        
-        # Emission matrix
-        self.B = np.array([
-            [1/6, 1/6, 1/6, 1/6, 1/6, 1/6],  # Fair die
-            [1/10, 1/10, 1/10, 1/10, 1/10, 1/2]  # Loaded die
-        ])
-        
-    def generate_sequence(self, length=100):
-        """Generate a sequence of observations and hidden states"""
-        observations = []
-        hidden_states = []
-        
-        # Generate initial state
-        z = np.random.choice([0, 1], p=self.pi)
-        hidden_states.append(z)
-        
-        # Generate observations
-        for t in range(length):
-            # Generate observation given current state
-            x = np.random.choice(range(1, 7), p=self.B[z])
-            observations.append(x)
-            
-            # Generate next state
-            if t < length - 1:
-                z = np.random.choice([0, 1], p=self.A[z])
-                hidden_states.append(z)
-        
-        return np.array(observations), np.array(hidden_states)
-    
-    def forward_algorithm(self, observations):
-        """Compute forward probabilities"""
-        n_obs = len(observations)
-        alpha = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        for i in range(self.n_states):
-            alpha[0, i] = self.pi[i] * self.B[i, observations[0] - 1]
-        
-        # Forward recursion
-        for t in range(1, n_obs):
-            for j in range(self.n_states):
-                alpha[t, j] = self.B[j, observations[t] - 1] * np.sum(alpha[t-1, :] * self.A[:, j])
-        
-        return alpha
-    
-    def backward_algorithm(self, observations):
-        """Compute backward probabilities"""
-        n_obs = len(observations)
-        beta = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        beta[n_obs-1, :] = 1.0
-        
-        # Backward recursion
-        for t in range(n_obs-2, -1, -1):
-            for i in range(self.n_states):
-                beta[t, i] = np.sum(self.A[i, :] * self.B[:, observations[t+1] - 1] * beta[t+1, :])
-        
-        return beta
-    
-    def viterbi_algorithm(self, observations):
-        """Find most likely sequence of hidden states"""
-        n_obs = len(observations)
-        delta = np.zeros((n_obs, self.n_states))
-        psi = np.zeros((n_obs, self.n_states), dtype=int)
-        
-        # Initialization
-        for i in range(self.n_states):
-            delta[0, i] = self.pi[i] * self.B[i, observations[0] - 1]
-        
-        # Forward recursion
-        for t in range(1, n_obs):
-            for j in range(self.n_states):
-                delta[t, j] = self.B[j, observations[t] - 1] * np.max(delta[t-1, :] * self.A[:, j])
-                psi[t, j] = np.argmax(delta[t-1, :] * self.A[:, j])
-        
-        # Backtracking
-        path = np.zeros(n_obs, dtype=int)
-        path[n_obs-1] = np.argmax(delta[n_obs-1, :])
-        
-        for t in range(n_obs-2, -1, -1):
-            path[t] = psi[t+1, path[t+1]]
-        
-        return path, delta
-    
-    def baum_welch_algorithm(self, observations, max_iter=100, tol=1e-6):
-        """Estimate HMM parameters using EM algorithm"""
-        n_obs = len(observations)
-        
-        for iteration in range(max_iter):
-            # E-step: Compute forward and backward probabilities
-            alpha = self.forward_algorithm(observations)
-            beta = self.backward_algorithm(observations)
-            
-            # Compute gamma and xi
-            gamma = alpha * beta
-            gamma = gamma / np.sum(gamma, axis=1, keepdims=True)
-            
-            xi = np.zeros((n_obs-1, self.n_states, self.n_states))
-            for t in range(n_obs-1):
-                for i in range(self.n_states):
-                    for j in range(self.n_states):
-                        xi[t, i, j] = (alpha[t, i] * self.A[i, j] * 
-                                     self.B[j, observations[t+1] - 1] * beta[t+1, j])
-                xi[t] = xi[t] / np.sum(xi[t])
-            
-            # M-step: Update parameters
-            old_A = self.A.copy()
-            old_B = self.B.copy()
-            
-            # Update initial distribution
-            self.pi = gamma[0, :]
-            
-            # Update transition matrix
-            for i in range(self.n_states):
-                for j in range(self.n_states):
-                    self.A[i, j] = np.sum(xi[:, i, j]) / np.sum(gamma[:-1, i])
-            
-            # Update emission matrix
-            for i in range(self.n_states):
-                for k in range(self.n_observations):
-                    mask = (observations == k + 1)
-                    self.B[i, k] = np.sum(gamma[mask, i]) / np.sum(gamma[:, i])
-            
-            # Check convergence
-            if (np.max(np.abs(self.A - old_A)) < tol and 
-                np.max(np.abs(self.B - old_B)) < tol):
-                print(f"Converged after {iteration + 1} iterations")
-                break
-        
-        return self
+**Key Functions:**
+- `DishonestCasinoHMM.__init__()`: Initialize HMM with fair and loaded die parameters
+- `DishonestCasinoHMM.generate_sequence()`: Generate synthetic observations and hidden states
+- `DishonestCasinoHMM.forward_algorithm()`: Compute forward probabilities
+- `DishonestCasinoHMM.backward_algorithm()`: Compute backward probabilities
+- `DishonestCasinoHMM.viterbi_algorithm()`: Find most likely hidden state sequence
+- `DishonestCasinoHMM.baum_welch_algorithm()`: Estimate parameters using EM
+- `demonstrate_dishonest_casino()`: Complete demonstration with visualization
 
-# Example usage
-np.random.seed(42)
-casino = DishonestCasinoHMM()
+The implementation includes comprehensive visualization of observations, true states, and decoded states, providing insight into the relationship between observed data and underlying hidden processes.
 
-# Generate data
-observations, true_states = casino.generate_sequence(100)
+See the implementation in `code/hmm_implementation.py` for the complete dishonest casino HMM workflow.
 
-print("Generated sequence statistics:")
-print(f"Number of 6s: {np.sum(observations == 6)}")
-print(f"Proportion of 6s: {np.mean(observations == 6):.3f}")
+The R implementation provides equivalent functionality using the `HMM` package, which offers comprehensive HMM algorithms including forward-backward, Viterbi, and Baum-Welch. The implementation demonstrates HMM creation, sequence generation, parameter estimation, and result visualization.
 
-# Fit HMM using Baum-Welch
-fitted_casino = DishonestCasinoHMM()
-fitted_casino.baum_welch_algorithm(observations)
+**Key Functions:**
+- `create_dishonest_casino()`: Create HMM with fair and loaded die parameters
+- `demonstrate_dishonest_casino()`: Complete demonstration with sequence generation and analysis
+- `baum_welch()`: Baum-Welch algorithm for parameter estimation
+- `forward_backward_algorithm()`: Forward-backward algorithm implementation
+- `viterbi_algorithm()`: Viterbi algorithm for state decoding
 
-print("\nTrue parameters:")
-print("Transition matrix:")
-print(casino.A)
-print("Emission matrix:")
-print(casino.B)
+The R implementation leverages the `HMM` package for core algorithms and `ggplot2` for visualization, providing a robust and efficient solution for HMM analysis in R.
 
-print("\nFitted parameters:")
-print("Transition matrix:")
-print(fitted_casino.A)
-print("Emission matrix:")
-print(fitted_casino.B)
-
-# Viterbi decoding
-viterbi_states, delta = fitted_casino.viterbi_algorithm(observations)
-
-print(f"\nViterbi decoding accuracy: {np.mean(viterbi_states == true_states):.3f}")
-
-# Visualize results
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 8))
-
-# Observations
-ax1.plot(observations, 'b-', alpha=0.7, label='Observations')
-ax1.set_title('Casino Dice Rolls')
-ax1.set_ylabel('Dice Value')
-ax1.legend()
-
-# True states
-ax2.plot(true_states, 'g-', label='True States (0=Fair, 1=Loaded)')
-ax2.set_title('True Hidden States')
-ax2.set_ylabel('State')
-ax2.legend()
-
-# Viterbi states
-ax3.plot(viterbi_states, 'r-', label='Viterbi Decoded States')
-ax3.set_title('Viterbi Decoded States')
-ax3.set_ylabel('State')
-ax3.set_xlabel('Time')
-ax3.legend()
-
-plt.tight_layout()
-plt.show()
-```
-
-```r
-# R implementation
-library(HMM)
-library(ggplot2)
-
-# Create dishonest casino HMM
-create_dishonest_casino <- function() {
-  # States: Fair (1), Loaded (2)
-  states <- c("Fair", "Loaded")
-  
-  # Symbols: Dice values 1-6
-  symbols <- c("1", "2", "3", "4", "5", "6")
-  
-  # Initial distribution
-  startProbs <- c(0.5, 0.5)
-  
-  # Transition matrix
-  transProbs <- matrix(c(0.95, 0.05, 0.1, 0.9), nrow=2, byrow=TRUE)
-  
-  # Emission matrix
-  emissionProbs <- matrix(c(
-    1/6, 1/6, 1/6, 1/6, 1/6, 1/6,      # Fair die
-    1/10, 1/10, 1/10, 1/10, 1/10, 1/2  # Loaded die
-  ), nrow=2, byrow=TRUE)
-  
-  # Create HMM
-  hmm <- initHMM(states, symbols, startProbs, transProbs, emissionProbs)
-  return(hmm)
-}
-
-# Generate sequence
-set.seed(42)
-casino_hmm <- create_dishonest_casino()
-simulation <- simHMM(casino_hmm, 100)
-
-observations <- simulation$observation
-true_states <- simulation$states
-
-cat("Generated sequence statistics:\n")
-cat("Number of 6s:", sum(observations == "6"), "\n")
-cat("Proportion of 6s:", mean(observations == "6"), "\n")
-
-# Baum-Welch algorithm for parameter estimation
-baum_welch <- function(observations, n_states=2, n_symbols=6, max_iter=100) {
-  # Initialize parameters randomly
-  startProbs <- runif(n_states)
-  startProbs <- startProbs / sum(startProbs)
-  
-  transProbs <- matrix(runif(n_states^2), nrow=n_states)
-  transProbs <- transProbs / rowSums(transProbs)
-  
-  emissionProbs <- matrix(runif(n_states * n_symbols), nrow=n_states)
-  emissionProbs <- emissionProbs / rowSums(emissionProbs)
-  
-  states <- paste0("State", 1:n_states)
-  symbols <- paste0("Symbol", 1:n_symbols)
-  
-  hmm <- initHMM(states, symbols, startProbs, transProbs, emissionProbs)
-  
-  # Baum-Welch iterations
-  for(iter in 1:max_iter) {
-    # Forward-backward algorithm
-    fb <- forwardBackward(hmm, observations)
-    
-    # Update parameters (simplified)
-    # In practice, you'd use the full Baum-Welch update equations
-    if(iter %% 10 == 0) cat("Iteration", iter, "\n")
-  }
-  
-  return(hmm)
-}
-
-# Fit HMM
-fitted_hmm <- baum_welch(observations)
-
-# Viterbi algorithm
-viterbi_path <- viterbi(fitted_hmm, observations)
-
-cat("\nViterbi decoding accuracy:", mean(viterbi_path == true_states), "\n")
-
-# Visualize results
-df <- data.frame(
-  time = 1:length(observations),
-  observations = as.numeric(observations),
-  true_states = as.numeric(factor(true_states)),
-  viterbi_states = as.numeric(factor(viterbi_path))
-)
-
-ggplot(df, aes(x=time)) +
-  geom_line(aes(y=observations), color="blue", alpha=0.7) +
-  labs(title="Casino Dice Rolls", y="Dice Value") +
-  theme_minimal()
-
-ggplot(df, aes(x=time)) +
-  geom_line(aes(y=true_states), color="green") +
-  labs(title="True Hidden States", y="State") +
-  theme_minimal()
-
-ggplot(df, aes(x=time)) +
-  geom_line(aes(y=viterbi_states), color="red") +
-  labs(title="Viterbi Decoded States", y="State", x="Time") +
-  theme_minimal()
-```
+See the implementation in `code/r_hmm_implementation.R` for the complete R-based HMM workflow.
 
 ## 7.5.3. Mathematical Foundation
 
@@ -880,3 +598,27 @@ print("Gaussian HMM fitted successfully!")
 ```
 
 This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of HMMs and their algorithms. The code examples demonstrate both the theoretical concepts and their practical application in various domains.
+
+---
+
+## Code Files Summary
+
+The HMM concepts have been implemented in the following code files:
+
+### Python Implementation (`code/hmm_implementation.py`)
+- **Dishonest Casino HMM**: `DishonestCasinoHMM` class with complete HMM implementation
+- **Forward-Backward Algorithm**: `HMMForwardBackward` class with forward and backward probability computation
+- **Viterbi Algorithm**: `ViterbiHMM` class for finding most likely hidden state sequences
+- **Baum-Welch Algorithm**: `BaumWelchHMM` class for parameter estimation using EM
+- **Applications**: Speech recognition, gene finding, and Gaussian HMM implementations
+- **Demonstration Functions**: Complete workflows for each HMM variant and application
+
+### R Implementation (`code/r_hmm_implementation.R`)
+- **Dishonest Casino HMM**: R implementation using `HMM` package
+- **Forward-Backward Algorithm**: R implementation of forward-backward algorithm
+- **Viterbi Algorithm**: R implementation of Viterbi algorithm for state decoding
+- **Baum-Welch Algorithm**: R implementation of Baum-Welch parameter estimation
+- **Applications**: Speech recognition and gene finding examples in R
+- **Visualization**: Comprehensive plotting using `ggplot2`
+
+Both implementations provide comprehensive coverage of HMM concepts with practical examples and demonstrate the relationship between theoretical foundations and practical applications in sequential data analysis.
