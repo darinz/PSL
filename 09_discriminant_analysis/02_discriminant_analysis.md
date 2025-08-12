@@ -91,61 +91,18 @@ The framework uses numerical stability techniques (log-likelihoods and softmax) 
 
 See the implementation in `code/discriminant_analysis_implementation.py` for the complete Bayes Classifier framework.
 
-```r
-# R implementation
-library(MASS)
-library(ggplot2)
-library(caret)
+The R implementation provides equivalent functionality using the `MASS`, `ggplot2`, and `caret` packages. The implementation demonstrates data creation, model fitting, and result visualization in R.
 
-# Create synthetic Gaussian mixture data
-create_gaussian_mixture_data <- function(n_samples = 1000, random_state = 42) {
-  set.seed(random_state)
-  
-  # Three classes with different means and covariances
-  means <- list(
-    c(0, 0),
-    c(3, 3),
-    c(-2, 2)
-  )
-  
-  covs <- list(
-    matrix(c(1, 0.5, 0.5, 1), nrow = 2),
-    matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    matrix(c(0.5, 0, 0, 0.5), nrow = 2)
-  )
-  
-  X_list <- list()
-  y_list <- list()
-  
-  for (k in 1:3) {
-    n_k <- n_samples %/% 3
-    X_k <- mvrnorm(n_k, mu = means[[k]], Sigma = covs[[k]])
-    X_list[[k]] <- X_k
-    y_list[[k]] <- rep(k - 1, n_k)
-  }
-  
-  X <- do.call(rbind, X_list)
-  y <- factor(unlist(y_list))
-  
-  return(list(X = X, y = y))
-}
+**Key Functions:**
+- `create_gaussian_mixture_data()`: Create synthetic Gaussian mixture data
+- `demonstrate_bayes_classifier()`: Complete demonstration with data creation and splitting
+- `QDA()`, `LDA()`, `GaussianNaiveBayes()`: Model fitting functions
+- `plot_decision_boundaries()`: Visualization of decision boundaries
+- `compare_models()`: Comprehensive model comparison
 
-# Create dataset
-data <- create_gaussian_mixture_data()
-X <- data$X
-y <- data$y
+The R implementation leverages established packages for robust and efficient discriminant analysis, providing a clean interface for both basic and advanced usage.
 
-# Split data
-train_index <- createDataPartition(y, p = 0.7, list = FALSE)
-X_train <- X[train_index, ]
-X_test <- X[-train_index, ]
-y_train <- y[train_index]
-y_test <- y[-train_index]
-
-cat("Dataset shape:", nrow(X), "x", ncol(X), "\n")
-cat("Class distribution:\n")
-print(table(y) / length(y))
-```
+See the implementation in `code/r_discriminant_analysis_implementation.R` for the complete R-based discriminant analysis workflow.
 
 ## 9.2.3. Quadratic Discriminant Analysis (QDA)
 
