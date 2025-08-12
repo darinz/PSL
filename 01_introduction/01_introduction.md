@@ -101,6 +101,7 @@ $$f^*(x) = \arg\max_{k \in \{1,\ldots,K\}} P(Y = k | X = x)$$
 **Common Loss Functions for Classification:**
 
 1. **0-1 Loss (misclassification rate):**
+
 $$L(y, \hat{y}) = \mathbb{I}(y \neq \hat{y}) = \begin{cases}
 0 & \text{if } y = \hat{y} \\
 1 & \text{if } y \neq \hat{y}
