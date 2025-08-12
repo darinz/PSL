@@ -128,4 +128,10 @@ To contribute improvements to this module:
 
 ---
 
-*This material is based on the [PSL Online Notes](https://liangfgithub.github.io/PSL/) and other foundational statistical learning resources.* 
+*This material is based on the [PSL Online Notes](https://liangfgithub.github.io/PSL/) and other foundational statistical learning resources.*
+
+---
+
+**Navigation:**
+- **Start Learning:** [Introduction to Statistical Learning](01_introduction.md) - Begin with the foundational concepts
+- **Previous Section:** *This is the overview page for the introduction section* 
