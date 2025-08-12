@@ -128,74 +128,15 @@ where $`\bar{y}_{\text{left}}`$ and $`\bar{y}_{\text{right}}`$ are the means of 
 
 ### Greedy Tree Building Algorithm
 
-```python
-def build_regression_tree(X, y, max_depth=None, min_samples_split=2):
-    """
-    Build a regression tree using greedy algorithm
-    
-    Parameters:
-    X: feature matrix (n_samples, n_features)
-    y: target vector (n_samples,)
-    max_depth: maximum tree depth
-    min_samples_split: minimum samples required to split
-    
-    Returns:
-    tree: dictionary representing the tree structure
-    """
-    def find_best_split(X, y):
-        best_split = None
-        best_score = float('inf')
-        
-        for j in range(X.shape[1]):  # For each feature
-            unique_values = np.unique(X[:, j])
-            for s in unique_values[:-1]:  # For each potential split
-                left_mask = X[:, j] <= s
-                right_mask = ~left_mask
-                
-                if np.sum(left_mask) < min_samples_split or np.sum(right_mask) < min_samples_split:
-                    continue
-                
-                # Calculate RSS reduction
-                y_left = y[left_mask]
-                y_right = y[right_mask]
-                
-                rss_left = np.sum((y_left - np.mean(y_left))**2)
-                rss_right = np.sum((y_right - np.mean(y_right))**2)
-                rss_total = rss_left + rss_right
-                
-                if rss_total < best_score:
-                    best_score = rss_total
-                    best_split = (j, s)
-        
-        return best_split
-    
-    def build_node(X, y, depth):
-        # Stopping criteria
-        if (max_depth is not None and depth >= max_depth) or len(y) < min_samples_split:
-            return {'type': 'leaf', 'prediction': np.mean(y)}
-        
-        # Find best split
-        split = find_best_split(X, y)
-        if split is None:
-            return {'type': 'leaf', 'prediction': np.mean(y)}
-        
-        j, s = split
-        left_mask = X[:, j] <= s
-        right_mask = ~left_mask
-        
-        # Create internal node
-        node = {
-            'type': 'internal',
-            'feature': j,
-            'threshold': s,
-            'left': build_node(X[left_mask], y[left_mask], depth + 1),
-            'right': build_node(X[right_mask], y[right_mask], depth + 1)
-        }
-        
-        return node
-    
-    return build_node(X, y, 0)
-```
+The greedy tree building algorithm recursively partitions the feature space by finding the optimal split at each node. The implementation includes functions for finding the best split, building nodes recursively, and handling stopping criteria.
+
+**Python Implementation:** [tree_building.py](code/tree_building.py)
+
+The algorithm includes:
+- `build_regression_tree()`: Main function to build the complete tree
+- `find_best_split()`: Find optimal feature and threshold for splitting
+- `build_node()`: Recursively build tree nodes
+- Utility functions for prediction and tree analysis
 
 ### Handling Categorical Variables
 
@@ -207,47 +148,12 @@ For categorical variables with $`m`$ levels, the optimal split can be found effi
 **Mathematical Justification:**
 The optimal split minimizes within-group variance. By sorting levels by their response means, adjacent levels have similar means, making them natural candidates for grouping.
 
-**Example:**
-```python
-def find_categorical_split(X_cat, y):
-    """
-    Find optimal split for categorical variable
-    """
-    # Calculate mean response for each level
-    levels = np.unique(X_cat)
-    level_means = {}
-    for level in levels:
-        mask = X_cat == level
-        level_means[level] = np.mean(y[mask])
-    
-    # Sort levels by mean response
-    sorted_levels = sorted(levels, key=lambda x: level_means[x])
-    
-    # Try splits between adjacent levels
-    best_split = None
-    best_score = float('inf')
-    
-    for i in range(len(sorted_levels) - 1):
-        left_levels = set(sorted_levels[:i+1])
-        left_mask = np.isin(X_cat, list(left_levels))
-        right_mask = ~left_mask
-        
-        if np.sum(left_mask) < 2 or np.sum(right_mask) < 2:
-            continue
-        
-        y_left = y[left_mask]
-        y_right = y[right_mask]
-        
-        rss_left = np.sum((y_left - np.mean(y_left))**2)
-        rss_right = np.sum((y_right - np.mean(y_right))**2)
-        rss_total = rss_left + rss_right
-        
-        if rss_total < best_score:
-            best_score = rss_total
-            best_split = left_levels
-    
-    return best_split
-```
+**Python Implementation:** [tree_building.py](code/tree_building.py) - `find_categorical_split()` function
+
+The implementation efficiently handles categorical variables by:
+- Calculating mean response for each level
+- Sorting levels by response means
+- Evaluating only adjacent splits to find the optimal partition
 
 ### Handling Missing Values
 
@@ -258,43 +164,13 @@ Tree-based methods offer several strategies for handling missing values:
 3. **Majority Rule**: Assign missing values to the larger child node
 4. **Imputation**: Fill missing values before tree construction
 
-**Surrogate Split Implementation:**
-```python
-def find_surrogate_splits(X, y, primary_split, missing_mask):
-    """
-    Find surrogate splits for missing values
-    """
-    j, s = primary_split
-    surrogate_splits = []
-    
-    for k in range(X.shape[1]):
-        if k == j:
-            continue
-        
-        # Calculate correlation with primary split
-        primary_values = (X[:, j] <= s).astype(int)
-        k_values = X[:, k]
-        
-        # Find best split on feature k that mimics primary split
-        unique_values = np.unique(k_values)
-        best_correlation = 0
-        best_threshold = None
-        
-        for threshold in unique_values[:-1]:
-            k_split = (k_values <= threshold).astype(int)
-            correlation = np.corrcoef(primary_values, k_split)[0, 1]
-            
-            if abs(correlation) > abs(best_correlation):
-                best_correlation = correlation
-                best_threshold = threshold
-        
-        if abs(best_correlation) > 0.5:  # Minimum correlation threshold
-            surrogate_splits.append((k, best_threshold, best_correlation))
-    
-    # Sort by correlation strength
-    surrogate_splits.sort(key=lambda x: abs(x[2]), reverse=True)
-    return surrogate_splits
-```
+**Python Implementation:** [tree_building.py](code/tree_building.py) - `find_surrogate_splits()` function
+
+The surrogate split implementation:
+- Finds correlated variables that can substitute for the primary split
+- Calculates correlation between primary split and potential surrogate splits
+- Returns sorted list of surrogate splits by correlation strength
+- Uses a minimum correlation threshold (0.5) to ensure quality substitutes
 
 ### Stopping Criteria
 
