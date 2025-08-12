@@ -314,3 +314,11 @@ Each file includes comprehensive examples, demonstrations, and analysis tools to
 - Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media.
 - James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). An introduction to statistical learning. Springer.
 - Montgomery, D. C., Peck, E. A., & Vining, G. G. (2012). Introduction to linear regression analysis. John Wiley & Sons.
+
+Polynomial regression provides a natural extension of linear regression for modeling nonlinear relationships, but requires careful consideration of degree selection, overfitting, and interpretability.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Cubic Splines](02_cubic_splines.md) - Piecewise polynomial functions with continuity constraints
+- **Previous Topic:** [Nonlinear Regression Overview](README.md) - Overview of nonlinear regression methods and applications
