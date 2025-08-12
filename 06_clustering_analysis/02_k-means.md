@@ -107,6 +107,9 @@ Repeat Steps 1 and 2 until convergence, which occurs when:
 Random initialization selects K data points uniformly at random as initial centroids. While simple, this method can lead to poor initializations and suboptimal convergence.
 
 ### K-means++ Initialization
+
+**Implementation:** See `kmeans_plus_plus_init()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
+
 K-means++ improves upon random initialization by spreading initial centroids:
 
 1. Choose first centroid uniformly at random
@@ -114,29 +117,7 @@ K-means++ improves upon random initialization by spreading initial centroids:
    - Compute distances from each point to nearest existing centroid
    - Choose next centroid with probability proportional to squared distance
 
-```python
-def kmeans_plus_plus_init(X, K):
-    """K-means++ initialization for better initial centroids."""
-    n, p = X.shape
-    centroids = np.zeros((K, p))
-    
-    # Choose first centroid randomly
-    centroids[0] = X[np.random.randint(n)]
-    
-    for k in range(1, K):
-        # Compute distances to nearest centroid
-        distances = np.min([np.sum((X - centroids[i])**2, axis=1) 
-                           for i in range(k)], axis=0)
-        
-        # Choose next centroid with probability proportional to distance^2
-        probs = distances / distances.sum()
-        cumprobs = np.cumsum(probs)
-        r = np.random.random()
-        idx = np.where(cumprobs >= r)[0][0]
-        centroids[k] = X[idx]
-    
-    return centroids
-```
+This method significantly reduces the probability of poor initialization and improves convergence to better local minima.
 
 ## 6.2.4. Local Minima and Multiple Initializations
 
@@ -155,30 +136,9 @@ K-means can converge to suboptimal solutions due to poor initialization. Conside
 
 ### Solution: Multiple Initializations
 
-Run K-means multiple times with different initializations and choose the best result:
+**Implementation:** See `kmeans_multiple_runs()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
 
-```python
-def kmeans_multiple_runs(X, K, n_runs=10):
-    """Run K-means multiple times and return best clustering."""
-    best_inertia = float('inf')
-    best_labels = None
-    best_centroids = None
-    
-    for run in range(n_runs):
-        # Initialize centroids
-        centroids = kmeans_plus_plus_init(X, K)
-        
-        # Run K-means
-        labels, centroids, inertia = kmeans_single_run(X, K, centroids)
-        
-        # Update best result
-        if inertia < best_inertia:
-            best_inertia = inertia
-            best_labels = labels
-            best_centroids = centroids
-    
-    return best_labels, best_centroids, best_inertia
-```
+Run K-means multiple times with different initializations and choose the best result. This approach significantly improves the chances of finding a good local minimum by exploring multiple starting points.
 
 ## 6.2.5. Dimension Reduction for K-means
 
