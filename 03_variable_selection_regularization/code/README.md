@@ -32,6 +32,10 @@ This folder contains Python code examples that demonstrate the concepts covered 
 
 - **`lasso_regression_detailed.R`** - Demonstrates comprehensive lasso regression with coordinate descent and variable selection using the glmnet package.
 
+- **`variable_selection_comparison.py`** - Demonstrates comprehensive comparison of variable selection and regularization methods across different scenarios with detailed analysis and visualization.
+
+- **`variable_selection_comparison.R`** - Demonstrates comprehensive comparison of variable selection and regularization methods using glmnet, pls, and leaps packages with detailed analysis and visualization.
+
 ### Existing Files
 
 - **`Python_W3_VarSel_SubsetSelection.py`** - Original subset selection implementation.
