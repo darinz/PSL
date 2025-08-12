@@ -254,3 +254,9 @@ The credit risk assessment example is implemented in the code files:
 This example creates synthetic credit data with features like income, credit score, debt ratio, and employment years. It demonstrates how QDA can be used for risk assessment, including feature analysis and visualization of class-specific parameter differences.
 
 This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of Quadratic Discriminant Analysis. The code examples demonstrate both theoretical concepts and their practical application, including visualization, evaluation, and handling of common challenges in high-dimensional settings.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Linear Discriminant Analysis](04_linear_discriminant_analysis.md) - Shared covariance assumption and linear decision boundaries
+- **Previous Topic:** [Discriminant Analysis](02_discriminant_analysis.md) - Bayes' theorem application and joint distribution factorization
