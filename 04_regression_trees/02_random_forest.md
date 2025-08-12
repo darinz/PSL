@@ -190,42 +190,9 @@ High-cardinality categorical variables can appear artificially important due to 
 2. **Regularization**: Use feature subsampling more aggressively
 3. **Alternative Importance Measures**: Use permutation importance instead of RSS-based importance
 
-**Example:**
-```python
-def handle_high_cardinality_features(X, y, categorical_features, max_categories=10):
-    """
-    Handle high-cardinality categorical features
-    
-    Parameters:
-    X: feature matrix
-    y: target vector
-    categorical_features: list of categorical feature indices
-    max_categories: maximum number of categories to keep
-    
-    Returns:
-    X_processed: processed feature matrix
-    """
-    X_processed = X.copy()
-    
-    for feature_idx in categorical_features:
-        unique_values, counts = np.unique(X[:, feature_idx], return_counts=True)
-        
-        if len(unique_values) > max_categories:
-            # Keep top categories by frequency
-            top_categories = unique_values[np.argsort(counts)[-max_categories:]]
-            
-            # Create binary features for top categories
-            for i, category in enumerate(top_categories):
-                X_processed = np.column_stack([
-                    X_processed, 
-                    (X[:, feature_idx] == category).astype(int)
-                ])
-            
-            # Remove original feature
-            X_processed = np.delete(X_processed, feature_idx, axis=1)
-    
-    return X_processed
-```
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `handle_high_cardinality_features()` function
+
+The high-cardinality feature handling implementation creates binary features for the most frequent categories and removes the original feature to prevent artificial importance inflation.
 
 ## 4.2.5. Hyperparameter Tuning
 
@@ -239,219 +206,36 @@ def handle_high_cardinality_features(X, y, categorical_features, max_categories=
 
 ### Grid Search Implementation
 
-```python
-from sklearn.model_selection import GridSearchCV, cross_val_score
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `tune_random_forest()` and `demonstrate_hyperparameter_tuning()` functions
 
-def tune_random_forest(X, y):
-    """
-    Tune Random Forest hyperparameters using grid search
-    """
-    param_grid = {
-        'n_trees': [50, 100, 200],
-        'max_features': ['sqrt', 'log2', 0.3, 0.5],
-        'max_depth': [5, 10, 15, None],
-        'min_samples_split': [2, 5, 10],
-        'min_samples_leaf': [1, 2, 4]
-    }
-    
-    # Create Random Forest model
-    rf = RandomForestRegressor(random_state=42)
-    
-    # Grid search with cross-validation
-    grid_search = GridSearchCV(
-        rf, param_grid, cv=5, scoring='neg_mean_squared_error',
-        n_jobs=-1, verbose=1
-    )
-    
-    grid_search.fit(X, y)
-    
-    print("Best parameters:", grid_search.best_params_)
-    print("Best CV score:", -grid_search.best_score_)
-    
-    return grid_search.best_estimator_
-
-# Example usage
-def demonstrate_hyperparameter_tuning():
-    """Demonstrate hyperparameter tuning"""
-    from sklearn.datasets import make_regression
-    
-    # Generate data
-    X, y = make_regression(n_samples=1000, n_features=20, n_informative=10, 
-                          noise=0.1, random_state=42)
-    
-    # Tune hyperparameters
-    best_rf = tune_random_forest(X, y)
-    
-    # Evaluate on test set
-    from sklearn.model_selection import train_test_split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    
-    best_rf.fit(X_train, y_train)
-    y_pred = best_rf.predict(X_test)
-    
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-    
-    print(f"Test MSE: {mse:.4f}")
-    print(f"Test R²: {r2:.4f}")
-    
-    return best_rf
-```
+The hyperparameter tuning implementation includes:
+- Grid search over key hyperparameters (n_trees, max_features, max_depth, etc.)
+- Cross-validation for robust parameter selection
+- Integration with scikit-learn's GridSearchCV
+- Complete demonstration with synthetic data and evaluation
 
 ## 4.2.6. R Implementation
 
-```r
-# Random Forest Implementation in R
-library(randomForest)
-library(ggplot2)
-library(dplyr)
+**Complete R Implementation:** [r_random_forest.R](code/r_random_forest.R)
 
-# Function to demonstrate Random Forest
-demonstrate_random_forest_r <- function() {
-  # Load data
-  data(Boston, package = "MASS")
-  
-  # Prepare data
-  X <- Boston[, -ncol(Boston)]
-  y <- Boston$medv
-  
-  # Split data
-  set.seed(42)
-  train_indices <- sample(1:nrow(Boston), size = 0.8 * nrow(Boston))
-  X_train <- X[train_indices, ]
-  y_train <- y[train_indices]
-  X_test <- X[-train_indices, ]
-  y_test <- y[-train_indices]
-  
-  # Train Random Forest
-  rf_model <- randomForest(
-    medv ~ ., 
-    data = data.frame(X_train, medv = y_train),
-    ntree = 100,
-    mtry = sqrt(ncol(X_train)),  # sqrt(p) for regression
-    importance = TRUE,
-    keep.forest = TRUE
-  )
-  
-  # Make predictions
-  predictions <- predict(rf_model, X_test)
-  
-  # Calculate metrics
-  mse <- mean((y_test - predictions)^2)
-  r2 <- 1 - sum((y_test - predictions)^2) / sum((y_test - mean(y_test))^2)
-  
-  cat("Test MSE:", round(mse, 4), "\n")
-  cat("Test R²:", round(r2, 4), "\n")
-  cat("OOB MSE:", round(rf_model$mse[length(rf_model$mse)], 4), "\n")
-  
-  # Variable importance
-  importance_df <- data.frame(
-    feature = rownames(importance(rf_model)),
-    importance = importance(rf_model)[, "%IncMSE"]
-  ) %>%
-    arrange(desc(importance))
-  
-  print("Variable Importance (Permutation):")
-  print(importance_df)
-  
-  # Visualize results
-  par(mfrow = c(2, 2))
-  
-  # Predictions vs actual
-  plot(y_test, predictions, pch = 19, col = "blue", alpha = 0.6,
-       xlab = "Actual Values", ylab = "Predicted Values",
-       main = "Random Forest Predictions")
-  abline(0, 1, col = "red", lty = 2)
-  
-  # Variable importance plot
-  varImpPlot(rf_model, main = "Variable Importance")
-  
-  # OOB error vs number of trees
-  plot(rf_model$mse, type = "l", xlab = "Number of Trees",
-       ylab = "OOB MSE", main = "OOB Error vs Number of Trees")
-  
-  # Residuals
-  residuals <- y_test - predictions
-  plot(predictions, residuals, pch = 19, col = "blue", alpha = 0.6,
-       xlab = "Predicted Values", ylab = "Residuals",
-       main = "Residual Plot")
-  abline(h = 0, col = "red", lty = 2)
-  
-  return(rf_model)
-}
+The R implementation provides:
 
-# Function to tune hyperparameters
-tune_random_forest_r <- function() {
-  library(caret)
-  
-  # Load data
-  data(Boston, package = "MASS")
-  
-  # Define parameter grid
-  param_grid <- expand.grid(
-    mtry = c(2, 4, 6, 8),
-    ntree = c(50, 100, 200)
-  )
-  
-  # Control for cross-validation
-  control <- trainControl(
-    method = "cv",
-    number = 5,
-    verboseIter = TRUE
-  )
-  
-  # Train models
-  results <- list()
-  for (i in 1:nrow(param_grid)) {
-    cat("Training model", i, "of", nrow(param_grid), "\n")
-    
-    rf_model <- randomForest(
-      medv ~ .,
-      data = Boston,
-      mtry = param_grid$mtry[i],
-      ntree = param_grid$ntree[i]
-    )
-    
-    # Cross-validation score
-    cv_scores <- numeric(5)
-    for (fold in 1:5) {
-      # Simple CV implementation
-      test_indices <- sample(1:nrow(Boston), size = nrow(Boston) %/% 5)
-      train_data <- Boston[-test_indices, ]
-      test_data <- Boston[test_indices, ]
-      
-      fold_model <- randomForest(
-        medv ~ .,
-        data = train_data,
-        mtry = param_grid$mtry[i],
-        ntree = param_grid$ntree[i]
-      )
-      
-      predictions <- predict(fold_model, test_data)
-      cv_scores[fold] <- mean((test_data$medv - predictions)^2)
-    }
-    
-    results[[i]] <- mean(cv_scores)
-  }
-  
-  # Find best parameters
-  best_idx <- which.min(unlist(results))
-  best_params <- param_grid[best_idx, ]
-  
-  cat("Best parameters:\n")
-  cat("mtry:", best_params$mtry, "\n")
-  cat("ntree:", best_params$ntree, "\n")
-  cat("Best CV MSE:", results[[best_idx]], "\n")
-  
-  return(best_params)
-}
+- **Random Forest Training**: Complete implementation using the `randomForest` package
+- **Bootstrap Sampling**: Demonstration of bootstrap sampling properties
+- **Bagging**: Comparison between single trees and bagging ensembles
+- **Variable Importance**: Built-in permutation importance calculation
+- **Hyperparameter Tuning**: Grid search implementation with cross-validation
+- **Visualization**: Comprehensive plotting functions for model analysis
+- **Ensemble Size Analysis**: Analysis of the effect of ensemble size on performance
+- **Partial Dependence Plots**: Tools for understanding feature effects
+- **Confidence Intervals**: Prediction intervals using tree quantiles
 
-# Run demonstrations
-rf_model_r <- demonstrate_random_forest_r()
-best_params_r <- tune_random_forest_r()
-```
+Key features:
+- Uses `randomForest` package for efficient implementation
+- Built-in OOB estimation and variable importance
+- Comprehensive visualization tools
+- Integration with `MASS` package for dataset access
+- Modular function design for easy customization and analysis
 
 ## 4.2.7. Advanced Topics
 
