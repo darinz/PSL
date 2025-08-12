@@ -266,433 +266,51 @@ where $`\hat{d}_{ij}`$ are the reconstructed distances.
 
 ## 6.1.8. Python Implementation
 
-```python
-import numpy as np
-import pandas as pd
-from scipy.spatial.distance import pdist, squareform
-from scipy.spatial import distance
-from sklearn.metrics.pairwise import cosine_distances
-from sklearn.manifold import MDS
-import matplotlib.pyplot as plt
-import seaborn as sns
+**Complete Implementation:** [distance_measures_implementation.py](code/distance_measures_implementation.py)
 
-class DistanceMeasures:
-    """Comprehensive implementation of distance measures for clustering analysis."""
-    
-    def __init__(self):
-        pass
-    
-    def euclidean_distance(self, x, z):
-        """Compute Euclidean distance between two points."""
-        return np.sqrt(np.sum((x - z) ** 2))
-    
-    def manhattan_distance(self, x, z):
-        """Compute Manhattan distance between two points."""
-        return np.sum(np.abs(x - z))
-    
-    def minkowski_distance(self, x, z, p=2):
-        """Compute Minkowski distance with parameter p."""
-        return np.power(np.sum(np.power(np.abs(x - z), p)), 1/p)
-    
-    def chebyshev_distance(self, x, z):
-        """Compute Chebyshev distance (L∞ norm)."""
-        return np.max(np.abs(x - z))
-    
-    def hamming_distance(self, x, z):
-        """Compute Hamming distance between two arrays."""
-        return np.sum(x != z)
-    
-    def jaccard_distance(self, set_a, set_b):
-        """Compute Jaccard distance between two sets."""
-        intersection = len(set_a.intersection(set_b))
-        union = len(set_a.union(set_b))
-        return 1 - intersection / union if union > 0 else 0
-    
-    def cosine_distance(self, x, z):
-        """Compute cosine distance between two vectors."""
-        dot_product = np.dot(x, z)
-        norm_x = np.linalg.norm(x)
-        norm_z = np.linalg.norm(z)
-        return 1 - dot_product / (norm_x * norm_z) if norm_x > 0 and norm_z > 0 else 1
-    
-    def edit_distance(self, s, t):
-        """Compute Levenshtein edit distance between two strings."""
-        m, n = len(s), len(t)
-        dp = np.zeros((m + 1, n + 1))
-        
-        for i in range(m + 1):
-            dp[i, 0] = i
-        for j in range(n + 1):
-            dp[0, j] = j
-            
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if s[i-1] == t[j-1]:
-                    dp[i, j] = dp[i-1, j-1]
-                else:
-                    dp[i, j] = 1 + min(dp[i-1, j], dp[i, j-1], dp[i-1, j-1])
-        
-        return int(dp[m, n])
-    
-    def compute_distance_matrix(self, X, metric='euclidean'):
-        """Compute pairwise distance matrix for a dataset."""
-        if metric == 'euclidean':
-            return squareform(pdist(X, metric='euclidean'))
-        elif metric == 'manhattan':
-            return squareform(pdist(X, metric='manhattan'))
-        elif metric == 'cosine':
-            return cosine_distances(X)
-        else:
-            raise ValueError(f"Unsupported metric: {metric}")
-    
-    def classical_mds(self, D, k=None):
-        """Perform classical MDS on distance matrix D."""
-        n = D.shape[0]
-        if k is None:
-            k = n
-        
-        # Step 1: Double centering
-        D_squared = D ** 2
-        H = np.eye(n) - np.ones((n, n)) / n
-        B = -0.5 * H @ D_squared @ H
-        
-        # Step 2: Eigendecomposition
-        eigenvals, eigenvecs = np.linalg.eigh(B)
-        
-        # Sort in descending order
-        idx = np.argsort(eigenvals)[::-1]
-        eigenvals = eigenvals[idx]
-        eigenvecs = eigenvecs[:, idx]
-        
-        # Step 3: Reconstruction
-        X_reconstructed = eigenvecs[:, :k] @ np.sqrt(np.diag(eigenvals[:k]))
-        
-        return X_reconstructed, eigenvals, eigenvecs
-    
-    def plot_distance_comparison(self, X, metrics=['euclidean', 'manhattan', 'cosine']):
-        """Compare different distance measures on the same dataset."""
-        fig, axes = plt.subplots(1, len(metrics), figsize=(15, 5))
-        
-        for i, metric in enumerate(metrics):
-            D = self.compute_distance_matrix(X, metric)
-            sns.heatmap(D, ax=axes[i], cmap='viridis', square=True)
-            axes[i].set_title(f'{metric.capitalize()} Distance')
-            axes[i].set_xlabel('Sample Index')
-            axes[i].set_ylabel('Sample Index')
-        
-        plt.tight_layout()
-        plt.show()
-    
-    def analyze_distance_distributions(self, X, metrics=['euclidean', 'manhattan', 'cosine']):
-        """Analyze the distribution of distances for different metrics."""
-        fig, axes = plt.subplots(1, len(metrics), figsize=(15, 5))
-        
-        for i, metric in enumerate(metrics):
-            D = self.compute_distance_matrix(X, metric)
-            # Get upper triangular part (excluding diagonal)
-            distances = D[np.triu_indices_from(D, k=1)]
-            
-            axes[i].hist(distances, bins=30, alpha=0.7, edgecolor='black')
-            axes[i].set_title(f'{metric.capitalize()} Distance Distribution')
-            axes[i].set_xlabel('Distance')
-            axes[i].set_ylabel('Frequency')
-            axes[i].axvline(np.mean(distances), color='red', linestyle='--', 
-                           label=f'Mean: {np.mean(distances):.3f}')
-            axes[i].legend()
-        
-        plt.tight_layout()
-        plt.show()
+The Python implementation includes:
 
-# Example usage and demonstration
-def demonstrate_distance_measures():
-    """Demonstrate various distance measures with examples."""
-    dm = DistanceMeasures()
-    
-    # Generate sample data
-    np.random.seed(42)
-    X = np.random.randn(50, 3)  # 50 samples, 3 features
-    
-    print("=== Distance Measures Demonstration ===\n")
-    
-    # Numerical distance examples
-    x1, x2 = X[0], X[1]
-    print(f"Sample points: x1 = {x1}, x2 = {x2}")
-    print(f"Euclidean distance: {dm.euclidean_distance(x1, x2):.4f}")
-    print(f"Manhattan distance: {dm.manhattan_distance(x1, x2):.4f}")
-    print(f"Minkowski distance (p=3): {dm.minkowski_distance(x1, x2, p=3):.4f}")
-    print(f"Chebyshev distance: {dm.chebyshev_distance(x1, x2):.4f}")
-    print(f"Cosine distance: {dm.cosine_distance(x1, x2):.4f}")
-    
-    # Categorical distance examples
-    set_a = {'apple', 'banana', 'cherry', 'date'}
-    set_b = {'apple', 'banana', 'elderberry'}
-    print(f"\nSet A: {set_a}")
-    print(f"Set B: {set_b}")
-    print(f"Jaccard distance: {dm.jaccard_distance(set_a, set_b):.4f}")
-    
-    # String distance examples
-    s1, s2 = "karolin", "kathrin"
-    print(f"\nString 1: '{s1}'")
-    print(f"String 2: '{s2}'")
-    print(f"Edit distance: {dm.edit_distance(s1, s2)}")
-    
-    # Distance matrix analysis
-    print(f"\nComputing distance matrices for {X.shape[0]} samples...")
-    dm.plot_distance_comparison(X)
-    dm.analyze_distance_distributions(X)
-    
-    # MDS demonstration
-    print("\n=== Multidimensional Scaling Demo ===")
-    D = dm.compute_distance_matrix(X, 'euclidean')
-    X_mds, eigenvals, eigenvecs = dm.classical_mds(D, k=2)
-    
-    print(f"Original data shape: {X.shape}")
-    print(f"MDS reconstructed shape: {X_mds.shape}")
-    print(f"Top 5 eigenvalues: {eigenvals[:5]}")
-    
-    # Plot MDS results
-    plt.figure(figsize=(12, 5))
-    
-    plt.subplot(1, 2, 1)
-    plt.scatter(X[:, 0], X[:, 1], alpha=0.7)
-    plt.title('Original Data (First 2 Dimensions)')
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    
-    plt.subplot(1, 2, 2)
-    plt.scatter(X_mds[:, 0], X_mds[:, 1], alpha=0.7)
-    plt.title('MDS Reconstruction (2D)')
-    plt.xlabel('MDS Dimension 1')
-    plt.ylabel('MDS Dimension 2')
-    
-    plt.tight_layout()
-    plt.show()
+- **DistanceMeasures Class**: Comprehensive implementation with support for numerical, categorical, and text-based distance measures
+- **Numerical Distances**: Euclidean, Manhattan, Minkowski, Chebyshev distances with efficient computation
+- **Categorical Distances**: Hamming distance for binary data and Jaccard distance for set-based data
+- **Text Distances**: Cosine distance for vectors and Levenshtein edit distance for strings
+- **Distance Matrix Computation**: Efficient pairwise distance matrix computation using scipy
+- **Classical MDS**: Complete implementation of multidimensional scaling with eigendecomposition
+- **Visualization Tools**: Distance comparison heatmaps and distribution analysis
+- **Comprehensive Demonstrations**: Examples with synthetic data, distance property analysis, and MDS applications
 
-if __name__ == "__main__":
-    demonstrate_distance_measures()
-```
+Key features:
+- Support for multiple distance metrics (euclidean, manhattan, cosine, etc.)
+- Efficient distance matrix computation using scipy and sklearn
+- Classical MDS implementation with dimensionality reduction
+- Comprehensive visualization and analysis tools
+- Integration with numpy, scipy, and sklearn for robust implementation
+- Property analysis for different data characteristics (normal, outliers, high-dimensional)
 
 ## 6.1.9. R Implementation
 
-```r
-# Distance Measures and Multidimensional Scaling in R
-library(stats)
-library(ggplot2)
-library(dplyr)
-library(proxy)
-library(MASS)
+**Complete Implementation:** [r_distance_measures.R](code/r_distance_measures.R)
 
-DistanceMeasures <- setRefClass("DistanceMeasures",
-  methods = list(
-    
-    euclidean_distance = function(x, z) {
-      sqrt(sum((x - z)^2))
-    },
-    
-    manhattan_distance = function(x, z) {
-      sum(abs(x - z))
-    },
-    
-    minkowski_distance = function(x, z, p = 2) {
-      (sum(abs(x - z)^p))^(1/p)
-    },
-    
-    chebyshev_distance = function(x, z) {
-      max(abs(x - z))
-    },
-    
-    hamming_distance = function(x, z) {
-      sum(x != z)
-    },
-    
-    jaccard_distance = function(set_a, set_b) {
-      intersection <- length(intersect(set_a, set_b))
-      union <- length(union(set_a, set_b))
-      if (union == 0) return(0)
-      1 - intersection / union
-    },
-    
-    cosine_distance = function(x, z) {
-      dot_product <- sum(x * z)
-      norm_x <- sqrt(sum(x^2))
-      norm_z <- sqrt(sum(z^2))
-      if (norm_x == 0 || norm_z == 0) return(1)
-      1 - dot_product / (norm_x * norm_z)
-    },
-    
-    edit_distance = function(s, t) {
-      # Simple implementation using adist
-      adist(s, t)[1, 1]
-    },
-    
-    compute_distance_matrix = function(X, metric = "euclidean") {
-      if (metric == "euclidean") {
-        as.matrix(dist(X, method = "euclidean"))
-      } else if (metric == "manhattan") {
-        as.matrix(dist(X, method = "manhattan"))
-      } else if (metric == "cosine") {
-        # Use proxy package for cosine distance
-        as.matrix(proxy::dist(X, method = "cosine"))
-      } else {
-        stop(paste("Unsupported metric:", metric))
-      }
-    },
-    
-    classical_mds = function(D, k = NULL) {
-      n <- nrow(D)
-      if (is.null(k)) k <- n
-      
-      # Step 1: Double centering
-      D_squared <- D^2
-      H <- diag(n) - matrix(1, n, n) / n
-      B <- -0.5 * H %*% D_squared %*% H
-      
-      # Step 2: Eigendecomposition
-      eigen_decomp <- eigen(B)
-      eigenvals <- eigen_decomp$values
-      eigenvecs <- eigen_decomp$vectors
-      
-      # Sort in descending order
-      idx <- order(eigenvals, decreasing = TRUE)
-      eigenvals <- eigenvals[idx]
-      eigenvecs <- eigenvecs[, idx]
-      
-      # Step 3: Reconstruction
-      X_reconstructed <- eigenvecs[, 1:k] %*% diag(sqrt(eigenvals[1:k]))
-      
-      list(
-        coordinates = X_reconstructed,
-        eigenvalues = eigenvals,
-        eigenvectors = eigenvecs
-      )
-    },
-    
-    plot_distance_comparison = function(X, metrics = c("euclidean", "manhattan", "cosine")) {
-      plots <- list()
-      
-      for (i in seq_along(metrics)) {
-        metric <- metrics[i]
-        D <- compute_distance_matrix(X, metric)
-        
-        # Convert to long format for ggplot
-        D_long <- as.data.frame(D) %>%
-          mutate(row_id = row_number()) %>%
-          tidyr::gather(key = "col_id", value = "distance", -row_id) %>%
-          mutate(col_id = as.numeric(col_id))
-        
-        p <- ggplot(D_long, aes(x = col_id, y = row_id, fill = distance)) +
-          geom_tile() +
-          scale_fill_viridis_c() +
-          labs(title = paste(toupper(metric), "Distance"),
-               x = "Sample Index", y = "Sample Index") +
-          theme_minimal() +
-          theme(axis.text = element_text(size = 8))
-        
-        plots[[i]] <- p
-      }
-      
-      # Combine plots
-      do.call(gridExtra::grid.arrange, c(plots, ncol = length(metrics)))
-    },
-    
-    analyze_distance_distributions = function(X, metrics = c("euclidean", "manhattan", "cosine")) {
-      plots <- list()
-      
-      for (i in seq_along(metrics)) {
-        metric <- metrics[i]
-        D <- compute_distance_matrix(X, metric)
-        
-        # Get upper triangular part (excluding diagonal)
-        distances <- D[upper.tri(D)]
-        
-        p <- ggplot(data.frame(distance = distances), aes(x = distance)) +
-          geom_histogram(bins = 30, alpha = 0.7, fill = "steelblue", color = "black") +
-          geom_vline(xintercept = mean(distances), color = "red", linestyle = "dashed") +
-          labs(title = paste(toupper(metric), "Distance Distribution"),
-               x = "Distance", y = "Frequency") +
-          annotate("text", x = mean(distances), y = Inf, 
-                   label = paste("Mean:", round(mean(distances), 3)),
-                   vjust = 2, hjust = -0.1, color = "red") +
-          theme_minimal()
-        
-        plots[[i]] <- p
-      }
-      
-      # Combine plots
-      do.call(gridExtra::grid.arrange, c(plots, ncol = length(metrics)))
-    }
-  )
-)
+The R implementation includes:
 
-# Example usage and demonstration
-demonstrate_distance_measures <- function() {
-  cat("=== Distance Measures Demonstration ===\n\n")
-  
-  dm <- DistanceMeasures$new()
-  
-  # Generate sample data
-  set.seed(42)
-  X <- matrix(rnorm(50 * 3), ncol = 3)  # 50 samples, 3 features
-  
-  # Numerical distance examples
-  x1 <- X[1, ]
-  x2 <- X[2, ]
-  cat("Sample points:\n")
-  cat("x1 =", paste(round(x1, 3), collapse = ", "), "\n")
-  cat("x2 =", paste(round(x2, 3), collapse = ", "), "\n\n")
-  
-  cat("Distance measures:\n")
-  cat("Euclidean distance:", round(dm$euclidean_distance(x1, x2), 4), "\n")
-  cat("Manhattan distance:", round(dm$manhattan_distance(x1, x2), 4), "\n")
-  cat("Minkowski distance (p=3):", round(dm$minkowski_distance(x1, x2, 3), 4), "\n")
-  cat("Chebyshev distance:", round(dm$chebyshev_distance(x1, x2), 4), "\n")
-  cat("Cosine distance:", round(dm$cosine_distance(x1, x2), 4), "\n\n")
-  
-  # Categorical distance examples
-  set_a <- c("apple", "banana", "cherry", "date")
-  set_b <- c("apple", "banana", "elderberry")
-  cat("Set A:", paste(set_a, collapse = ", "), "\n")
-  cat("Set B:", paste(set_b, collapse = ", "), "\n")
-  cat("Jaccard distance:", round(dm$jaccard_distance(set_a, set_b), 4), "\n\n")
-  
-  # String distance examples
-  s1 <- "karolin"
-  s2 <- "kathrin"
-  cat("String 1:", s1, "\n")
-  cat("String 2:", s2, "\n")
-  cat("Edit distance:", dm$edit_distance(s1, s2), "\n\n")
-  
-  # Distance matrix analysis
-  cat("Computing distance matrices for", nrow(X), "samples...\n")
-  dm$plot_distance_comparison(X)
-  dm$analyze_distance_distributions(X)
-  
-  # MDS demonstration
-  cat("\n=== Multidimensional Scaling Demo ===\n")
-  D <- dm$compute_distance_matrix(X, "euclidean")
-  mds_result <- dm$classical_mds(D, k = 2)
-  
-  cat("Original data shape:", dim(X), "\n")
-  cat("MDS reconstructed shape:", dim(mds_result$coordinates), "\n")
-  cat("Top 5 eigenvalues:", round(mds_result$eigenvalues[1:5], 4), "\n")
-  
-  # Plot MDS results
-  par(mfrow = c(1, 2))
-  
-  plot(X[, 1], X[, 2], main = "Original Data (First 2 Dimensions)",
-       xlab = "Feature 1", ylab = "Feature 2", pch = 19, col = "blue")
-  
-  plot(mds_result$coordinates[, 1], mds_result$coordinates[, 2],
-       main = "MDS Reconstruction (2D)",
-       xlab = "MDS Dimension 1", ylab = "MDS Dimension 2", 
-       pch = 19, col = "red")
-  
-  par(mfrow = c(1, 1))
-}
+- **DistanceMeasures Class**: Comprehensive implementation using R's reference class system
+- **Numerical Distances**: Euclidean, Manhattan, Minkowski, Chebyshev distances with efficient computation
+- **Categorical Distances**: Hamming distance for binary data and Jaccard distance for set-based data
+- **Text Distances**: Cosine distance for vectors and edit distance using R's built-in adist function
+- **Distance Matrix Computation**: Efficient pairwise distance matrix computation using stats and proxy packages
+- **Classical MDS**: Complete implementation of multidimensional scaling with eigendecomposition
+- **ggplot2 Visualizations**: Publication-quality distance comparison heatmaps and distribution analysis
+- **Comprehensive Demonstrations**: Examples with synthetic data, distance property analysis, and MDS applications
+- **Built-in Function Comparison**: Validation against R's native distance and MDS functions
 
-# Run demonstration
-demonstrate_distance_measures()
-```
+Key features:
+- Support for multiple distance metrics (euclidean, manhattan, cosine, etc.)
+- Efficient distance matrix computation using stats::dist and proxy packages
+- Classical MDS implementation with dimensionality reduction
+- ggplot2-based visualizations for publication-quality plots
+- Integration with R's built-in functions for robust implementation
+- Property analysis for different data characteristics (normal, outliers, high-dimensional)
+- Validation against R's native cmdscale function
 
 ## 6.1.10. Summary and Best Practices
 
@@ -733,3 +351,25 @@ demonstrate_distance_measures()
 - **Metric learning**: Learn optimal distance measures from data
 - **Approximate methods**: Use techniques like locality-sensitive hashing for large datasets
 - **Non-metric distances**: Relax metric axioms for specific applications
+
+## Code Files Summary
+
+The following code files contain the complete implementations for distance measures:
+
+### Python Files
+- **[distance_measures_implementation.py](code/distance_measures_implementation.py)**: Main implementation with DistanceMeasures class, comprehensive demonstrations, and MDS applications
+
+### R Files
+- **[r_distance_measures.R](code/r_distance_measures.R)**: Complete R implementation with ggplot2 visualizations, distance property analysis, and built-in function comparison
+
+### Key Features Implemented
+- **DistanceMeasures Class**: Comprehensive implementation with support for numerical, categorical, and text-based distance measures
+- **Numerical Distances**: Euclidean, Manhattan, Minkowski, Chebyshev distances with efficient computation
+- **Categorical Distances**: Hamming distance for binary data and Jaccard distance for set-based data
+- **Text Distances**: Cosine distance for vectors and Levenshtein edit distance for strings
+- **Distance Matrix Computation**: Efficient pairwise distance matrix computation using scipy/stats and sklearn/proxy packages
+- **Classical MDS**: Complete implementation of multidimensional scaling with eigendecomposition
+- **Visualization Tools**: Distance comparison heatmaps and distribution analysis using seaborn and ggplot2
+- **Comprehensive Demonstrations**: Examples with synthetic data, distance property analysis, and MDS applications
+- **Property Analysis**: Analysis for different data characteristics (normal, outliers, high-dimensional)
+- **Built-in Function Validation**: Comparison with native R functions for verification
