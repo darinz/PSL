@@ -228,4 +228,10 @@ Before studying this module, you should have:
 
 ---
 
-**Note**: This module provides a solid foundation in discriminant analysis methods. The theoretical understanding combined with practical implementations prepares students for advanced machine learning topics and real-world classification problems. 
+**Note**: This module provides a solid foundation in discriminant analysis methods. The theoretical understanding combined with practical implementations prepares students for advanced machine learning topics and real-world classification problems.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Introduction to Classification](01_classification.md) - Definition of classification problems and optimal classifier derivation
+- **Previous Section:** [Latent Structure Models](../07_latent_structure_models/README.md) - Overview of unsupervised learning techniques 
