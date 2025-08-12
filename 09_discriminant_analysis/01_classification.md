@@ -299,3 +299,9 @@ The classification concepts have been implemented in the following code files:
 - **Practical Considerations**: R implementations of class imbalance and feature importance
 
 Both implementations provide comprehensive coverage of classification concepts with practical examples and visualizations.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Discriminant Analysis](02_discriminant_analysis.md) - Bayes' theorem application and joint distribution factorization
+- **Previous Topic:** [Discriminant Analysis Overview](README.md) - Overview of discriminant analysis methods and applications
