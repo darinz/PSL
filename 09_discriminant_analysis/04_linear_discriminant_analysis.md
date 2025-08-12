@@ -380,3 +380,9 @@ These functions provide stratified k-fold cross-validation for reliable performa
 - High-dimensional data with complex patterns (use deep learning)
 
 LDA remains a fundamental and powerful classification method that provides an excellent balance between simplicity, interpretability, and performance for many real-world problems.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Fisher Discriminant Analysis](05_fisher_discriminant_analysis.md) - Supervised dimensionality reduction and optimal projection directions
+- **Previous Topic:** [Quadratic Discriminant Analysis](03_quadratic_discriminant_analysis.md) - Class-specific covariance matrices and quadratic decision boundaries
