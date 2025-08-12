@@ -51,49 +51,13 @@ The implementation demonstrates:
 - **Component analysis**: Individual component densities and their weighted combination
 - **Parameter specification**: Clear demonstration of mixing weights and component parameters
 
-```r
-# R implementation
-set.seed(42)
+**Implementation:** See `visualize_mixture_model()` function in [r_mixture_models_implementation.R](code/r_mixture_models_implementation.R)
 
-# Parameters for a two-component Gaussian mixture
-mu1 <- 0; sigma1 <- 1
-mu2 <- 4; sigma2 <- 1.5
-pi1 <- 0.6; pi2 <- 1 - pi1
-
-# Generate data
-n_samples <- 1000
-z <- sample(c(0, 1), size=n_samples, replace=TRUE, prob=c(pi1, pi2))
-x <- numeric(n_samples)
-
-x[z == 0] <- rnorm(sum(z == 0), mu1, sigma1)
-x[z == 1] <- rnorm(sum(z == 1), mu2, sigma2)
-
-# Plot the mixture
-par(mfrow=c(1, 2))
-
-# Histogram of data
-hist(x, breaks=50, freq=FALSE, col="skyblue", border="black",
-     main="Histogram of Mixture Data", xlab="x", ylab="Density")
-
-# True mixture density
-x_range <- seq(-3, 8, length.out=1000)
-true_density <- pi1 * dnorm(x_range, mu1, sigma1) + pi2 * dnorm(x_range, mu2, sigma2)
-lines(x_range, true_density, col="red", lwd=2)
-
-# Individual components
-plot(x_range, pi1 * dnorm(x_range, mu1, sigma1), type="l", lty=2, col="blue",
-     main="Mixture Components", xlab="x", ylab="Density",
-     ylim=c(0, max(true_density)))
-lines(x_range, pi2 * dnorm(x_range, mu2, sigma2), lty=2, col="green")
-lines(x_range, true_density, col="red", lwd=2)
-legend("topright", legend=c(paste("Component 1 (π=", pi1, ")"), 
-                           paste("Component 2 (π=", pi2, ")"), "Mixture"),
-       col=c("blue", "green", "red"), lty=c(2, 2, 1), lwd=c(1, 1, 2))
-
-cat("Generated", n_samples, "samples from mixture model\n")
-cat("Component 1: μ=", mu1, ", σ=", sigma1, ", π=", pi1, "\n")
-cat("Component 2: μ=", mu2, ", σ=", sigma2, ", π=", pi2, "\n")
-```
+The implementation demonstrates:
+- **Data generation**: Creating synthetic data from a two-component Gaussian mixture using R's random number generators
+- **Visualization**: Histogram of generated data with true mixture density overlay using base R graphics
+- **Component analysis**: Individual component densities and their weighted combination
+- **Parameter specification**: Clear demonstration of mixing weights and component parameters
 
 ## 7.2.2. Two-Component Gaussian Mixture
 
@@ -187,147 +151,23 @@ where $`n_1 = \sum_{i=1}^n \mathbf{1}_{\{z_i=1\}}`$ and $`n_2 = n - n_1`$.
 
 ### Implementation: Two-Component Gaussian Mixture
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-from sklearn.mixture import GaussianMixture
+**Implementation:** See `TwoComponentGaussianMixture` class and `demonstrate_two_component_mixture()` function in [mixture_models_implementation.py](code/mixture_models_implementation.py)
 
-class TwoComponentGaussianMixture:
-    def __init__(self, mu1=0, mu2=4, sigma1=1, sigma2=1.5, pi=0.6):
-        self.mu1 = mu1
-        self.mu2 = mu2
-        self.sigma1 = sigma1
-        self.sigma2 = sigma2
-        self.pi = pi
-        
-    def generate_data(self, n_samples=1000):
-        """Generate data from the mixture model"""
-        z = np.random.choice([0, 1], size=n_samples, p=[self.pi, 1-self.pi])
-        x = np.zeros(n_samples)
-        
-        x[z == 0] = np.random.normal(self.mu1, self.sigma1, size=np.sum(z == 0))
-        x[z == 1] = np.random.normal(self.mu2, self.sigma2, size=np.sum(z == 1))
-        
-        return x, z
-    
-    def pdf(self, x):
-        """Compute the probability density function"""
-        return (self.pi * norm.pdf(x, self.mu1, self.sigma1) + 
-                (1-self.pi) * norm.pdf(x, self.mu2, self.sigma2))
-    
-    def plot_mixture(self, x, z=None):
-        """Plot the mixture model and data"""
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-        
-        # Histogram
-        ax1.hist(x, bins=50, density=True, alpha=0.7, color='skyblue', edgecolor='black')
-        x_range = np.linspace(x.min()-1, x.max()+1, 1000)
-        ax1.plot(x_range, self.pdf(x_range), 'r-', linewidth=2, label='True Mixture')
-        ax1.set_title('Data and True Mixture Density')
-        ax1.set_xlabel('x')
-        ax1.set_ylabel('Density')
-        ax1.legend()
-        
-        # Components
-        ax2.plot(x_range, self.pi * norm.pdf(x_range, self.mu1, self.sigma1), 
-                'b--', label=f'Component 1 (π={self.pi:.1f})')
-        ax2.plot(x_range, (1-self.pi) * norm.pdf(x_range, self.mu2, self.sigma2), 
-                'g--', label=f'Component 2 (π={1-self.pi:.1f})')
-        ax2.plot(x_range, self.pdf(x_range), 'r-', linewidth=2, label='Mixture')
-        ax2.set_title('Mixture Components')
-        ax2.set_xlabel('x')
-        ax2.set_ylabel('Density')
-        ax2.legend()
-        
-        plt.tight_layout()
-        plt.show()
+The implementation includes:
+- **TwoComponentGaussianMixture class**: Complete implementation with data generation, PDF computation, and visualization
+- **Data generation**: Synthetic data generation from the mixture model with latent component assignments
+- **PDF computation**: Probability density function evaluation for the mixture model
+- **Visualization**: Comprehensive plotting with histogram, true density, and component analysis
+- **Parameter comparison**: Comparison with sklearn's GaussianMixture for validation
 
-# Example usage
-np.random.seed(42)
-gmm = TwoComponentGaussianMixture()
-x, z = gmm.generate_data(1000)
-gmm.plot_mixture(x, z)
+**Implementation:** See `TwoComponentGaussianMixture` function and `demonstrate_two_component_mixture()` function in [r_mixture_models_implementation.R](code/r_mixture_models_implementation.R)
 
-# Fit using sklearn for comparison
-sklearn_gmm = GaussianMixture(n_components=2, random_state=42)
-sklearn_gmm.fit(x.reshape(-1, 1))
-
-print("True parameters:")
-print(f"μ1={gmm.mu1}, μ2={gmm.mu2}, σ1={gmm.sigma1}, σ2={gmm.sigma2}, π={gmm.pi}")
-print("\nSklearn estimated parameters:")
-print(f"μ1={sklearn_gmm.means_[0,0]:.3f}, μ2={sklearn_gmm.means_[1,0]:.3f}")
-print(f"σ1={np.sqrt(sklearn_gmm.covariances_[0,0,0]):.3f}, σ2={np.sqrt(sklearn_gmm.covariances_[1,0,0]):.3f}")
-print(f"π1={sklearn_gmm.weights_[0]:.3f}, π2={sklearn_gmm.weights_[1]:.3f}")
-```
-
-```r
-# R implementation
-library(mixtools)
-library(ggplot2)
-
-TwoComponentGaussianMixture <- function(mu1=0, mu2=4, sigma1=1, sigma2=1.5, pi=0.6) {
-  list(mu1=mu1, mu2=mu2, sigma1=sigma1, sigma2=sigma2, pi=pi)
-}
-
-generate_data <- function(gmm, n_samples=1000) {
-  z <- sample(c(0, 1), size=n_samples, replace=TRUE, prob=c(gmm$pi, 1-gmm$pi))
-  x <- numeric(n_samples)
-  
-  x[z == 0] <- rnorm(sum(z == 0), gmm$mu1, gmm$sigma1)
-  x[z == 1] <- rnorm(sum(z == 1), gmm$mu2, gmm$sigma2)
-  
-  list(x=x, z=z)
-}
-
-pdf_mixture <- function(x, gmm) {
-  gmm$pi * dnorm(x, gmm$mu1, gmm$sigma1) + (1-gmm$pi) * dnorm(x, gmm$mu2, gmm$sigma2)
-}
-
-plot_mixture <- function(x, gmm, z=NULL) {
-  # Create data frame for plotting
-  df <- data.frame(x=x)
-  x_range <- seq(min(x)-1, max(x)+1, length.out=1000)
-  df_density <- data.frame(
-    x=x_range,
-    component1=gmm$pi * dnorm(x_range, gmm$mu1, gmm$sigma1),
-    component2=(1-gmm$pi) * dnorm(x_range, gmm$mu2, gmm$sigma2),
-    mixture=pdf_mixture(x_range, gmm)
-  )
-  
-  # Plot 1: Histogram with true density
-  p1 <- ggplot(df, aes(x=x)) +
-    geom_histogram(aes(y=..density..), bins=50, fill="skyblue", alpha=0.7) +
-    geom_line(data=df_density, aes(x=x, y=mixture), color="red", size=1) +
-    labs(title="Data and True Mixture Density", x="x", y="Density") +
-    theme_minimal()
-  
-  # Plot 2: Components
-  p2 <- ggplot(df_density, aes(x=x)) +
-    geom_line(aes(y=component1), color="blue", linetype="dashed") +
-    geom_line(aes(y=component2), color="green", linetype="dashed") +
-    geom_line(aes(y=mixture), color="red", size=1) +
-    labs(title="Mixture Components", x="x", y="Density") +
-    theme_minimal()
-  
-  gridExtra::grid.arrange(p1, p2, ncol=2)
-}
-
-# Example usage
-set.seed(42)
-gmm <- TwoComponentGaussianMixture()
-data <- generate_data(gmm, 1000)
-plot_mixture(data$x, gmm, data$z)
-
-# Fit using mixtools
-fit <- normalmixEM(data$x, k=2)
-print("True parameters:")
-cat("μ1=", gmm$mu1, ", μ2=", gmm$mu2, ", σ1=", gmm$sigma1, ", σ2=", gmm$sigma2, ", π=", gmm$pi, "\n")
-print("Estimated parameters:")
-cat("μ1=", round(fit$mu[1], 3), ", μ2=", round(fit$mu[2], 3), "\n")
-cat("σ1=", round(fit$sigma[1], 3), ", σ2=", round(fit$sigma[2], 3), "\n")
-cat("π1=", round(fit$lambda[1], 3), ", π2=", round(fit$lambda[2], 3), "\n")
-```
+The implementation includes:
+- **TwoComponentGaussianMixture function**: Complete implementation with data generation, PDF computation, and visualization
+- **Data generation**: Synthetic data generation from the mixture model with latent component assignments
+- **PDF computation**: Probability density function evaluation for the mixture model
+- **Visualization**: Comprehensive plotting with ggplot2 for histogram, true density, and component analysis
+- **Parameter comparison**: Comparison with mixtools' normalmixEM for validation
 
 ## 7.2.3. Kullback-Leibler Divergence
 
@@ -372,126 +212,22 @@ KL(p \| q) = \int p(x) \log\frac{p(x)}{q(x)} dx
 
 ### Implementation: KL Divergence
 
-```python
-import numpy as np
-from scipy.stats import norm, entropy
-from scipy.integrate import quad
+**Implementation:** See `kl_divergence_discrete()`, `kl_divergence_continuous()`, `kl_divergence_gaussian()`, and `demonstrate_kl_divergence()` functions in [mixture_models_implementation.py](code/mixture_models_implementation.py)
 
-def kl_divergence_discrete(p, q):
-    """Compute KL divergence for discrete distributions"""
-    # Ensure probabilities sum to 1
-    p = np.array(p) / np.sum(p)
-    q = np.array(q) / np.sum(q)
-    
-    # Add small epsilon to avoid log(0)
-    epsilon = 1e-10
-    p = p + epsilon
-    q = q + epsilon
-    
-    return np.sum(p * np.log(p / q))
+The implementation includes:
+- **Discrete KL divergence**: Computation for discrete probability distributions with numerical stability
+- **Continuous KL divergence**: Numerical integration for continuous distributions using scipy.integrate
+- **Gaussian KL divergence**: Analytical solution for Gaussian distributions
+- **Visualization**: Distribution comparison with KL divergence computation and visualization
+- **Validation**: Comparison between analytical and numerical solutions
 
-def kl_divergence_continuous(p_func, q_func, x_range):
-    """Compute KL divergence for continuous distributions using numerical integration"""
-    def integrand(x):
-        p_val = p_func(x)
-        q_val = q_func(x)
-        # Avoid log(0)
-        if p_val > 0 and q_val > 0:
-            return p_val * np.log(p_val / q_val)
-        return 0
-    
-    result, _ = quad(integrand, x_range[0], x_range[-1])
-    return result
+**Implementation:** See `kl_divergence_discrete()`, `kl_divergence_gaussian()`, and `demonstrate_kl_divergence()` functions in [r_mixture_models_implementation.R](code/r_mixture_models_implementation.R)
 
-def kl_divergence_gaussian(mu1, sigma1, mu2, sigma2):
-    """Compute KL divergence between two Gaussian distributions"""
-    return (np.log(sigma2/sigma1) + 
-            (sigma1**2 + (mu1 - mu2)**2) / (2 * sigma2**2) - 0.5)
-
-# Example: KL divergence between Gaussians
-mu1, sigma1 = 0, 1
-mu2, sigma2 = 1, 1.5
-
-# Analytical solution
-kl_analytical = kl_divergence_gaussian(mu1, sigma1, mu2, sigma2)
-
-# Numerical solution
-def gaussian_pdf(x, mu, sigma):
-    return norm.pdf(x, mu, sigma)
-
-kl_numerical = kl_divergence_continuous(
-    lambda x: gaussian_pdf(x, mu1, sigma1),
-    lambda x: gaussian_pdf(x, mu2, sigma2),
-    [-5, 5]
-)
-
-print(f"KL divergence between N({mu1},{sigma1}) and N({mu2},{sigma2})")
-print(f"Analytical: {kl_analytical:.6f}")
-print(f"Numerical:  {kl_numerical:.6f}")
-
-# Visualize the distributions
-import matplotlib.pyplot as plt
-
-x = np.linspace(-4, 6, 1000)
-p1 = gaussian_pdf(x, mu1, sigma1)
-p2 = gaussian_pdf(x, mu2, sigma2)
-
-plt.figure(figsize=(10, 6))
-plt.plot(x, p1, 'b-', label=f'N({mu1},{sigma1})')
-plt.plot(x, p2, 'r-', label=f'N({mu2},{sigma2})')
-plt.fill_between(x, p1, p2, alpha=0.3, color='gray')
-plt.title(f'Gaussian Distributions (KL divergence: {kl_analytical:.4f})')
-plt.xlabel('x')
-plt.ylabel('Density')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-```
-
-```r
-# R implementation
-library(ggplot2)
-
-kl_divergence_discrete <- function(p, q) {
-  # Normalize probabilities
-  p <- p / sum(p)
-  q <- q / sum(q)
-  
-  # Add small epsilon to avoid log(0)
-  epsilon <- 1e-10
-  p <- p + epsilon
-  q <- q + epsilon
-  
-  sum(p * log(p / q))
-}
-
-kl_divergence_gaussian <- function(mu1, sigma1, mu2, sigma2) {
-  log(sigma2/sigma1) + (sigma1^2 + (mu1 - mu2)^2) / (2 * sigma2^2) - 0.5
-}
-
-# Example
-mu1 <- 0; sigma1 <- 1
-mu2 <- 1; sigma2 <- 1.5
-
-kl_analytical <- kl_divergence_gaussian(mu1, sigma1, mu2, sigma2)
-
-cat("KL divergence between N(", mu1, ",", sigma1, ") and N(", mu2, ",", sigma2, ")\n")
-cat("Analytical:", round(kl_analytical, 6), "\n")
-
-# Visualize
-x <- seq(-4, 6, length.out=1000)
-p1 <- dnorm(x, mu1, sigma1)
-p2 <- dnorm(x, mu2, sigma2)
-
-df <- data.frame(x=x, p1=p1, p2=p2)
-ggplot(df, aes(x=x)) +
-  geom_line(aes(y=p1), color="blue", size=1) +
-  geom_line(aes(y=p2), color="red", size=1) +
-  geom_ribbon(aes(ymin=pmin(p1, p2), ymax=pmax(p1, p2)), alpha=0.3, fill="gray") +
-  labs(title=paste("Gaussian Distributions (KL divergence:", round(kl_analytical, 4), ")"),
-       x="x", y="Density") +
-  theme_minimal()
-```
+The implementation includes:
+- **Discrete KL divergence**: Computation for discrete probability distributions with numerical stability
+- **Gaussian KL divergence**: Analytical solution for Gaussian distributions
+- **Visualization**: Distribution comparison with KL divergence computation using ggplot2
+- **Validation**: Analytical solution demonstration with visualization
 
 ## 7.2.4. The Expectation-Maximization Algorithm
 
@@ -530,211 +266,25 @@ Using the responsibilities, we update the parameters:
 
 ### Implementation: EM Algorithm
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
+**Implementation:** See `EMGaussianMixture` class and `demonstrate_em_algorithm()` function in [mixture_models_implementation.py](code/mixture_models_implementation.py)
 
-class EMGaussianMixture:
-    def __init__(self, n_components=2, max_iter=100, tol=1e-6):
-        self.n_components = n_components
-        self.max_iter = max_iter
-        self.tol = tol
-        self.means_ = None
-        self.covariances_ = None
-        self.weights_ = None
-        self.responsibilities_ = None
-        
-    def fit(self, X):
-        """Fit the Gaussian mixture model using EM algorithm"""
-        n_samples = len(X)
-        
-        # Initialize parameters randomly
-        self._initialize_parameters(X)
-        
-        log_likelihoods = []
-        
-        for iteration in range(self.max_iter):
-            # E-step: Compute responsibilities
-            self.responsibilities_ = self._e_step(X)
-            
-            # M-step: Update parameters
-            self._m_step(X)
-            
-            # Compute log-likelihood
-            log_likelihood = self._compute_log_likelihood(X)
-            log_likelihoods.append(log_likelihood)
-            
-            # Check convergence
-            if len(log_likelihoods) > 1:
-                if abs(log_likelihoods[-1] - log_likelihoods[-2]) < self.tol:
-                    print(f"Converged after {iteration + 1} iterations")
-                    break
-        
-        return self
-    
-    def _initialize_parameters(self, X):
-        """Initialize parameters randomly"""
-        n_samples = len(X)
-        
-        # Random means
-        self.means_ = np.random.choice(X, size=self.n_components, replace=False)
-        
-        # Random covariances
-        self.covariances_ = np.array([np.var(X)] * self.n_components)
-        
-        # Random weights
-        self.weights_ = np.random.dirichlet(np.ones(self.n_components))
-    
-    def _e_step(self, X):
-        """E-step: Compute responsibilities"""
-        n_samples = len(X)
-        responsibilities = np.zeros((n_samples, self.n_components))
-        
-        for k in range(self.n_components):
-            responsibilities[:, k] = (self.weights_[k] * 
-                                   norm.pdf(X, self.means_[k], np.sqrt(self.covariances_[k])))
-        
-        # Normalize
-        row_sums = responsibilities.sum(axis=1)
-        responsibilities = responsibilities / row_sums[:, np.newaxis]
-        
-        return responsibilities
-    
-    def _m_step(self, X):
-        """M-step: Update parameters"""
-        n_samples = len(X)
-        
-        for k in range(self.n_components):
-            # Update weights
-            self.weights_[k] = np.mean(self.responsibilities_[:, k])
-            
-            # Update means
-            self.means_[k] = (np.sum(self.responsibilities_[:, k] * X) / 
-                             np.sum(self.responsibilities_[:, k]))
-            
-            # Update covariances
-            self.covariances_[k] = (np.sum(self.responsibilities_[:, k] * 
-                                          (X - self.means_[k])**2) / 
-                                   np.sum(self.responsibilities_[:, k]))
-    
-    def _compute_log_likelihood(self, X):
-        """Compute log-likelihood"""
-        likelihood = np.zeros(len(X))
-        
-        for k in range(self.n_components):
-            likelihood += (self.weights_[k] * 
-                         norm.pdf(X, self.means_[k], np.sqrt(self.covariances_[k])))
-        
-        return np.sum(np.log(likelihood + 1e-10))
-    
-    def predict_proba(self, X):
-        """Predict component probabilities"""
-        return self._e_step(X)
-    
-    def predict(self, X):
-        """Predict component assignments"""
-        return np.argmax(self.predict_proba(X), axis=1)
+The implementation includes:
+- **EMGaussianMixture class**: Complete EM algorithm implementation with E-step and M-step
+- **Parameter initialization**: Random initialization of means, covariances, and weights
+- **E-step**: Computation of responsibilities (posterior probabilities)
+- **M-step**: Parameter updates using weighted averages
+- **Convergence monitoring**: Log-likelihood tracking and convergence detection
+- **Visualization**: Comparison of true vs. fitted mixtures and responsibility plots
+- **Parameter comparison**: Detailed comparison between true and estimated parameters
 
-# Example usage
-np.random.seed(42)
+**Implementation:** See `demonstrate_em_algorithm()` function in [r_mixture_models_implementation.R](code/r_mixture_models_implementation.R)
 
-# Generate data from true mixture
-true_gmm = TwoComponentGaussianMixture()
-X, true_z = true_gmm.generate_data(1000)
-
-# Fit using EM
-em_gmm = EMGaussianMixture(n_components=2)
-em_gmm.fit(X)
-
-# Compare results
-print("True parameters:")
-print(f"μ1={true_gmm.mu1}, μ2={true_gmm.mu2}")
-print(f"σ1={true_gmm.sigma1}, σ2={true_gmm.sigma2}")
-print(f"π={true_gmm.pi}")
-
-print("\nEM estimated parameters:")
-print(f"μ1={em_gmm.means_[0]:.3f}, μ2={em_gmm.means_[1]:.3f}")
-print(f"σ1={np.sqrt(em_gmm.covariances_[0]):.3f}, σ2={np.sqrt(em_gmm.covariances_[1]):.3f}")
-print(f"π1={em_gmm.weights_[0]:.3f}, π2={em_gmm.weights_[1]:.3f}")
-
-# Visualize results
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-
-# Data and fitted mixture
-ax1.hist(X, bins=50, density=True, alpha=0.7, color='skyblue', edgecolor='black')
-x_range = np.linspace(X.min()-1, X.max()+1, 1000)
-
-# True mixture
-true_density = true_gmm.pdf(x_range)
-ax1.plot(x_range, true_density, 'r-', linewidth=2, label='True Mixture')
-
-# Fitted mixture
-fitted_density = (em_gmm.weights_[0] * norm.pdf(x_range, em_gmm.means_[0], np.sqrt(em_gmm.covariances_[0])) +
-                 em_gmm.weights_[1] * norm.pdf(x_range, em_gmm.means_[1], np.sqrt(em_gmm.covariances_[1])))
-ax1.plot(x_range, fitted_density, 'g--', linewidth=2, label='Fitted Mixture')
-
-ax1.set_title('Data and Mixture Densities')
-ax1.set_xlabel('x')
-ax1.set_ylabel('Density')
-ax1.legend()
-
-# Responsibilities
-predicted_z = em_gmm.predict(X)
-ax2.scatter(X, em_gmm.responsibilities_[:, 0], alpha=0.6, s=20)
-ax2.set_title('Responsibilities (Component 1)')
-ax2.set_xlabel('x')
-ax2.set_ylabel('P(Z=1|x)')
-
-plt.tight_layout()
-plt.show()
-```
-
-```r
-# R implementation
-library(mixtools)
-
-# Generate data
-set.seed(42)
-gmm <- TwoComponentGaussianMixture()
-data <- generate_data(gmm, 1000)
-
-# Fit using mixtools EM
-fit <- normalmixEM(data$x, k=2, maxit=100, epsilon=1e-6)
-
-# Compare results
-cat("True parameters:\n")
-cat("μ1=", gmm$mu1, ", μ2=", gmm$mu2, "\n")
-cat("σ1=", gmm$sigma1, ", σ2=", gmm$sigma2, "\n")
-cat("π=", gmm$pi, "\n")
-
-cat("\nEM estimated parameters:\n")
-cat("μ1=", round(fit$mu[1], 3), ", μ2=", round(fit$mu[2], 3), "\n")
-cat("σ1=", round(fit$sigma[1], 3), ", σ2=", round(fit$sigma[2], 3), "\n")
-cat("π1=", round(fit$lambda[1], 3), ", π2=", round(fit$lambda[2], 3), "\n")
-
-# Visualize results
-par(mfrow=c(1, 2))
-
-# Data and fitted mixture
-hist(data$x, breaks=50, freq=FALSE, col="skyblue", border="black",
-     main="Data and Mixture Densities", xlab="x", ylab="Density")
-
-x_range <- seq(min(data$x)-1, max(data$x)+1, length.out=1000)
-true_density <- pdf_mixture(x_range, gmm)
-lines(x_range, true_density, col="red", lwd=2)
-
-fitted_density <- fit$lambda[1] * dnorm(x_range, fit$mu[1], fit$sigma[1]) +
-                 fit$lambda[2] * dnorm(x_range, fit$mu[2], fit$sigma[2])
-lines(x_range, fitted_density, col="green", lty=2, lwd=2)
-
-legend("topright", legend=c("True Mixture", "Fitted Mixture"),
-       col=c("red", "green"), lty=c(1, 2), lwd=2)
-
-# Responsibilities
-plot(data$x, fit$posterior[,1], pch=16, cex=0.5, col="blue",
-     main="Responsibilities (Component 1)", xlab="x", ylab="P(Z=1|x)")
-```
+The implementation includes:
+- **EM algorithm**: Using mixtools' normalmixEM for Gaussian mixture fitting
+- **Parameter comparison**: Detailed comparison between true and estimated parameters
+- **Visualization**: Base R graphics for data and mixture densities comparison
+- **Responsibility analysis**: Posterior probability plots for component assignments
+- **Convergence monitoring**: Built-in convergence detection in mixtools
 
 ### Convergence and Initialization
 
@@ -746,27 +296,37 @@ The EM algorithm has several important properties:
 
 ### Multiple Initializations
 
-```python
-def fit_multiple_initializations(X, n_components=2, n_init=10):
-    """Fit GMM with multiple initializations and return the best result"""
-    best_log_likelihood = -np.inf
-    best_gmm = None
-    
-    for i in range(n_init):
-        gmm = EMGaussianMixture(n_components=n_components)
-        gmm.fit(X)
-        
-        log_likelihood = gmm._compute_log_likelihood(X)
-        
-        if log_likelihood > best_log_likelihood:
-            best_log_likelihood = log_likelihood
-            best_gmm = gmm
-    
-    return best_gmm, best_log_likelihood
+**Implementation:** See `fit_multiple_initializations()` and `demonstrate_multiple_initializations()` functions in [mixture_models_implementation.py](code/mixture_models_implementation.py)
 
-# Example with multiple initializations
-best_gmm, best_ll = fit_multiple_initializations(X, n_components=2, n_init=10)
-print(f"Best log-likelihood: {best_ll:.3f}")
-```
+The implementation includes:
+- **Multiple initialization strategy**: Robust fitting with multiple random initializations
+- **Best model selection**: Selection based on highest log-likelihood
+- **Robustness improvement**: Reduces sensitivity to poor initializations
+- **Performance monitoring**: Log-likelihood tracking across initializations
 
-This comprehensive expansion provides detailed mathematical foundations, practical implementations, and visualizations for understanding mixture models and the EM algorithm. The code examples demonstrate both the theoretical concepts and their practical application.
+This comprehensive implementation provides detailed mathematical foundations, practical implementations, and visualizations for understanding mixture models and the EM algorithm. The code examples demonstrate both the theoretical concepts and their practical application.
+
+## Code Files Summary
+
+The following code files contain the complete implementations for mixture models:
+
+### Python Files
+- **[mixture_models_implementation.py](code/mixture_models_implementation.py)**: Main implementation with visualization, KL divergence, and EM algorithm
+
+### R Files
+- **[r_mixture_models_implementation.R](code/r_mixture_models_implementation.R)**: Complete R implementation with visualization, KL divergence, and EM algorithm using mixtools
+
+### Key Features Implemented
+- **Mixture Model Visualization**: Basic two-component Gaussian mixture visualization with data generation and density plotting
+- **TwoComponentGaussianMixture Class/Function**: Complete implementation with data generation, PDF computation, and comprehensive visualization
+- **KL Divergence Computation**: Discrete and continuous KL divergence with analytical solutions for Gaussian distributions
+- **EM Algorithm Implementation**: Complete Expectation-Maximization algorithm with E-step and M-step
+- **Parameter Initialization**: Random initialization strategies for robust fitting
+- **Convergence Monitoring**: Log-likelihood tracking and convergence detection
+- **Multiple Initializations**: Robust fitting with multiple random initializations to avoid local optima
+- **Responsibility Analysis**: Posterior probability computation and visualization
+- **Parameter Comparison**: Detailed comparison between true and estimated parameters
+- **Visualization Tools**: Comprehensive plotting with matplotlib/seaborn and ggplot2
+- **Numerical Stability**: Robust implementations with proper handling of edge cases
+- **Validation**: Comparison with established libraries (sklearn, mixtools) for validation
+- **Demonstration Functions**: Complete examples showing all concepts in action
