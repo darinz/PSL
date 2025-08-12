@@ -295,4 +295,10 @@ These functions provide a comprehensive demonstration of the logistic regression
 
 The demonstration shows how logistic regression transforms linear predictors into probabilities through the sigmoid function, creating a complete framework for binary classification.
 
-This setup provides the foundation for understanding Logistic Regression as a discriminative classification method that directly models posterior probabilities through a carefully chosen link function and loss function.
+This setup provides the foundation for understanding logistic regression as both a probabilistic model and an optimization problem, setting the stage for maximum likelihood estimation and practical applications.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Maximum Likelihood Estimation](02_mle.md) - Likelihood function, optimization, and parameter estimation
+- **Previous Topic:** [Logistic Regression Overview](README.md) - Overview of logistic regression concepts and applications
