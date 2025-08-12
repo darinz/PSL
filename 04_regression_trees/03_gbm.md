@@ -292,3 +292,9 @@ Each file includes comprehensive examples, demonstrations, and analysis tools to
 - Friedman, J. H. (2001). Greedy function approximation: a gradient boosting machine. Annals of statistics, 1189-1232.
 - Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media.
 - Chen, T., & Guestrin, C. (2016). Xgboost: A scalable tree boosting system. In Proceedings of the 22nd acm sigkdd international conference on knowledge discovery and data mining (pp. 785-794).
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the regression trees section*
+- **Previous Topic:** [Random Forest](02_random_forest.md) - Ensemble methods and bootstrap aggregation
