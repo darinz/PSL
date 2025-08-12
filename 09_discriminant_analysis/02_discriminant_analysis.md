@@ -128,101 +128,17 @@ For each class $`k`$:
 2. **Class mean**: $`\hat{\mu}_k = \frac{1}{n_k} \sum_{i: y_i = k} x_i`$
 3. **Class covariance**: $`\hat{\Sigma}_k = \frac{1}{n_k - 1} \sum_{i: y_i = k} (x_i - \hat{\mu}_k)(x_i - \hat{\mu}_k)^T`$
 
-### Implementation: QDA
+The QDA implementation extends the Bayes Classifier framework to handle class-specific covariance matrices. The `QuadraticDiscriminantAnalysis` class implements the complete QDA algorithm with quadratic decision boundaries.
 
-```python
-class QuadraticDiscriminantAnalysis(BayesClassifier):
-    """Quadratic Discriminant Analysis"""
-    
-    def _fit_conditional_densities(self, X, y):
-        """Fit Gaussian densities for each class"""
-        n_classes = len(self.classes_)
-        n_features = X.shape[1]
-        
-        self.means_ = np.zeros((n_classes, n_features))
-        self.covariances_ = np.zeros((n_classes, n_features, n_features))
-        self.conditional_densities_ = []
-        
-        for i, k in enumerate(self.classes_):
-            # Get samples from class k
-            X_k = X[y == k]
-            
-            # Estimate mean
-            self.means_[i] = np.mean(X_k, axis=0)
-            
-            # Estimate covariance
-            self.covariances_[i] = np.cov(X_k, rowvar=False)
-            
-            # Create multivariate normal distribution
-            density = multivariate_normal(
-                mean=self.means_[i], 
-                cov=self.covariances_[i]
-            )
-            self.conditional_densities_.append(density)
-    
-    def decision_function(self, X):
-        """Compute decision function values for each class"""
-        n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        decisions = np.zeros((n_samples, n_classes))
-        
-        for i, k in enumerate(self.classes_):
-            # Compute quadratic discriminant function
-            diff = X - self.means_[i]
-            inv_cov = np.linalg.inv(self.covariances_[i])
-            
-            # Quadratic term
-            quad_term = -0.5 * np.sum(diff @ inv_cov * diff, axis=1)
-            
-            # Log determinant term
-            log_det_term = -0.5 * np.log(np.linalg.det(self.covariances_[i]))
-            
-            # Prior term
-            prior_term = np.log(self.priors_[i])
-            
-            decisions[:, i] = quad_term + log_det_term + prior_term
-        
-        return decisions
+**Key Functions:**
+- `QuadraticDiscriminantAnalysis._fit_conditional_densities()`: Fit Gaussian densities with class-specific covariances
+- `QuadraticDiscriminantAnalysis.decision_function()`: Compute quadratic discriminant function values
+- `plot_decision_boundaries_qda()`: Visualize QDA decision boundaries
+- `demonstrate_qda()`: Complete demonstration with model fitting and evaluation
 
-# Fit QDA
-qda = QuadraticDiscriminantAnalysis()
-qda.fit(X_train, y_train)
+QDA is particularly effective when classes have different covariance structures, allowing for more flexible decision boundaries compared to LDA.
 
-# Make predictions
-qda_predictions = qda.predict(X_test)
-qda_probabilities = qda.predict_proba(X_test)
-
-print("QDA Results:")
-print(f"Accuracy: {qda.score(X_test, y_test):.3f}")
-print("\nClassification Report:")
-print(classification_report(y_test, qda_predictions))
-
-# Visualize decision boundaries
-def plot_decision_boundaries_qda(X, y, qda_model, title="QDA Decision Boundaries"):
-    """Plot QDA decision boundaries"""
-    # Create mesh grid
-    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
-                         np.arange(y_min, y_max, 0.02))
-    
-    # Predict on mesh grid
-    Z = qda_model.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    
-    # Plot
-    plt.figure(figsize=(10, 8))
-    plt.contourf(xx, yy, Z, alpha=0.4, cmap='viridis')
-    plt.scatter(X[:, 0], X[:, 1], c=y, alpha=0.8, edgecolors='k', cmap='viridis')
-    plt.title(title)
-    plt.xlabel('Feature 1')
-    plt.ylabel('Feature 2')
-    plt.colorbar()
-    plt.show()
-
-# Plot QDA decision boundaries
-plot_decision_boundaries_qda(X_test, y_test, qda)
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete QDA workflow.
 
 ## 9.2.4. Linear Discriminant Analysis (LDA)
 
@@ -246,127 +162,17 @@ The decision function becomes linear:
 2. **Class mean**: $`\hat{\mu}_k = \frac{1}{n_k} \sum_{i: y_i = k} x_i`$
 3. **Shared covariance**: $`\hat{\Sigma} = \frac{1}{n-K} \sum_{k=1}^K \sum_{i: y_i = k} (x_i - \hat{\mu}_k)(x_i - \hat{\mu}_k)^T`$
 
-### Implementation: LDA
+The LDA implementation extends the Bayes Classifier framework to use a shared covariance matrix across all classes. The `LinearDiscriminantAnalysis` class implements the complete LDA algorithm with linear decision boundaries.
 
-```python
-class LinearDiscriminantAnalysis(BayesClassifier):
-    """Linear Discriminant Analysis"""
-    
-    def _fit_conditional_densities(self, X, y):
-        """Fit Gaussian densities with shared covariance"""
-        n_classes = len(self.classes_)
-        n_features = X.shape[1]
-        n_samples = len(y)
-        
-        self.means_ = np.zeros((n_classes, n_features))
-        self.conditional_densities_ = []
-        
-        # Estimate class means
-        for i, k in enumerate(self.classes_):
-            X_k = X[y == k]
-            self.means_[i] = np.mean(X_k, axis=0)
-        
-        # Estimate shared covariance matrix
-        self.shared_covariance_ = np.zeros((n_features, n_features))
-        for i, k in enumerate(self.classes_):
-            X_k = X[y == k]
-            diff = X_k - self.means_[i]
-            self.shared_covariance_ += diff.T @ diff
-        
-        self.shared_covariance_ /= (n_samples - n_classes)
-        
-        # Create multivariate normal distributions with shared covariance
-        for i in range(n_classes):
-            density = multivariate_normal(
-                mean=self.means_[i], 
-                cov=self.shared_covariance_
-            )
-            self.conditional_densities_.append(density)
-    
-    def decision_function(self, X):
-        """Compute linear decision function values"""
-        n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        decisions = np.zeros((n_samples, n_classes))
-        
-        # Precompute inverse covariance
-        inv_cov = np.linalg.inv(self.shared_covariance_)
-        
-        for i, k in enumerate(self.classes_):
-            # Linear discriminant function
-            linear_term = self.means_[i] @ inv_cov @ X.T
-            constant_term = -0.5 * self.means_[i] @ inv_cov @ self.means_[i]
-            prior_term = np.log(self.priors_[i])
-            
-            decisions[:, i] = linear_term + constant_term + prior_term
-        
-        return decisions
+**Key Functions:**
+- `LinearDiscriminantAnalysis._fit_conditional_densities()`: Fit Gaussian densities with shared covariance
+- `LinearDiscriminantAnalysis.decision_function()`: Compute linear discriminant function values
+- `compare_qda_lda()`: Compare QDA and LDA performance with visualization
+- `demonstrate_lda()`: Complete demonstration with model fitting and evaluation
 
-# Fit LDA
-lda = LinearDiscriminantAnalysis()
-lda.fit(X_train, y_train)
+LDA is particularly effective when classes have similar covariance structures, providing linear decision boundaries that are often more robust in high-dimensional spaces.
 
-# Make predictions
-lda_predictions = lda.predict(X_test)
-lda_probabilities = lda.predict_proba(X_test)
-
-print("LDA Results:")
-print(f"Accuracy: {lda.score(X_test, y_test):.3f}")
-print("\nClassification Report:")
-print(classification_report(y_test, lda_predictions))
-
-# Compare QDA vs LDA
-def compare_qda_lda(X_train, y_train, X_test, y_test):
-    """Compare QDA and LDA performance"""
-    # Fit both models
-    qda = QuadraticDiscriminantAnalysis()
-    lda = LinearDiscriminantAnalysis()
-    
-    qda.fit(X_train, y_train)
-    lda.fit(X_train, y_train)
-    
-    # Predictions
-    qda_pred = qda.predict(X_test)
-    lda_pred = lda.predict(X_test)
-    
-    # Results
-    print("Model Comparison:")
-    print(f"QDA Accuracy: {qda.score(X_test, y_test):.3f}")
-    print(f"LDA Accuracy: {lda.score(X_test, y_test):.3f}")
-    
-    # Visualize decision boundaries
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # QDA boundaries
-    x_min, x_max = X_test[:, 0].min() - 1, X_test[:, 0].max() + 1
-    y_min, y_max = X_test[:, 1].min() - 1, X_test[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
-                         np.arange(y_min, y_max, 0.02))
-    
-    # QDA
-    Z_qda = qda.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z_qda = Z_qda.reshape(xx.shape)
-    ax1.contourf(xx, yy, Z_qda, alpha=0.4, cmap='viridis')
-    ax1.scatter(X_test[:, 0], X_test[:, 1], c=y_test, alpha=0.8, edgecolors='k')
-    ax1.set_title('QDA Decision Boundaries')
-    ax1.set_xlabel('Feature 1')
-    ax1.set_ylabel('Feature 2')
-    
-    # LDA
-    Z_lda = lda.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z_lda = Z_lda.reshape(xx.shape)
-    ax2.contourf(xx, yy, Z_lda, alpha=0.4, cmap='viridis')
-    ax2.scatter(X_test[:, 0], X_test[:, 1], c=y_test, alpha=0.8, edgecolors='k')
-    ax2.set_title('LDA Decision Boundaries')
-    ax2.set_xlabel('Feature 1')
-    ax2.set_ylabel('Feature 2')
-    
-    plt.tight_layout()
-    plt.show()
-
-# Compare models
-compare_qda_lda(X_train, y_train, X_test, y_test)
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete LDA workflow.
 
 ## 9.2.5. Naive Bayes
 
