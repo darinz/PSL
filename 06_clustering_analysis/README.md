@@ -137,4 +137,10 @@ Clustering analysis is widely used in:
 
 - [Linear Regression](../02_linear_regression/) – Supervised learning foundation
 - [Variable Selection](../03_variable_selection_regularization/) – Feature selection techniques
-- [Nonlinear Regression](../05_nonlinear_regression/) – Advanced regression methods 
+- [Nonlinear Regression](../05_nonlinear_regression/) – Advanced regression methods
+
+---
+
+**Navigation:**
+- **Start Learning:** [Distance Measures](01_distance_measures.md) - Comprehensive coverage of distance metrics and MDS
+- **Previous Section:** [Discriminant Analysis](../09_discriminant_analysis/README.md) - Overview of discriminant analysis methods and applications 
