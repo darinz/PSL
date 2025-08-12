@@ -544,3 +544,9 @@ Learning theory provides the mathematical framework for understanding:
 4. **Sample Complexity**: Theory tells us how much data we need for reliable learning
 
 This theoretical foundation guides practical decisions in model selection, hyperparameter tuning, and algorithm design. Understanding these concepts is essential for developing effective machine learning solutions and interpreting their performance correctly.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Bias and Variance Tradeoff](03_bias_variance.md) - Understanding the fundamental tradeoff between model complexity and generalization
+- **Previous Topic:** [Introduction to Statistical Learning](01_introduction.md) - Overview of supervised vs unsupervised learning and fundamental concepts
