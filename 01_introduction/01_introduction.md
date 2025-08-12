@@ -720,3 +720,9 @@ See the implementation in [`code/ridge_regression_grid_search.py`](code/ridge_re
 
 This comprehensive introduction provides the foundation for understanding statistical learning. The key concepts of supervised vs. unsupervised learning, the bias-variance tradeoff, overfitting, and the curse of dimensionality are fundamental to all subsequent topics in this course.
 
+---
+
+**Navigation:**
+- **Next Topic:** [Learning Theory](02_learning_theory.md) - Mathematical foundations and theoretical understanding of machine learning algorithms
+- **Previous Topic:** *This is the first topic in the introduction section*
+
