@@ -155,21 +155,9 @@ where:
 - $`\mathcal{T}_b^{(j)}`$ is the set of nodes in tree $`b`$ that split on feature $`j`$
 - $`\Delta \text{RSS}_t`$ is the RSS reduction at node $`t`$
 
-**Implementation:**
-```python
-def calculate_rss_importance(trees, X, y):
-    """
-    Calculate RSS-based feature importance
-    """
-    n_features = X.shape[1]
-    importance = np.zeros(n_features)
-    
-    for tree in trees:
-        # Get feature importances from sklearn tree
-        importance += tree.feature_importances_
-    
-    return importance / len(trees)
-```
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `calculate_rss_importance()` function
+
+The RSS-based importance calculation aggregates feature importances from all trees in the ensemble.
 
 ### 2. Permutation Importance
 
@@ -190,45 +178,9 @@ This measure evaluates the increase in prediction error when a feature is random
 
 where $`\text{Err}_{\text{perm}}^{(b)}`$ is the OOB error after permuting feature $`j`$ in tree $`b`$.
 
-**Implementation:**
-```python
-def calculate_permutation_importance(rf_model, X, y, n_repeats=5):
-    """
-    Calculate permutation-based feature importance
-    
-    Parameters:
-    rf_model: trained Random Forest model
-    X: feature matrix
-    y: target vector
-    n_repeats: number of times to repeat permutation
-    
-    Returns:
-    importance: permutation importance scores
-    """
-    n_features = X.shape[1]
-    importance = np.zeros(n_features)
-    
-    # Calculate baseline OOB error
-    baseline_error = 1 - rf_model.get_oob_score(X, y)
-    
-    for j in range(n_features):
-        feature_importance = 0
-        
-        for repeat in range(n_repeats):
-            # Create copy of data with permuted feature
-            X_perm = X.copy()
-            np.random.shuffle(X_perm[:, j])
-            
-            # Calculate error with permuted feature
-            # This is a simplified version - in practice, you'd need to track OOB samples
-            perm_error = 1 - rf_model.get_oob_score(X_perm, y)
-            
-            feature_importance += (perm_error - baseline_error)
-        
-        importance[j] = feature_importance / n_repeats
-    
-    return importance
-```
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `calculate_permutation_importance()` function
+
+The permutation importance implementation evaluates feature importance by measuring the increase in prediction error when features are randomly permuted.
 
 ### Handling High-Cardinality Variables
 
