@@ -779,6 +779,10 @@ Understanding these practical issues is essential for building reliable and inte
 
 ---
 
+**Navigation:**
+- **Next Topic:** *This is the last topic in the linear regression section*
+- **Previous Topic:** [Geometric Interpretation](02_geometric_interpretation.md) - Visual and mathematical foundation of linear regression through vector spaces and projection
+
 ## Code Files Summary
 
 This chapter includes several Python code files that demonstrate the practical implementation of linear regression concepts:
