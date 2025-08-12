@@ -89,39 +89,15 @@ Compute $`SC`$ for a range of $`K`$ and select the $`K`$ with the highest $`SC`$
 
 ### Python Example
 
-```python
-from sklearn.metrics import silhouette_score
-from sklearn.cluster import KMeans
-import numpy as np
+**Implementation:** See `silhouette_analysis()` function in [choice_of_k_implementation.py](code/choice_of_k_implementation.py)
 
-X = ... # your data
-K_range = range(2, 10)
-sc_scores = []
-for K in K_range:
-    kmeans = KMeans(n_clusters=K, n_init=10).fit(X)
-    score = silhouette_score(X, kmeans.labels_)
-    sc_scores.append(score)
-
-import matplotlib.pyplot as plt
-plt.plot(K_range, sc_scores, marker='o')
-plt.xlabel('Number of clusters K')
-plt.ylabel('Silhouette Coefficient')
-plt.title('Silhouette Analysis for Optimal K')
-plt.show()
-```
+The function computes silhouette scores for a range of K values and provides both average silhouette scores and individual sample scores for detailed analysis.
 
 ### R Example
 
-```r
-library(cluster)
-K_range <- 2:10
-sc_scores <- numeric(length(K_range))
-for (i in seq_along(K_range)) {
-  km <- kmeans(X, centers = K_range[i], nstart = 10)
-  sc_scores[i] <- mean(silhouette(km$cluster, dist(X))[, 3])
-}
-plot(K_range, sc_scores, type = 'b', xlab = 'Number of clusters K', ylab = 'Silhouette Coefficient')
-```
+**Implementation:** See `silhouette_analysis()` function in [r_choice_of_k_implementation.R](code/r_choice_of_k_implementation.R)
+
+The function computes silhouette scores for a range of K values using R's cluster package and provides comprehensive analysis capabilities.
 
 ---
 
@@ -159,55 +135,15 @@ Select the largest $`K`$ such that $`PS(K)`$ exceeds a threshold (e.g., 0.8).
 
 ### Python Example
 
-```python
-from sklearn.cluster import KMeans
-from sklearn.metrics import pairwise_distances
-import numpy as np
+**Implementation:** See `prediction_strength()` and `compute_prediction_strength_range()` functions in [choice_of_k_implementation.py](code/choice_of_k_implementation.py)
 
-def prediction_strength(X, K, n_splits=5, threshold=0.8):
-    n = X.shape[0]
-    ps_scores = []
-    for split in range(n_splits):
-        idx = np.random.permutation(n)
-        A, B = X[idx[:n//2]], X[idx[n//2:]]
-        # Cluster B
-        kmeans_B = KMeans(n_clusters=K, n_init=10).fit(B)
-        labels_B = kmeans_B.labels_
-        # Cluster A, assign B
-        kmeans_A = KMeans(n_clusters=K, n_init=10).fit(A)
-        labels_B_pred = kmeans_A.predict(B)
-        # For each cluster in B, compute PS_j
-        ps_j = []
-        for j in range(K):
-            members = np.where(labels_B == j)[0]
-            if len(members) < 2:
-                continue
-            pairs = [(i, l) for idx, i in enumerate(members) for l in members[idx+1:]]
-            agree = sum(labels_B_pred[i] == labels_B_pred[l] for i, l in pairs)
-            ps_j.append(agree / len(pairs))
-        if ps_j:
-            ps_scores.append(min(ps_j))
-    return np.mean(ps_scores)
-
-# Example usage:
-K_range = range(2, 10)
-ps_results = [prediction_strength(X, K) for K in K_range]
-plt.plot(K_range, ps_results, marker='o')
-plt.axhline(0.8, color='red', linestyle='--', label='Threshold')
-plt.xlabel('Number of clusters K')
-plt.ylabel('Prediction Strength')
-plt.legend()
-plt.show()
-```
+The functions implement the complete prediction strength algorithm with data splitting, clustering, and pair-wise agreement computation for determining optimal K.
 
 ### R Example
 
-```r
-library(fpc)
-ps <- prediction.strength(X, Gmin=2, Gmax=10, M=10, clustermethod=kmeansCBI)
-plot(2:10, ps$mean.pred, type='b', xlab='Number of clusters K', ylab='Prediction Strength')
-abline(h=0.8, col='red', lty=2)
-```
+**Implementation:** See `prediction_strength()` and `compute_prediction_strength_range()` functions in [r_choice_of_k_implementation.R](code/r_choice_of_k_implementation.R)
+
+The functions implement the complete prediction strength algorithm with data splitting, clustering, and pair-wise agreement computation for determining optimal K using R's native functions.
 
 ---
 
@@ -218,3 +154,23 @@ abline(h=0.8, col='red', lty=2)
 - **Prediction strength**: Measures stability; good for practical validation
 - **No single method is perfect**; use multiple criteria and domain knowledge
 - **Visualize**: Always inspect cluster assignments and validation plots
+
+## Code Files Summary
+
+The following code files contain the complete implementations for choosing the optimal number of clusters K:
+
+### Python Files
+- **[choice_of_k_implementation.py](code/choice_of_k_implementation.py)**: Main implementation with gap statistics, silhouette analysis, prediction strength, and comprehensive K selection methods
+
+### R Files
+- **[r_choice_of_k_implementation.R](code/r_choice_of_k_implementation.R)**: Complete R implementation with gap statistics, silhouette analysis, prediction strength, and ggplot2 visualizations
+
+### Key Features Implemented
+- **Gap Statistic**: Complete implementation with uniform and PCA-based reference data generation, one-standard-error rule for optimal K selection
+- **Silhouette Analysis**: Comprehensive silhouette computation with individual sample scores and visualization capabilities
+- **Prediction Strength**: Full implementation with data splitting, clustering stability assessment, and threshold-based K selection
+- **Comprehensive K Selection**: Multi-method approach combining all techniques for robust K selection
+- **Visualization Tools**: Publication-quality plots for gap statistics, silhouette analysis, and prediction strength using matplotlib/seaborn and ggplot2
+- **Method Comparison**: Systematic comparison of different K selection methods on various data types
+- **Robust Implementation**: Error handling, reproducibility controls, and comprehensive documentation
+- **Demonstration Functions**: Complete examples with synthetic data and real-world application scenarios
