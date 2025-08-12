@@ -129,86 +129,19 @@ The backward probability $`\beta_t(i) = P(X_{t+1}, \ldots, X_n \mid Z_t = i, \th
 
 **Recursion**: $`\beta_t(i) = \sum_{j=1}^{m_z} A_{ij} B_{j,X_{t+1}} \beta_{t+1}(j)`$
 
-### Implementation: Forward-Backward Algorithm
+The forward-backward algorithm implementation provides the foundation for many HMM computations. The `HMMForwardBackward` class implements both forward and backward probability calculations, enabling likelihood computation and posterior state estimation.
 
-```python
-class HMMForwardBackward:
-    def __init__(self, pi, A, B):
-        self.pi = pi
-        self.A = A
-        self.B = B
-        self.n_states = len(pi)
-        
-    def forward(self, observations):
-        """Compute forward probabilities"""
-        n_obs = len(observations)
-        alpha = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        for i in range(self.n_states):
-            alpha[0, i] = self.pi[i] * self.B[i, observations[0]]
-        
-        # Forward recursion
-        for t in range(1, n_obs):
-            for j in range(self.n_states):
-                alpha[t, j] = self.B[j, observations[t]] * np.sum(alpha[t-1, :] * self.A[:, j])
-        
-        return alpha
-    
-    def backward(self, observations):
-        """Compute backward probabilities"""
-        n_obs = len(observations)
-        beta = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        beta[n_obs-1, :] = 1.0
-        
-        # Backward recursion
-        for t in range(n_obs-2, -1, -1):
-            for i in range(self.n_states):
-                beta[t, i] = np.sum(self.A[i, :] * self.B[:, observations[t+1]] * beta[t+1, :])
-        
-        return beta
-    
-    def compute_likelihood(self, observations):
-        """Compute marginal likelihood"""
-        alpha = self.forward(observations)
-        return np.sum(alpha[-1, :])
-    
-    def compute_posterior(self, observations):
-        """Compute posterior probabilities of hidden states"""
-        alpha = self.forward(observations)
-        beta = self.backward(observations)
-        
-        # Compute joint probabilities
-        joint = alpha * beta
-        
-        # Normalize
-        posterior = joint / np.sum(joint, axis=1, keepdims=True)
-        
-        return posterior
+**Key Functions:**
+- `HMMForwardBackward.__init__()`: Initialize with HMM parameters
+- `HMMForwardBackward.forward()`: Compute forward probabilities using dynamic programming
+- `HMMForwardBackward.backward()`: Compute backward probabilities using dynamic programming
+- `HMMForwardBackward.compute_likelihood()`: Compute marginal likelihood of observations
+- `HMMForwardBackward.compute_posterior()`: Compute posterior probabilities of hidden states
+- `demonstrate_forward_backward()`: Complete demonstration with example usage
 
-# Example usage
-pi = np.array([0.5, 0.5])
-A = np.array([[0.7, 0.3], [0.4, 0.6]])
-B = np.array([[0.1, 0.4, 0.5], [0.6, 0.3, 0.1]])
+The forward-backward algorithm is essential for parameter estimation and provides the computational foundation for the Baum-Welch algorithm.
 
-hmm_fb = HMMForwardBackward(pi, A, B)
-observations = [0, 1, 2, 0, 1]  # Example observations
-
-# Compute forward and backward probabilities
-alpha = hmm_fb.forward(observations)
-beta = hmm_fb.backward(observations)
-posterior = hmm_fb.compute_posterior(observations)
-
-print("Forward probabilities:")
-print(alpha)
-print("\nBackward probabilities:")
-print(beta)
-print("\nPosterior probabilities:")
-print(posterior)
-print(f"\nMarginal likelihood: {hmm_fb.compute_likelihood(observations):.6f}")
-```
+See the implementation in `code/hmm_implementation.py` for the complete forward-backward algorithm workflow.
 
 ## 7.5.5. Viterbi Algorithm
 
@@ -230,65 +163,17 @@ Define $`\delta_t(i) = \max_{Z_1, \ldots, Z_{t-1}} P(Z_1, \ldots, Z_{t-1}, Z_t =
 
 **Backtracking**: Store $`\psi_t(i) = \arg\max_j [\delta_{t-1}(j) P(Z_t = i \mid Z_{t-1} = j)]`$
 
-### Implementation: Viterbi Algorithm
+The Viterbi algorithm implementation provides the optimal solution for finding the most likely sequence of hidden states given observations. The `ViterbiHMM` class implements the complete Viterbi algorithm with dynamic programming and backtracking.
 
-```python
-class ViterbiHMM:
-    def __init__(self, pi, A, B):
-        self.pi = pi
-        self.A = A
-        self.B = B
-        self.n_states = len(pi)
-        
-    def decode(self, observations):
-        """Find most likely sequence of hidden states"""
-        n_obs = len(observations)
-        delta = np.zeros((n_obs, self.n_states))
-        psi = np.zeros((n_obs, self.n_states), dtype=int)
-        
-        # Initialization
-        for i in range(self.n_states):
-            delta[0, i] = self.pi[i] * self.B[i, observations[0]]
-        
-        # Forward recursion
-        for t in range(1, n_obs):
-            for j in range(self.n_states):
-                # Compute all possible transitions
-                transitions = delta[t-1, :] * self.A[:, j]
-                delta[t, j] = self.B[j, observations[t]] * np.max(transitions)
-                psi[t, j] = np.argmax(transitions)
-        
-        # Backtracking
-        path = np.zeros(n_obs, dtype=int)
-        path[n_obs-1] = np.argmax(delta[n_obs-1, :])
-        
-        for t in range(n_obs-2, -1, -1):
-            path[t] = psi[t+1, path[t+1]]
-        
-        return path, delta
-    
-    def compute_probability(self, observations, path):
-        """Compute probability of a given path"""
-        prob = self.pi[path[0]] * self.B[path[0], observations[0]]
-        
-        for t in range(1, len(observations)):
-            prob *= self.A[path[t-1], path[t]] * self.B[path[t], observations[t]]
-        
-        return prob
+**Key Functions:**
+- `ViterbiHMM.__init__()`: Initialize with HMM parameters
+- `ViterbiHMM.decode()`: Find most likely hidden state sequence using dynamic programming
+- `ViterbiHMM.compute_probability()`: Compute probability of a given path
+- `demonstrate_viterbi()`: Complete demonstration with comparison to posterior decoding
 
-# Example usage
-viterbi_hmm = ViterbiHMM(pi, A, B)
-best_path, delta = viterbi_hmm.decode(observations)
+The Viterbi algorithm is essential for state sequence decoding and provides the optimal solution for many HMM applications such as speech recognition and gene finding.
 
-print("Most likely hidden state sequence:")
-print(best_path)
-print(f"Path probability: {viterbi_hmm.compute_probability(observations, best_path):.6f}")
-
-# Compare with posterior decoding
-posterior_path = np.argmax(posterior, axis=1)
-print(f"Posterior decoding: {posterior_path}")
-print(f"Posterior path probability: {viterbi_hmm.compute_probability(observations, posterior_path):.6f}")
-```
+See the implementation in `code/hmm_implementation.py` for the complete Viterbi algorithm workflow.
 
 ## 7.5.6. Baum-Welch Algorithm (EM for HMM)
 
@@ -316,134 +201,19 @@ A_{ij} = \frac{\sum_{t=1}^{n-1} \xi_t(i,j)}{\sum_{t=1}^{n-1} \gamma_t(i)}
 B_{ik} = \frac{\sum_{t: X_t = k} \gamma_t(i)}{\sum_{t=1}^n \gamma_t(i)}
 ```
 
-### Implementation: Baum-Welch Algorithm
+The Baum-Welch algorithm implementation provides the Expectation-Maximization (EM) approach for HMM parameter estimation. The `BaumWelchHMM` class implements the complete EM algorithm with E-step and M-step iterations.
 
-```python
-class BaumWelchHMM:
-    def __init__(self, n_states, n_observations):
-        self.n_states = n_states
-        self.n_observations = n_observations
-        
-    def initialize_parameters(self):
-        """Initialize parameters randomly"""
-        self.pi = np.random.dirichlet(np.ones(self.n_states))
-        self.A = np.random.dirichlet(np.ones(self.n_states), size=self.n_states)
-        self.B = np.random.dirichlet(np.ones(self.n_observations), size=self.n_states)
-        
-    def fit(self, observations, max_iter=100, tol=1e-6):
-        """Fit HMM using Baum-Welch algorithm"""
-        self.initialize_parameters()
-        
-        for iteration in range(max_iter):
-            # E-step
-            gamma, xi = self._e_step(observations)
-            
-            # M-step
-            old_pi = self.pi.copy()
-            old_A = self.A.copy()
-            old_B = self.B.copy()
-            
-            self._m_step(observations, gamma, xi)
-            
-            # Check convergence
-            if (np.max(np.abs(self.pi - old_pi)) < tol and
-                np.max(np.abs(self.A - old_A)) < tol and
-                np.max(np.abs(self.B - old_B)) < tol):
-                print(f"Converged after {iteration + 1} iterations")
-                break
-                
-            if iteration % 10 == 0:
-                print(f"Iteration {iteration}")
-        
-        return self
-    
-    def _e_step(self, observations):
-        """E-step: Compute gamma and xi"""
-        n_obs = len(observations)
-        
-        # Forward-backward
-        alpha = self._forward(observations)
-        beta = self._backward(observations)
-        
-        # Compute gamma
-        gamma = alpha * beta
-        gamma = gamma / np.sum(gamma, axis=1, keepdims=True)
-        
-        # Compute xi
-        xi = np.zeros((n_obs-1, self.n_states, self.n_states))
-        for t in range(n_obs-1):
-            for i in range(self.n_states):
-                for j in range(self.n_states):
-                    xi[t, i, j] = (alpha[t, i] * self.A[i, j] * 
-                                 self.B[j, observations[t+1]] * beta[t+1, j])
-            xi[t] = xi[t] / np.sum(xi[t])
-        
-        return gamma, xi
-    
-    def _m_step(self, observations, gamma, xi):
-        """M-step: Update parameters"""
-        n_obs = len(observations)
-        
-        # Update initial distribution
-        self.pi = gamma[0, :]
-        
-        # Update transition matrix
-        for i in range(self.n_states):
-            for j in range(self.n_states):
-                self.A[i, j] = np.sum(xi[:, i, j]) / np.sum(gamma[:-1, i])
-        
-        # Update emission matrix
-        for i in range(self.n_states):
-            for k in range(self.n_observations):
-                mask = (observations == k)
-                self.B[i, k] = np.sum(gamma[mask, i]) / np.sum(gamma[:, i])
-    
-    def _forward(self, observations):
-        """Forward algorithm"""
-        n_obs = len(observations)
-        alpha = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        for i in range(self.n_states):
-            alpha[0, i] = self.pi[i] * self.B[i, observations[0]]
-        
-        # Forward recursion
-        for t in range(1, n_obs):
-            for j in range(self.n_states):
-                alpha[t, j] = self.B[j, observations[t]] * np.sum(alpha[t-1, :] * self.A[:, j])
-        
-        return alpha
-    
-    def _backward(self, observations):
-        """Backward algorithm"""
-        n_obs = len(observations)
-        beta = np.zeros((n_obs, self.n_states))
-        
-        # Initialization
-        beta[n_obs-1, :] = 1.0
-        
-        # Backward recursion
-        for t in range(n_obs-2, -1, -1):
-            for i in range(self.n_states):
-                beta[t, i] = np.sum(self.A[i, :] * self.B[:, observations[t+1]] * beta[t+1, :])
-        
-        return beta
+**Key Functions:**
+- `BaumWelchHMM.__init__()`: Initialize with number of states and observations
+- `BaumWelchHMM.initialize_parameters()`: Initialize parameters randomly
+- `BaumWelchHMM.fit()`: Fit HMM using Baum-Welch algorithm with convergence checking
+- `BaumWelchHMM._e_step()`: E-step: Compute gamma and xi using forward-backward
+- `BaumWelchHMM._m_step()`: M-step: Update parameters using computed expectations
+- `demonstrate_baum_welch()`: Complete demonstration with parameter fitting
 
-# Example usage
-np.random.seed(42)
-observations = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0]
+The Baum-Welch algorithm is essential for learning HMM parameters from data and provides the foundation for unsupervised learning in sequential data.
 
-# Fit HMM
-bw_hmm = BaumWelchHMM(n_states=2, n_observations=3)
-bw_hmm.fit(observations)
-
-print("Fitted parameters:")
-print("Initial distribution:", bw_hmm.pi)
-print("Transition matrix:")
-print(bw_hmm.A)
-print("Emission matrix:")
-print(bw_hmm.B)
-```
+See the implementation in `code/hmm_implementation.py` for the complete Baum-Welch algorithm workflow.
 
 ## 7.5.7. Applications and Extensions
 
