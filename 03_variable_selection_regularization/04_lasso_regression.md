@@ -348,3 +348,9 @@ Lasso regression is a powerful regularization technique that combines variable s
 5. **Coordinate descent**: Efficient algorithm for general design matrices
 
 Lasso is particularly valuable in high-dimensional settings where sparsity is expected, providing both prediction accuracy and interpretability through automatic variable selection.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Discussion and Comparison](05_discussion.md) - Comparing variable selection and regularization methods
+- **Previous Topic:** [Ridge Regression](03_ridge_regression.md) - L2 regularization and coefficient shrinkage
