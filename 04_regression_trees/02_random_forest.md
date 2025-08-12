@@ -241,62 +241,25 @@ Key features:
 
 ### Partial Dependence Plots
 
-Partial dependence plots show the marginal effect of a feature on predictions:
+Partial dependence plots show the marginal effect of a feature on predictions.
 
-```python
-def partial_dependence_plot(rf_model, X, feature_idx, feature_names=None):
-    """
-    Create partial dependence plot for a feature
-    """
-    feature_name = feature_names[feature_idx] if feature_names else f"Feature {feature_idx}"
-    
-    # Generate feature values
-    feature_values = np.linspace(X[:, feature_idx].min(), 
-                                X[:, feature_idx].max(), 50)
-    
-    # Calculate partial dependence
-    pd_values = []
-    for val in feature_values:
-        X_temp = X.copy()
-        X_temp[:, feature_idx] = val
-        predictions = rf_model.predict(X_temp)
-        pd_values.append(np.mean(predictions))
-    
-    # Plot
-    plt.figure(figsize=(10, 6))
-    plt.plot(feature_values, pd_values, 'b-', linewidth=2)
-    plt.xlabel(feature_name)
-    plt.ylabel('Partial Dependence')
-    plt.title(f'Partial Dependence Plot for {feature_name}')
-    plt.grid(True, alpha=0.3)
-    plt.show()
-    
-    return feature_values, pd_values
-```
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `partial_dependence_plot()` function
+
+The partial dependence plot implementation:
+- Generates a range of feature values
+- Calculates average predictions for each value
+- Visualizes the marginal effect of the feature on model predictions
 
 ### Confidence Intervals
 
-Random Forest can provide prediction intervals using quantiles of tree predictions:
+Random Forest can provide prediction intervals using quantiles of tree predictions.
 
-```python
-def predict_with_intervals(rf_model, X, confidence=0.95):
-    """
-    Make predictions with confidence intervals
-    """
-    # Get predictions from all trees
-    tree_predictions = np.array([tree.predict(X) for tree in rf_model.trees])
-    
-    # Calculate quantiles
-    alpha = 1 - confidence
-    lower_quantile = alpha / 2
-    upper_quantile = 1 - alpha / 2
-    
-    mean_pred = np.mean(tree_predictions, axis=0)
-    lower_bound = np.quantile(tree_predictions, lower_quantile, axis=0)
-    upper_bound = np.quantile(tree_predictions, upper_quantile, axis=0)
-    
-    return mean_pred, lower_bound, upper_bound
-```
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py) - `predict_with_intervals()` function
+
+The confidence interval implementation:
+- Collects predictions from all trees in the ensemble
+- Calculates quantiles to determine confidence bounds
+- Returns mean predictions with lower and upper confidence bounds
 
 ## Summary
 
@@ -309,6 +272,19 @@ Random Forest is a powerful ensemble method that addresses the high variance pro
 5. **Robustness**: Handles outliers and noise effectively
 
 The mathematical foundations ensure optimal performance, while the algorithmic design provides computational efficiency and interpretability through variable importance measures.
+
+## Code Files Summary
+
+The following code files provide complete implementations of the concepts discussed in this chapter:
+
+### Python Implementation
+- **[bootstrap_bagging.py](code/bootstrap_bagging.py)**: Bootstrap sampling, bagging implementation, and ensemble size analysis
+- **[random_forest_implementation.py](code/random_forest_implementation.py)**: Complete Random Forest implementation with feature subsampling, variable importance, hyperparameter tuning, and advanced features
+
+### R Implementation
+- **[r_random_forest.R](code/r_random_forest.R)**: Complete R implementation using randomForest package with training, evaluation, visualization, and analysis tools
+
+Each file includes comprehensive examples, demonstrations, and analysis tools to help understand and apply Random Forest concepts in practice.
 
 ## References
 
