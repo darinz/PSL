@@ -178,32 +178,9 @@ where $`R \in \mathbb{R}^{p \times d}`$ is a random matrix with entries from $`N
 
 ### Implementation
 
-```python
-def kmeans_with_dimension_reduction(X, K, method='pca', d=None):
-    """K-means with dimension reduction preprocessing."""
-    if d is None:
-        d = min(K + 1, X.shape[1])  # Rule of thumb
-    
-    if method == 'pca':
-        from sklearn.decomposition import PCA
-        reducer = PCA(n_components=d)
-    elif method == 'random':
-        from sklearn.random_projection import GaussianRandomProjection
-        reducer = GaussianRandomProjection(n_components=d)
-    else:
-        raise ValueError(f"Unknown method: {method}")
-    
-    # Reduce dimensions
-    X_reduced = reducer.fit_transform(X)
-    
-    # Run K-means on reduced data
-    labels, centroids_reduced, inertia = kmeans_multiple_runs(X_reduced, K)
-    
-    # Transform centroids back to original space
-    centroids = reducer.inverse_transform(centroids_reduced)
-    
-    return labels, centroids, inertia, reducer
-```
+**Implementation:** See `kmeans_with_dimension_reduction()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
+
+The function supports both PCA and random projection methods for dimension reduction, with automatic selection of reduced dimensions based on the number of clusters.
 
 ## 6.2.6. Alternative Distance Measures
 
@@ -229,47 +206,19 @@ where $`d(\cdot, \cdot)`$ is a general distance measure.
 #### Manhattan Distance (L1)
 For Manhattan distance, the optimal centroid is the **median** of cluster points:
 
-```python
-def manhattan_centroid(X_cluster):
-    """Compute centroid for Manhattan distance (median)."""
-    return np.median(X_cluster, axis=0)
-```
+**Implementation:** See `manhattan_centroid()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
 
 #### Cosine Distance
 For cosine distance, the optimal centroid is the **normalized mean**:
 
-```python
-def cosine_centroid(X_cluster):
-    """Compute centroid for cosine distance."""
-    mean_vec = np.mean(X_cluster, axis=0)
-    norm = np.linalg.norm(mean_vec)
-    return mean_vec / norm if norm > 0 else mean_vec
-```
+**Implementation:** See `cosine_centroid()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
 
 #### Mixed Distance Measures
 For data with mixed types (numerical + categorical):
 
-```python
-def mixed_distance(x, y, weights=[0.4, 0.6]):
-    """Mixed distance: L1 for numerical, Hamming for categorical."""
-    numerical_dist = np.sum(np.abs(x[:2] - y[:2]))  # First 2 features
-    categorical_dist = np.sum(x[2:] != y[2:])       # Remaining features
-    return weights[0] * numerical_dist + weights[1] * categorical_dist
+**Implementation:** See `mixed_distance()` and `mixed_centroid()` functions in [kmeans_implementation.py](code/kmeans_implementation.py)
 
-def mixed_centroid(X_cluster):
-    """Compute centroid for mixed distance measure."""
-    # Numerical features: median
-    numerical_centroid = np.median(X_cluster[:, :2], axis=0)
-    
-    # Categorical features: mode
-    categorical_centroid = []
-    for j in range(2, X_cluster.shape[1]):
-        values, counts = np.unique(X_cluster[:, j], return_counts=True)
-        mode_idx = np.argmax(counts)
-        categorical_centroid.append(values[mode_idx])
-    
-    return np.concatenate([numerical_centroid, categorical_centroid])
-```
+These functions handle different distance measures by computing appropriate centroids for each type of distance metric.
 
 ## 6.2.7. The K-medoids Algorithm
 
@@ -309,45 +258,9 @@ For each medoid $`m_k`$ and non-medoid point $`x_i`$:
 2. Compute total cost of new configuration
 3. If cost decreases, make the swap permanent
 
-```python
-def pam_swap_phase(D, labels, medoids):
-    """PAM swap phase: try swapping medoids with non-medoids."""
-    n, K = D.shape[0], len(medoids)
-    improved = True
-    
-    while improved:
-        improved = False
-        
-        for k in range(K):
-            current_medoid = medoids[k]
-            
-            # Try swapping with each non-medoid point
-            for i in range(n):
-                if i in medoids:
-                    continue
-                
-                # Temporarily swap
-                temp_medoids = medoids.copy()
-                temp_medoids[k] = i
-                
-                # Compute new assignments and cost
-                temp_labels = np.argmin(D[:, temp_medoids], axis=1)
-                temp_cost = sum(D[j, temp_medoids[temp_labels[j]]] 
-                               for j in range(n))
-                
-                # Current cost
-                current_cost = sum(D[j, medoids[labels[j]]] 
-                                  for j in range(n))
-                
-                # If improvement, make swap permanent
-                if temp_cost < current_cost:
-                    medoids = temp_medoids
-                    labels = temp_labels
-                    improved = True
-                    break
-    
-    return labels, medoids
-```
+**Implementation:** See `pam_swap_phase()` function in [kmeans_implementation.py](code/kmeans_implementation.py)
+
+The PAM swap phase systematically tries swapping each medoid with every non-medoid point to find improvements in the total clustering cost.
 
 ### Computational Complexity
 
