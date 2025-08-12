@@ -211,205 +211,33 @@ This **parameter inefficiency** motivates direct methods that learn the decision
 
 ### Computational Complexity
 
-```python
-def compare_complexity():
-    """
-    Compare computational complexity of discriminant analysis methods
-    """
-    import numpy as np
-    import matplotlib.pyplot as plt
-    
-    # Parameters
-    p_values = np.arange(10, 101, 10)  # Feature dimensions
-    K = 3  # Number of classes
-    
-    # Parameter counts
-    qda_params = K * p_values**2 + K * p_values + K
-    lda_params = p_values**2 + K * p_values + K
-    nb_params = 2 * K * p_values + K
-    
-    # Plotting
-    plt.figure(figsize=(10, 6))
-    plt.plot(p_values, qda_params, 'o-', label='QDA', linewidth=2)
-    plt.plot(p_values, lda_params, 's-', label='LDA', linewidth=2)
-    plt.plot(p_values, nb_params, '^-', label='Naive Bayes', linewidth=2)
-    
-    plt.xlabel('Number of Features (p)')
-    plt.ylabel('Number of Parameters')
-    plt.title('Parameter Complexity Comparison')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.yscale('log')
-    plt.show()
-    
-    return qda_params, lda_params, nb_params
+The computational complexity analysis is implemented in the code files:
 
-# Run comparison
-qda_p, lda_p, nb_p = compare_complexity()
-```
+**Python Implementation:** See `compare_complexity()` function in [`code/summary_implementation.py`](code/summary_implementation.py)
+
+**R Implementation:** See `compare_complexity_r()` function in [`code/r_summary_implementation.R`](code/r_summary_implementation.R)
+
+These functions compare the parameter complexity of different discriminant analysis methods, showing how the number of parameters grows with the number of features. The analysis reveals that QDA has the highest parameter count (quadratic in features), followed by LDA, while Naive Bayes has the most efficient parameter scaling (linear in features).
 
 ## 9.7.6. Practical Implementation and Comparison
 
 ### Comprehensive Comparison Code
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB
-from sklearn.model_selection import cross_val_score
-from sklearn.datasets import make_classification
-from sklearn.preprocessing import StandardScaler
-import seaborn as sns
+The comprehensive comparison of discriminant analysis methods is implemented in the code files:
 
-class DiscriminantAnalysisComparison:
-    """
-    Comprehensive comparison of discriminant analysis methods
-    """
-    
-    def __init__(self):
-        self.methods = {
-            'LDA': LinearDiscriminantAnalysis(),
-            'QDA': QuadraticDiscriminantAnalysis(),
-            'Naive Bayes': GaussianNB()
-        }
-        self.results = {}
-        
-    def generate_data(self, n_samples=1000, n_features=10, n_classes=3, 
-                     n_informative=8, n_redundant=2, random_state=42):
-        """
-        Generate synthetic data for comparison
-        """
-        X, y = make_classification(
-            n_samples=n_samples,
-            n_features=n_features,
-            n_classes=n_classes,
-            n_informative=n_informative,
-            n_redundant=n_redundant,
-            n_clusters_per_class=1,
-            random_state=random_state
-        )
-        
-        # Scale features
-        scaler = StandardScaler()
-        X = scaler.fit_transform(X)
-        
-        return X, y
-    
-    def compare_methods(self, X, y, cv=5):
-        """
-        Compare all methods using cross-validation
-        """
-        for name, method in self.methods.items():
-            scores = cross_val_score(method, X, y, cv=cv, scoring='accuracy')
-            self.results[name] = {
-                'mean_score': scores.mean(),
-                'std_score': scores.std(),
-                'scores': scores
-            }
-            
-        return self.results
-    
-    def visualize_results(self):
-        """
-        Visualize comparison results
-        """
-        methods = list(self.results.keys())
-        means = [self.results[m]['mean_score'] for m in methods]
-        stds = [self.results[m]['std_score'] for m in methods]
-        
-        fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-        
-        # Bar plot
-        bars = axes[0].bar(methods, means, yerr=stds, capsize=5, alpha=0.7)
-        axes[0].set_title('Accuracy Comparison')
-        axes[0].set_ylabel('Cross-validation Accuracy')
-        axes[0].grid(True, alpha=0.3)
-        
-        # Color bars based on performance
-        colors = ['green' if m == max(means) else 'lightblue' for m in means]
-        for bar, color in zip(bars, colors):
-            bar.set_color(color)
-        
-        # Box plot
-        scores_data = [self.results[m]['scores'] for m in methods]
-        axes[1].boxplot(scores_data, labels=methods)
-        axes[1].set_title('Score Distribution')
-        axes[1].set_ylabel('Accuracy')
-        axes[1].grid(True, alpha=0.3)
-        
-        plt.tight_layout()
-        plt.show()
-        
-        # Print results
-        print("Method Comparison Results:")
-        print("-" * 50)
-        for method in methods:
-            result = self.results[method]
-            print(f"{method:15s}: {result['mean_score']:.4f} ± {result['std_score']:.4f}")
-    
-    def analyze_decision_boundaries(self, X, y):
-        """
-        Analyze decision boundaries for 2D data
-        """
-        # Use only first 2 features for visualization
-        X_2d = X[:, :2]
-        
-        fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-        
-        for i, (name, method) in enumerate(self.methods.items()):
-            # Fit method
-            method.fit(X_2d, y)
-            
-            # Create mesh for decision boundaries
-            x_min, x_max = X_2d[:, 0].min() - 1, X_2d[:, 0].max() + 1
-            y_min, y_max = X_2d[:, 1].min() - 1, X_2d[:, 1].max() + 1
-            xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100),
-                                np.linspace(y_min, y_max, 100))
-            
-            # Predict on mesh
-            Z = method.predict(np.c_[xx.ravel(), yy.ravel()])
-            Z = Z.reshape(xx.shape)
-            
-            # Plot decision boundaries
-            axes[i].contourf(xx, yy, Z, alpha=0.3)
-            
-            # Plot data points
-            for j in range(len(np.unique(y))):
-                mask = y == j
-                axes[i].scatter(X_2d[mask, 0], X_2d[mask, 1], alpha=0.7, label=f'Class {j}')
-            
-            axes[i].set_title(f'{name} Decision Boundaries')
-            axes[i].legend()
-            axes[i].grid(True, alpha=0.3)
-        
-        plt.tight_layout()
-        plt.show()
+**Python Implementation:** See `DiscriminantAnalysisComparison` class and `demonstrate_comparison()` function in [`code/summary_implementation.py`](code/summary_implementation.py)
 
-def demonstrate_comparison():
-    """
-    Demonstrate comprehensive comparison
-    """
-    # Create comparison object
-    comparison = DiscriminantAnalysisComparison()
-    
-    # Generate data
-    X, y = comparison.generate_data(n_samples=1000, n_features=10, n_classes=3)
-    
-    # Compare methods
-    results = comparison.compare_methods(X, y)
-    
-    # Visualize results
-    comparison.visualize_results()
-    
-    # Analyze decision boundaries
-    comparison.analyze_decision_boundaries(X, y)
-    
-    return comparison, results
+**R Implementation:** See `DiscriminantAnalysisComparisonR` class and `demonstrate_comparison_r()` function in [`code/r_summary_implementation.R`](code/r_summary_implementation.R)
 
-# Run demonstration
-comparison, results = demonstrate_comparison()
-```
+These implementations provide:
+
+- **Data Generation**: Synthetic data generation with controlled characteristics
+- **Method Comparison**: Cross-validation comparison of LDA, QDA, and Naive Bayes
+- **Visualization**: Accuracy comparison plots and decision boundary analysis
+- **Parameter Efficiency**: Analysis of parameter counts and efficiency ratios
+- **Comprehensive Results**: Detailed performance metrics and statistical analysis
+
+The comparison reveals the trade-offs between model complexity, computational efficiency, and classification performance across different scenarios.
 
 ## 9.7.7. Limitations and Future Directions
 
@@ -423,87 +251,13 @@ comparison, results = demonstrate_comparison()
 
 ### Computational Challenges
 
-```python
-def analyze_scalability():
-    """
-    Analyze computational scalability of discriminant analysis methods
-    """
-    import time
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
-    from sklearn.naive_bayes import GaussianNB
-    
-    # Parameters
-    n_samples_list = [100, 500, 1000, 2000, 5000]
-    n_features = 50
-    n_classes = 3
-    
-    methods = {
-        'LDA': LinearDiscriminantAnalysis(),
-        'QDA': QuadraticDiscriminantAnalysis(),
-        'Naive Bayes': GaussianNB()
-    }
-    
-    timing_results = {name: [] for name in methods.keys()}
-    
-    for n_samples in n_samples_list:
-        # Generate data
-        X, y = make_classification(
-            n_samples=n_samples,
-            n_features=n_features,
-            n_classes=n_classes,
-            random_state=42
-        )
-        
-        for name, method in methods.items():
-            # Time fitting
-            start_time = time.time()
-            method.fit(X, y)
-            fit_time = time.time() - start_time
-            
-            # Time prediction
-            start_time = time.time()
-            method.predict(X)
-            pred_time = time.time() - start_time
-            
-            timing_results[name].append((fit_time, pred_time))
-    
-    # Plotting
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # Fitting time
-    for name in methods.keys():
-        fit_times = [t[0] for t in timing_results[name]]
-        axes[0].plot(n_samples_list, fit_times, 'o-', label=name, linewidth=2)
-    
-    axes[0].set_xlabel('Number of Samples')
-    axes[0].set_ylabel('Fitting Time (seconds)')
-    axes[0].set_title('Fitting Time Scalability')
-    axes[0].legend()
-    axes[0].grid(True, alpha=0.3)
-    axes[0].set_yscale('log')
-    
-    # Prediction time
-    for name in methods.keys():
-        pred_times = [t[1] for t in timing_results[name]]
-        axes[1].plot(n_samples_list, pred_times, 'o-', label=name, linewidth=2)
-    
-    axes[1].set_xlabel('Number of Samples')
-    axes[1].set_ylabel('Prediction Time (seconds)')
-    axes[1].set_title('Prediction Time Scalability')
-    axes[1].legend()
-    axes[1].grid(True, alpha=0.3)
-    axes[1].set_yscale('log')
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return timing_results
+The computational scalability analysis is implemented in the code files:
 
-# Run scalability analysis
-timing_results = analyze_scalability()
-```
+**Python Implementation:** See `analyze_scalability()` function in [`code/summary_implementation.py`](code/summary_implementation.py)
+
+**R Implementation:** See `analyze_scalability_r()` function in [`code/r_summary_implementation.R`](code/r_summary_implementation.R)
+
+These functions analyze the computational scalability of discriminant analysis methods by measuring fitting and prediction times across different sample sizes. The analysis reveals the computational trade-offs between different methods and helps identify when each method becomes computationally prohibitive.
 
 ## 9.7.8. Transition to Direct Methods
 
