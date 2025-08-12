@@ -179,232 +179,90 @@ where $`[z]_+ = \max(0, z)`$ is the hinge loss function.
 
 ## 11.3.7. Implementation and Examples
 
+The implementation and demonstration of SVM non-separable case concepts is provided in separate code files for both Python and R. These files contain comprehensive examples covering all the theoretical concepts discussed above.
+
 ### Python Implementation
 
+The complete Python implementation is available in the file `code/nonseparable_case_implementation.py`. This file includes:
+
+- **SoftMarginSVM class from scratch** using quadratic programming with cvxopt
+- **Data generation functions** for non-separable data with controlled overlap
+- **Decision boundary visualization** with support vector highlighting
+- **KKT conditions verification** for soft margin SVM theoretical properties
+- **C parameter effects analysis** showing how different C values affect the solution
+- **Hinge loss demonstration** comparing with other loss functions
+- **Cross-validation for parameter selection** using GridSearchCV
+- **Advantages and limitations analysis** with practical demonstrations
+- **Slack variable computation** and analysis
+- **Support vector classification** into margin and non-margin types
+- **Comprehensive demonstrations** of all non-separable case concepts
+
+To run the Python demonstrations:
+
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_blobs
-from sklearn.preprocessing import StandardScaler
-import cvxopt
-from cvxopt import matrix, solvers
-
-class SoftMarginSVM:
-    def __init__(self, C=1.0):
-        self.C = C
-        self.support_vectors = None
-        self.lambda_values = None
-        self.beta = None
-        self.beta_0 = None
-        
-    def fit(self, X, y):
-        n_samples, n_features = X.shape
-        
-        # Prepare the quadratic programming problem
-        P = matrix(np.outer(y, y) * np.dot(X, X.T))
-        q = matrix(-np.ones(n_samples))
-        
-        # Constraints: 0 <= lambda_i <= C
-        G = matrix(np.vstack([-np.eye(n_samples), np.eye(n_samples)]))
-        h = matrix(np.hstack([np.zeros(n_samples), self.C * np.ones(n_samples)]))
-        
-        A = matrix(y.reshape(1, -1))
-        b = matrix(0.0)
-        
-        # Solve the quadratic programming problem
-        solvers.options['show_progress'] = False
-        solution = solvers.qp(P, q, G, h, A, b)
-        
-        # Extract Lagrange multipliers
-        self.lambda_values = np.array(solution['x']).flatten()
-        
-        # Find support vectors
-        support_vector_indices = self.lambda_values > 1e-5
-        self.support_vectors = X[support_vector_indices]
-        support_vector_lambdas = self.lambda_values[support_vector_indices]
-        support_vector_y = y[support_vector_indices]
-        
-        # Compute beta
-        self.beta = np.sum(support_vector_lambdas.reshape(-1, 1) * 
-                          support_vector_y.reshape(-1, 1) * self.support_vectors, axis=0)
-        
-        # Compute beta_0
-        self.beta_0 = np.mean(support_vector_y - 
-                             np.dot(self.support_vectors, self.beta))
-        
-    def predict(self, X):
-        return np.sign(np.dot(X, self.beta) + self.beta_0)
-    
-    def decision_function(self, X):
-        return np.dot(X, self.beta) + self.beta_0
-
-# Generate non-separable data
-X, y = make_blobs(n_samples=100, centers=2, cluster_std=1.5, random_state=42)
-y = 2 * y - 1  # Convert to {-1, 1}
-
-# Add some noise to make it non-separable
-np.random.seed(42)
-noise_indices = np.random.choice(len(X), size=10, replace=False)
-y[noise_indices] = -y[noise_indices]
-
-# Scale the data
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Compare different C values
-C_values = [0.1, 1.0, 10.0]
-fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-
-for i, C in enumerate(C_values):
-    # Fit SVM
-    svm = SoftMarginSVM(C=C)
-    svm.fit(X_scaled, y)
-    
-    # Plotting
-    ax = axes[i]
-    
-    # Plot data points
-    ax.scatter(X_scaled[y == 1][:, 0], X_scaled[y == 1][:, 1], 
-              c='red', label='Class 1', alpha=0.6)
-    ax.scatter(X_scaled[y == -1][:, 0], X_scaled[y == -1][:, 1], 
-              c='blue', label='Class -1', alpha=0.6)
-    
-    # Plot decision boundary
-    x_min, x_max = X_scaled[:, 0].min() - 1, X_scaled[:, 0].max() + 1
-    y_min, y_max = X_scaled[:, 1].min() - 1, X_scaled[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
-                         np.arange(y_min, y_max, 0.01))
-    
-    Z = svm.decision_function(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    
-    ax.contour(xx, yy, Z, levels=[-1, 0, 1], alpha=0.8, 
-               colors=['blue', 'black', 'red'])
-    ax.contourf(xx, yy, Z, levels=[-1, 0, 1], alpha=0.1, 
-                colors=['blue', 'white', 'red'])
-    
-    # Highlight support vectors
-    if svm.support_vectors is not None:
-        ax.scatter(svm.support_vectors[:, 0], svm.support_vectors[:, 1], 
-                   s=100, linewidth=1, facecolors='none', edgecolors='k', 
-                   label='Support Vectors')
-    
-    ax.set_xlabel('Feature 1')
-    ax.set_ylabel('Feature 2')
-    ax.set_title(f'Soft Margin SVM (C={C})')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-
-# Print model information
-for C in C_values:
-    svm = SoftMarginSVM(C=C)
-    svm.fit(X_scaled, y)
-    n_support_vectors = len(svm.support_vectors) if svm.support_vectors is not None else 0
-    print(f"C={C}: {n_support_vectors} support vectors")
+# Import and run the main demonstration
+from code.nonseparable_case_implementation import main
+results = main()
 ```
 
 ### R Implementation
 
+The complete R implementation is available in the file `code/r_nonseparable_case_implementation.R`. This file includes:
+
+- **Data generation functions** for non-separable data with controlled noise
+- **SVM fitting and visualization** using e1071 package with different C values
+- **KKT conditions verification** for soft margin theoretical validation
+- **C parameter effects analysis** across different overlap levels
+- **Hinge loss demonstration** comparing with logistic and exponential loss
+- **Cross-validation for parameter selection** using tune function
+- **Advantages and limitations analysis** with practical demonstrations
+- **Slack variable estimation** and analysis
+- **Support vector analysis** and classification
+- **Comprehensive demonstrations** of all non-separable case concepts
+
+To run the R demonstrations:
+
 ```r
-library(e1071)
-library(ggplot2)
-
-# Generate non-separable data
-set.seed(42)
-n <- 100
-X <- matrix(rnorm(2*n), ncol=2)
-y <- ifelse(X[,1] + X[,2] > 0, 1, -1)
-
-# Add noise to make it non-separable
-noise_indices <- sample(1:n, 10)
-y[noise_indices] <- -y[noise_indices]
-
-# Function to fit and plot SVM with different C values
-plot_svm_with_c <- function(X, y, C_value) {
-  # Fit SVM
-  svm_model <- svm(X, y, kernel="linear", cost=C_value, scale=FALSE)
-  
-  # Create prediction grid
-  x_min <- min(X[,1]) - 1
-  x_max <- max(X[,1]) + 1
-  y_min <- min(X[,2]) - 1
-  y_max <- max(X[,2]) + 1
-  
-  grid_points <- expand.grid(
-    x1 = seq(x_min, x_max, length.out=50),
-    x2 = seq(y_min, y_max, length.out=50)
-  )
-  
-  # Make predictions
-  grid_points$pred <- predict(svm_model, grid_points)
-  
-  # Plot
-  p <- ggplot() +
-    geom_point(data=data.frame(X, y=factor(y)), 
-               aes(x=X1, y=X2, color=y), size=2) +
-    geom_contour(data=grid_points, 
-                 aes(x=x1, y=x2, z=as.numeric(pred)), 
-                 breaks=c(0.5), color="black", size=1) +
-    geom_point(data=data.frame(X[svm_model$index,]), 
-               aes(x=X1, y=X2), shape=21, size=3, 
-               fill="transparent", color="black") +
-    labs(title=paste("Soft Margin SVM (C=", C_value, ")", sep=""), 
-         x="Feature 1", y="Feature 2") +
-    theme_minimal()
-  
-  return(list(plot=p, model=svm_model))
-}
-
-# Compare different C values
-C_values <- c(0.1, 1.0, 10.0)
-plots <- lapply(C_values, function(C) plot_svm_with_c(X, y, C))
-
-# Display plots
-for(i in 1:length(plots)) {
-  print(plots[[i]]$plot)
-  cat("C =", C_values[i], ": Number of support vectors =", 
-      length(plots[[i]]$model$index), "\n")
-}
+# Source and run the main demonstration
+source("code/r_nonseparable_case_implementation.R")
+results <- main_r()
 ```
+
+### Key Demonstrations
+
+Both implementations provide comprehensive demonstrations of:
+
+1. **Basic Soft Margin SVM**: Shows how slack variables handle non-separable data
+2. **KKT Conditions Verification**: Demonstrates that the soft margin solution satisfies all theoretical conditions
+3. **C Parameter Effects**: Illustrates how C controls the trade-off between margin and errors
+4. **Hinge Loss Analysis**: Shows the margin-aware properties of hinge loss compared to other loss functions
+5. **Cross-Validation**: Demonstrates systematic parameter selection for optimal C values
+6. **Support Vector Classification**: Shows the three types of support vectors in soft margin SVM
+7. **Slack Variable Analysis**: Demonstrates how slack variables measure constraint violations
+8. **Practical Considerations**: Shows advantages and limitations across different data scenarios
 
 ## 11.3.8. Cross-Validation for Parameter Selection
 
+Cross-validation is essential for selecting the optimal C parameter in soft margin SVM. The implementation demonstrates systematic parameter selection using grid search with cross-validation.
+
 ### Grid Search Implementation
 
-```python
-from sklearn.model_selection import GridSearchCV
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score
+The cross-validation implementation is available in both Python and R code files:
 
-# Define parameter grid
-param_grid = {
-    'C': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
-}
+**Python**: The `demonstrate_cross_validation()` function in `code/nonseparable_case_implementation.py` shows:
+- Grid search with `GridSearchCV` from scikit-learn
+- Systematic exploration of C parameter space
+- Cross-validation accuracy plotting
+- Support vector count analysis
+- Best parameter identification
 
-# Perform grid search with cross-validation
-svm = SVC(kernel='linear', random_state=42)
-grid_search = GridSearchCV(svm, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
-grid_search.fit(X_scaled, y)
+**R**: The `demonstrate_cross_validation()` function in `code/r_nonseparable_case_implementation.R` shows:
+- Grid search with `tune()` function from e1071
+- Cross-validation error analysis
+- Parameter space exploration
+- Best model selection
 
-# Print results
-print("Best parameters:", grid_search.best_params_)
-print("Best cross-validation score:", grid_search.best_score_)
-
-# Plot cross-validation results
-C_values = param_grid['C']
-cv_scores = grid_search.cv_results_['mean_test_score']
-
-plt.figure(figsize=(10, 6))
-plt.semilogx(C_values, cv_scores, 'bo-')
-plt.xlabel('C (Regularization Parameter)')
-plt.ylabel('Cross-validation Accuracy')
-plt.title('Cross-validation Score vs C Parameter')
-plt.grid(True, alpha=0.3)
-plt.show()
-```
+Both implementations demonstrate how to systematically find the optimal C parameter that balances margin maximization with error minimization for the given dataset.
 
 ## 11.3.9. Advantages and Limitations
 
