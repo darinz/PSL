@@ -469,3 +469,9 @@ This comprehensive analysis of the Bayes rule provides:
 The Bayes rule serves as the gold standard for classification performance and provides essential insights for developing and evaluating learning algorithms. By understanding when and why methods perform well or poorly relative to the Bayes rule, we can make informed decisions about model selection and algorithm design.
 
 This foundation prepares us for exploring more advanced topics in statistical learning, including regularization, model selection, and ensemble methods.
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the introduction section*
+- **Previous Topic:** [Least Squares and k-Nearest Neighbors](04_ls_and_knn.md) - Practical implementation and comparison of fundamental learning algorithms
