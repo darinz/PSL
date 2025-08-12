@@ -137,298 +137,42 @@ The process of searching for the best split follows a basic greedy algorithm:
 
 ## 12.1.4. Implementation and Examples
 
-### Python Implementation
+The implementation of classification trees is provided in separate code files for both Python and R. These implementations demonstrate the core concepts of classification trees including impurity measures, tree building, and decision boundaries.
+
+**Python Implementation**: The complete classification tree implementation is available in `code/introduction_implementation.py` and includes:
+- **`ClassificationTree` class** with custom implementation of all impurity measures (Gini, Entropy, Misclassification Error)
+- **Tree building algorithm** with recursive splitting and stopping criteria
+- **Impurity measure comparison** between Gini and Entropy criteria
+- **Tree structure visualization** with different depths
+- **Stopping criteria demonstration** showing the effects of different parameters
+- **Greedy algorithm step-by-step demonstration** showing how splits are chosen
+- **Advantages and limitations analysis** with different data patterns
+- **Decision boundary visualization** and accuracy analysis
+
+**R Implementation**: The complete classification tree implementation is available in `code/r_introduction_implementation.R` and includes:
+- **Basic tree demonstration** using rpart with tree visualization
+- **Impurity measures analysis** using Gini criterion (rpart default)
+- **Tree structure analysis** with different depths and node counts
+- **Stopping criteria demonstration** with various parameter configurations
+- **Greedy algorithm demonstration** showing split selection process
+- **Advantages and limitations analysis** with different data patterns
+- **Decision boundary visualization** using ggplot2
+
+To run the classification tree demonstrations:
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_classification
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-
-class ClassificationTree:
-    def __init__(self, max_depth=None, min_samples_split=2, min_samples_leaf=1, 
-                 criterion='gini', random_state=None):
-        self.max_depth = max_depth
-        self.min_samples_split = min_samples_split
-        self.min_samples_leaf = min_samples_leaf
-        self.criterion = criterion
-        self.random_state = random_state
-        self.tree = None
-        
-    def gini_impurity(self, y):
-        """Calculate Gini impurity"""
-        classes, counts = np.unique(y, return_counts=True)
-        probabilities = counts / len(y)
-        return 1 - np.sum(probabilities ** 2)
-    
-    def entropy(self, y):
-        """Calculate entropy"""
-        classes, counts = np.unique(y, return_counts=True)
-        probabilities = counts / len(y)
-        return -np.sum(probabilities * np.log2(probabilities + 1e-10))
-    
-    def misclassification_error(self, y):
-        """Calculate misclassification error"""
-        classes, counts = np.unique(y, return_counts=True)
-        return 1 - np.max(counts) / len(y)
-    
-    def calculate_impurity(self, y):
-        """Calculate impurity based on criterion"""
-        if self.criterion == 'gini':
-            return self.gini_impurity(y)
-        elif self.criterion == 'entropy':
-            return self.entropy(y)
-        elif self.criterion == 'error':
-            return self.misclassification_error(y)
-        else:
-            raise ValueError(f"Unknown criterion: {self.criterion}")
-    
-    def find_best_split(self, X, y):
-        """Find the best split for the data"""
-        n_samples, n_features = X.shape
-        best_impurity_reduction = 0
-        best_feature = None
-        best_threshold = None
-        
-        # Calculate parent impurity
-        parent_impurity = self.calculate_impurity(y)
-        
-        for feature in range(n_features):
-            # Get unique values for this feature
-            thresholds = np.unique(X[:, feature])
-            
-            for threshold in thresholds:
-                # Create split
-                left_mask = X[:, feature] <= threshold
-                right_mask = ~left_mask
-                
-                # Skip if split doesn't meet minimum requirements
-                if (np.sum(left_mask) < self.min_samples_leaf or 
-                    np.sum(right_mask) < self.min_samples_leaf):
-                    continue
-                
-                # Calculate impurity for children
-                left_impurity = self.calculate_impurity(y[left_mask])
-                right_impurity = self.calculate_impurity(y[right_mask])
-                
-                # Calculate weighted impurity
-                n_left = np.sum(left_mask)
-                n_right = np.sum(right_mask)
-                weighted_impurity = (n_left * left_impurity + n_right * right_impurity) / n_samples
-                
-                # Calculate impurity reduction
-                impurity_reduction = parent_impurity - weighted_impurity
-                
-                if impurity_reduction > best_impurity_reduction:
-                    best_impurity_reduction = impurity_reduction
-                    best_feature = feature
-                    best_threshold = threshold
-        
-        return best_feature, best_threshold, best_impurity_reduction
-    
-    def create_leaf(self, y):
-        """Create a leaf node"""
-        classes, counts = np.unique(y, return_counts=True)
-        majority_class = classes[np.argmax(counts)]
-        probabilities = counts / len(y)
-        return {
-            'type': 'leaf',
-            'prediction': majority_class,
-            'probabilities': dict(zip(classes, probabilities)),
-            'n_samples': len(y)
-        }
-    
-    def build_tree(self, X, y, depth=0):
-        """Recursively build the decision tree"""
-        n_samples = len(y)
-        
-        # Stopping criteria
-        if (self.max_depth is not None and depth >= self.max_depth or
-            n_samples < self.min_samples_split or
-            len(np.unique(y)) == 1):
-            return self.create_leaf(y)
-        
-        # Find best split
-        best_feature, best_threshold, impurity_reduction = self.find_best_split(X, y)
-        
-        # If no good split found, create leaf
-        if best_feature is None or impurity_reduction <= 0:
-            return self.create_leaf(y)
-        
-        # Create split
-        left_mask = X[:, best_feature] <= best_threshold
-        right_mask = ~left_mask
-        
-        # Create internal node
-        node = {
-            'type': 'internal',
-            'feature': best_feature,
-            'threshold': best_threshold,
-            'impurity_reduction': impurity_reduction,
-            'n_samples': n_samples
-        }
-        
-        # Recursively build children
-        node['left'] = self.build_tree(X[left_mask], y[left_mask], depth + 1)
-        node['right'] = self.build_tree(X[right_mask], y[right_mask], depth + 1)
-        
-        return node
-    
-    def fit(self, X, y):
-        """Fit the classification tree"""
-        if self.random_state is not None:
-            np.random.seed(self.random_state)
-        
-        self.tree = self.build_tree(X, y)
-        return self
-    
-    def predict_single(self, x, node):
-        """Predict for a single sample"""
-        if node['type'] == 'leaf':
-            return node['prediction']
-        
-        if x[node['feature']] <= node['threshold']:
-            return self.predict_single(x, node['left'])
-        else:
-            return self.predict_single(x, node['right'])
-    
-    def predict(self, X):
-        """Predict for multiple samples"""
-        predictions = []
-        for x in X:
-            predictions.append(self.predict_single(x, self.tree))
-        return np.array(predictions)
-    
-    def predict_proba(self, X):
-        """Predict class probabilities"""
-        probabilities = []
-        for x in X:
-            proba = self.predict_proba_single(x, self.tree)
-            probabilities.append(proba)
-        return np.array(probabilities)
-    
-    def predict_proba_single(self, x, node):
-        """Predict probabilities for a single sample"""
-        if node['type'] == 'leaf':
-            return list(node['probabilities'].values())
-        
-        if x[node['feature']] <= node['threshold']:
-            return self.predict_proba_single(x, node['left'])
-        else:
-            return self.predict_proba_single(x, node['right'])
-
-# Generate classification data
-X, y = make_classification(n_samples=200, n_features=2, n_classes=2, 
-                          n_clusters_per_class=1, n_redundant=0, 
-                          random_state=42)
-
-# Split the data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
-                                                    random_state=42)
-
-# Compare different impurity measures
-criteria = ['gini', 'entropy']
-fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-
-for i, criterion in enumerate(criteria):
-    # Fit custom tree
-    custom_tree = ClassificationTree(max_depth=3, criterion=criterion, 
-                                    random_state=42)
-    custom_tree.fit(X_train, y_train)
-    
-    # Fit sklearn tree for comparison
-    sklearn_tree = DecisionTreeClassifier(max_depth=3, criterion=criterion, 
-                                         random_state=42)
-    sklearn_tree.fit(X_train, y_train)
-    
-    # Plotting
-    ax = axes[i]
-    
-    # Create mesh for decision boundary
-    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
-                         np.arange(y_min, y_max, 0.01))
-    
-    # Make predictions
-    Z = custom_tree.predict(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    
-    # Plot decision boundary
-    ax.contourf(xx, yy, Z, alpha=0.4)
-    ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, alpha=0.8)
-    ax.set_xlabel('Feature 1')
-    ax.set_ylabel('Feature 2')
-    ax.set_title(f'Classification Tree ({criterion.upper()})')
-    
-    # Print accuracy
-    train_acc = accuracy_score(y_train, custom_tree.predict(X_train))
-    test_acc = accuracy_score(y_test, custom_tree.predict(X_test))
-    ax.text(0.02, 0.98, f'Train Acc: {train_acc:.3f}\nTest Acc: {test_acc:.3f}', 
-            transform=ax.transAxes, verticalalignment='top',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
-
-plt.tight_layout()
-plt.show()
-
-# Compare impurity measures
-print("Comparison of Impurity Measures:")
-for criterion in criteria:
-    tree = ClassificationTree(max_depth=3, criterion=criterion, random_state=42)
-    tree.fit(X_train, y_train)
-    
-    train_acc = accuracy_score(y_train, tree.predict(X_train))
-    test_acc = accuracy_score(y_test, tree.predict(X_test))
-    
-    print(f"{criterion.upper()}:")
-    print(f"  Train Accuracy: {train_acc:.3f}")
-    print(f"  Test Accuracy: {test_acc:.3f}")
-    print()
+# Python
+from code.introduction_implementation import main
+results = main()
 ```
-
-### R Implementation
 
 ```r
-library(rpart)
-library(rpart.plot)
-library(ggplot2)
-
-# Generate classification data
-set.seed(42)
-n <- 200
-X <- matrix(rnorm(2*n), ncol=2)
-y <- ifelse(X[,1] + X[,2] > 0, 1, 0)
-
-# Create data frame
-data <- data.frame(X1 = X[,1], X2 = X[,2], y = factor(y))
-
-# Fit classification tree
-tree_model <- rpart(y ~ X1 + X2, data = data, method = "class", 
-                   control = rpart.control(maxdepth = 3))
-
-# Plot tree
-rpart.plot(tree_model, box.palette = "RdBu", shadow.col = "gray", 
-           nn = TRUE, main = "Classification Tree")
-
-# Make predictions
-data$pred <- predict(tree_model, data, type = "class")
-
-# Plot decision boundary
-ggplot(data, aes(x = X1, y = X2, color = y)) +
-  geom_point(alpha = 0.7) +
-  geom_point(data = data[data$y != data$pred, ], 
-             aes(x = X1, y = X2), shape = 21, size = 3, 
-             fill = "transparent", color = "red") +
-  labs(title = "Classification Tree Decision Boundary",
-       subtitle = "Red circles indicate misclassifications") +
-  theme_minimal()
-
-# Print tree summary
-print(tree_model)
-printcp(tree_model)
+# R
+source("code/r_introduction_implementation.R")
+results <- main_r()
 ```
+
+The implementations demonstrate how classification trees extend regression trees by using impurity measures instead of RSS, and how the greedy algorithm efficiently finds optimal splits to create interpretable decision boundaries.
 
 ## 12.1.5. Advantages and Limitations
 
