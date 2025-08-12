@@ -60,152 +60,40 @@ This is exactly what we have in our split gain formula!
 
 ## 12.3.3. Visual Comparison
 
-Let's visualize the key differences between misclassification rate and entropy:
+The visual comparison between misclassification rate and entropy is provided in separate code files for both Python and R. These implementations demonstrate the key mathematical differences between these impurity measures through comprehensive visualizations.
+
+**Python Implementation**: The complete visual comparison is available in `code/misclassification_entropy_implementation.py` and includes:
+- **`plot_impurity_comparison()`**: Comprehensive visualization of misclassification vs entropy
+- **Main comparison plot** showing impurity measures across probability range
+- **Concavity demonstration** with weighted average analysis
+- **Split gain analysis** comparing different scenarios
+- **Zero gain scenario** visualization for misclassification
+- **Interactive plots** with detailed annotations and grid lines
+- **Numerical analysis** of split gains
+
+**R Implementation**: The complete visual comparison is available in `code/r_misclassification_entropy_implementation.R` and includes:
+- **`plot_impurity_comparison()`**: R-based visualization using ggplot2
+- **Four-panel comparison** showing different aspects of the analysis
+- **Concavity demonstration** with segment visualization
+- **Split gain comparison** with gain values displayed
+- **Zero gain scenario** analysis
+- **Professional styling** with proper themes and colors
+
+To run the visual comparison:
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import minimize_scalar
-
-def plot_impurity_comparison():
-    """Visualize misclassification rate vs entropy"""
-    p = np.linspace(0, 1, 1000)
-    
-    # Calculate impurity measures
-    misclassification = 1 - np.maximum(p, 1-p)  # min(p, 1-p)
-    entropy = -p * np.log2(p + 1e-10) - (1-p) * np.log2(1-p + 1e-10)
-    
-    # Scale entropy to match misclassification at p=0.5
-    entropy_scaled = entropy / entropy[500] * misclassification[500]
-    
-    plt.figure(figsize=(15, 10))
-    
-    # Main comparison plot
-    plt.subplot(2, 2, 1)
-    plt.plot(p, misclassification, 'b-', linewidth=3, label='Misclassification Rate')
-    plt.plot(p, entropy_scaled, 'r-', linewidth=3, label='Entropy (Scaled)')
-    plt.xlabel('Probability of Class 0 (p)')
-    plt.ylabel('Impurity')
-    plt.title('Misclassification Rate vs Entropy')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Highlight key points
-    plt.axvline(x=0.5, color='gray', linestyle='--', alpha=0.7)
-    plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.7)
-    
-    # Add annotations
-    plt.annotate('p = 0.5', xy=(0.5, 0.5), xytext=(0.6, 0.6),
-                arrowprops=dict(arrowstyle='->', color='gray'))
-    
-    # Concavity demonstration
-    plt.subplot(2, 2, 2)
-    p1, p2 = 0.3, 0.7
-    p_weighted = 0.5  # (p1 + p2) / 2
-    
-    # Plot points
-    plt.plot([p1, p2], [misclassification[int(p1*1000)], misclassification[int(p2*1000)]], 
-             'bo-', linewidth=2, label='Linear interpolation')
-    plt.plot([p1, p2], [entropy_scaled[int(p1*1000)], entropy_scaled[int(p2*1000)]], 
-             'ro-', linewidth=2, label='Entropy values')
-    
-    # Plot weighted average point
-    plt.plot(p_weighted, misclassification[int(p_weighted*1000)], 'bs', markersize=10, 
-             label='Misclassification at weighted avg')
-    plt.plot(p_weighted, entropy_scaled[int(p_weighted*1000)], 'rs', markersize=10, 
-             label='Entropy at weighted avg')
-    
-    # Plot function values
-    plt.plot(p, misclassification, 'b-', alpha=0.3)
-    plt.plot(p, entropy_scaled, 'r-', alpha=0.3)
-    
-    plt.xlabel('Probability of Class 0 (p)')
-    plt.ylabel('Impurity')
-    plt.title('Concavity Demonstration')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Split gain analysis
-    plt.subplot(2, 2, 3)
-    
-    # Example: parent node with p=0.5, split into p1=0.3, p2=0.7
-    p_parent = 0.5
-    p_left = 0.3
-    p_right = 0.7
-    w_left = 0.5
-    w_right = 0.5
-    
-    # Calculate gains
-    misclass_parent = 1 - max(p_parent, 1-p_parent)
-    misclass_left = 1 - max(p_left, 1-p_left)
-    misclass_right = 1 - max(p_right, 1-p_right)
-    misclass_gain = misclass_parent - (w_left * misclass_left + w_right * misclass_right)
-    
-    entropy_parent = -p_parent * np.log2(p_parent) - (1-p_parent) * np.log2(1-p_parent)
-    entropy_left = -p_left * np.log2(p_left) - (1-p_left) * np.log2(1-p_left)
-    entropy_right = -p_right * np.log2(p_right) - (1-p_right) * np.log2(1-p_right)
-    entropy_gain = entropy_parent - (w_left * entropy_left + w_right * entropy_right)
-    
-    # Plot the split scenario
-    plt.plot([p_left, p_right], [misclass_left, misclass_right], 'bo-', linewidth=2, 
-             label=f'Misclassification Gain: {misclass_gain:.3f}')
-    plt.plot([p_left, p_right], [entropy_left, entropy_right], 'ro-', linewidth=2, 
-             label=f'Entropy Gain: {entropy_gain:.3f}')
-    
-    plt.axhline(y=misclass_parent, color='blue', linestyle='--', alpha=0.7)
-    plt.axhline(y=entropy_parent, color='red', linestyle='--', alpha=0.7)
-    
-    plt.xlabel('Probability of Class 0 (p)')
-    plt.ylabel('Impurity')
-    plt.title('Split Gain Comparison')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Zero gain scenario
-    plt.subplot(2, 2, 4)
-    
-    # Example: both child nodes on same side of 0.5
-    p_parent = 0.6
-    p_left = 0.55
-    p_right = 0.65
-    
-    misclass_parent = 1 - max(p_parent, 1-p_parent)
-    misclass_left = 1 - max(p_left, 1-p_left)
-    misclass_right = 1 - max(p_right, 1-p_right)
-    misclass_gain_zero = misclass_parent - (w_left * misclass_left + w_right * misclass_right)
-    
-    entropy_parent = -p_parent * np.log2(p_parent) - (1-p_parent) * np.log2(1-p_parent)
-    entropy_left = -p_left * np.log2(p_left) - (1-p_left) * np.log2(1-p_left)
-    entropy_right = -p_right * np.log2(p_right) - (1-p_right) * np.log2(1-p_right)
-    entropy_gain_zero = entropy_parent - (w_left * entropy_left + w_right * entropy_right)
-    
-    plt.plot([p_left, p_right], [misclass_left, misclass_right], 'bo-', linewidth=2, 
-             label=f'Misclassification Gain: {misclass_gain_zero:.3f}')
-    plt.plot([p_left, p_right], [entropy_left, entropy_right], 'ro-', linewidth=2, 
-             label=f'Entropy Gain: {entropy_gain_zero:.3f}')
-    
-    plt.axhline(y=misclass_parent, color='blue', linestyle='--', alpha=0.7)
-    plt.axhline(y=entropy_parent, color='red', linestyle='--', alpha=0.7)
-    plt.axvline(x=0.5, color='gray', linestyle='--', alpha=0.7)
-    
-    plt.xlabel('Probability of Class 0 (p)')
-    plt.ylabel('Impurity')
-    plt.title('Zero Gain Scenario (Same Side of 0.5)')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    # Print numerical results
-    print("Split Gain Analysis:")
-    print(f"Scenario 1 - Different sides of 0.5:")
-    print(f"  Parent: p={p_parent}, Misclassification gain: {misclass_gain:.4f}, Entropy gain: {entropy_gain:.4f}")
-    print(f"Scenario 2 - Same side of 0.5:")
-    print(f"  Parent: p={p_parent}, Misclassification gain: {misclass_gain_zero:.4f}, Entropy gain: {entropy_gain_zero:.4f}")
-
-plot_impurity_comparison()
+# Python
+from code.misclassification_entropy_implementation import plot_impurity_comparison
+viz_results = plot_impurity_comparison()
 ```
+
+```r
+# R
+source("code/r_misclassification_entropy_implementation.R")
+viz_results <- plot_impurity_comparison()
+```
+
+The visualizations demonstrate the fundamental differences between misclassification rate (piecewise linear) and entropy (strictly concave), showing how these mathematical properties affect split gain calculations and tree construction behavior.
 
 ## 12.3.4. Mathematical Analysis
 
@@ -260,90 +148,38 @@ During pruning, we may want to use misclassification rate because:
 
 ### Implementation Example
 
-```python
-def compare_split_gains():
-    """Compare split gains for different scenarios"""
-    
-    def misclassification_impurity(p):
-        return min(p, 1-p)
-    
-    def entropy_impurity(p):
-        if p == 0 or p == 1:
-            return 0
-        return -p * np.log2(p) - (1-p) * np.log2(1-p)
-    
-    def calculate_split_gain(p_parent, p_left, p_right, w_left, w_right, impurity_func):
-        """Calculate split gain for given impurity function"""
-        parent_impurity = impurity_func(p_parent)
-        left_impurity = impurity_func(p_left)
-        right_impurity = impurity_func(p_right)
-        
-        weighted_child_impurity = w_left * left_impurity + w_right * right_impurity
-        gain = parent_impurity - weighted_child_impurity
-        
-        return gain
-    
-    # Test scenarios
-    scenarios = [
-        {
-            'name': 'Different sides of 0.5',
-            'p_parent': 0.5,
-            'p_left': 0.3,
-            'p_right': 0.7,
-            'w_left': 0.5,
-            'w_right': 0.5
-        },
-        {
-            'name': 'Same side of 0.5 (left)',
-            'p_parent': 0.6,
-            'p_left': 0.55,
-            'p_right': 0.65,
-            'w_left': 0.5,
-            'w_right': 0.5
-        },
-        {
-            'name': 'Same side of 0.5 (right)',
-            'p_parent': 0.4,
-            'p_left': 0.35,
-            'p_right': 0.45,
-            'w_left': 0.5,
-            'w_right': 0.5
-        },
-        {
-            'name': 'Extreme split',
-            'p_parent': 0.5,
-            'p_left': 0.1,
-            'p_right': 0.9,
-            'w_left': 0.5,
-            'w_right': 0.5
-        }
-    ]
-    
-    print("Split Gain Comparison:")
-    print("-" * 80)
-    print(f"{'Scenario':<25} {'Misclass Gain':<15} {'Entropy Gain':<15}")
-    print("-" * 80)
-    
-    for scenario in scenarios:
-        misclass_gain = calculate_split_gain(
-            scenario['p_parent'], scenario['p_left'], scenario['p_right'],
-            scenario['w_left'], scenario['w_right'], misclassification_impurity
-        )
-        
-        entropy_gain = calculate_split_gain(
-            scenario['p_parent'], scenario['p_left'], scenario['p_right'],
-            scenario['w_left'], scenario['w_right'], entropy_impurity
-        )
-        
-        print(f"{scenario['name']:<25} {misclass_gain:<15.4f} {entropy_gain:<15.4f}")
-    
-    print("\nKey Observations:")
-    print("1. Entropy always provides positive gain (strictly concave)")
-    print("2. Misclassification can give zero gain when both children are on same side of 0.5")
-    print("3. Entropy encourages more aggressive splitting")
+The implementation example comparing split gains for different scenarios is provided in separate code files for both Python and R. These implementations demonstrate the practical differences between misclassification rate and entropy in split gain calculations.
 
-compare_split_gains()
+**Python Implementation**: The complete split gain comparison is available in `code/misclassification_entropy_implementation.py` and includes:
+- **`compare_split_gains()`**: Comprehensive comparison across different scenarios
+- **Multiple test scenarios** including different sides of 0.5, same side scenarios, and extreme splits
+- **Detailed analysis** of split gain calculations
+- **Numerical comparison tables** with formatted output
+- **Key observations** about impurity measure behavior
+- **Statistical analysis** of split quality
+
+**R Implementation**: The complete split gain comparison is available in `code/r_misclassification_entropy_implementation.R` and includes:
+- **`compare_split_gains()`**: R-based comparison with proper formatting
+- **Scenario testing** with different probability configurations
+- **Formatted output tables** showing gain comparisons
+- **Statistical analysis** of impurity measure performance
+- **Professional reporting** of results
+
+To run the split gain comparison:
+
+```python
+# Python
+from code.misclassification_entropy_implementation import compare_split_gains
+split_results = compare_split_gains()
 ```
+
+```r
+# R
+source("code/r_misclassification_entropy_implementation.R")
+split_results <- compare_split_gains()
+```
+
+The implementation demonstrates how entropy always provides positive split gain due to its strict concavity, while misclassification can give zero gain when both child nodes are on the same side of 0.5, highlighting the practical implications of mathematical properties in tree construction.
 
 ## 12.3.6. Theoretical Analysis
 
