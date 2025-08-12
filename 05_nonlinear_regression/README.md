@@ -4,7 +4,13 @@
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
-This module covers advanced, modernized methods for modeling nonlinear relationships in regression problems.
+This module provides a comprehensive foundation for understanding and implementing nonlinear regression methods, from simple polynomial models to sophisticated spline-based approaches.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Polynomial Regression](01_polynomial_regression.md) - Extending linear models with polynomial terms
+- **Previous Section:** [Clustering Analysis](../06_clustering_analysis/README.md) - Overview of unsupervised learning techniques
 
 ## Learning Objectives
 
