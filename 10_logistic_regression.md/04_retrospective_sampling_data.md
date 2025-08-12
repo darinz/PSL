@@ -212,3 +212,11 @@ Retrospective sampling is a powerful tool for studying rare outcomes, and logist
 4. **Model performance is maintained** - discriminative ability preserved
 
 This makes logistic regression particularly robust for retrospective studies, which are common in medical research and other fields where outcomes are rare.
+
+This understanding is crucial for practitioners working with case-control studies, as it ensures that logistic regression results are properly interpreted and that the odds ratio estimates are valid despite the sampling design.
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the logistic regression section*
+- **Previous Topic:** [Separable Data](03_seperable_data.md) - Handling perfectly separable data and convergence issues
