@@ -200,243 +200,73 @@ This demonstration shows how Gaussian PDF values become extremely small for poin
 
 #### 1. Use Log-Probabilities (Recommended)
 
-Always work with log-probabilities to avoid underflow:
+Always work with log-probabilities to avoid underflow. The implementation is provided in the code files:
 
-```python
-def safe_naive_bayes_predict(X, model):
-    """
-    Safe Naive Bayes prediction using log-probabilities
-    """
-    log_proba = model.predict_log_proba(X)
-    return model.classes_[np.argmax(log_proba, axis=1)]
-```
+**Python:** See `safe_naive_bayes_predict()` function in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
+
+**R:** See `safe_naive_bayes_predict()` function in [`code/r_naive_bayes_implementation.R`](code/r_naive_bayes_implementation.R)
 
 #### 2. Add Regularization
 
-Add small constants to prevent zero variances:
+Add small constants to prevent zero variances. The implementation is provided in the code files:
 
-```python
-def regularized_naive_bayes(X, y, epsilon=1e-9):
-    """
-    Naive Bayes with regularization
-    """
-    # ... existing code ...
-    
-    # Regularize variances
-    self.variances_ = np.maximum(self.variances_, epsilon)
-    
-    return self
-```
+**Python:** See `regularized_naive_bayes()` function in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
+
+**R:** See `regularized_naive_bayes()` function in [`code/r_naive_bayes_implementation.R`](code/r_naive_bayes_implementation.R)
 
 #### 3. Truncation (Not Recommended)
 
-Some packages truncate very small probabilities, but this can lead to incorrect predictions:
+Some packages truncate very small probabilities, but this can lead to incorrect predictions. The implementation is provided in the code files:
 
-```python
-def truncated_naive_bayes(X, model, threshold=1e-10):
-    """
-    Naive Bayes with truncation (not recommended)
-    """
-    proba = model.predict_proba(X)
-    proba = np.maximum(proba, threshold)  # Truncate small values
-    return model.classes_[np.argmax(proba, axis=1)]
-```
+**Python:** See `truncated_naive_bayes()` function in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
 
 ## 9.6.6. Variants of Naive Bayes
 
 ### 1. Gaussian Naive Bayes
 
-For continuous features, assumes Gaussian distribution:
+For continuous features, assumes Gaussian distribution. The implementation is provided in the code files:
 
-```python
-class GaussianNaiveBayes(NaiveBayesClassifier):
-    def __init__(self):
-        super().__init__(feature_type='gaussian')
-```
+**Python:** See `GaussianNaiveBayes` class in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
 
 ### 2. Multinomial Naive Bayes
 
-For discrete count data (e.g., text classification):
+For discrete count data (e.g., text classification). The implementation is provided in the code files:
 
-```python
-class MultinomialNaiveBayes:
-    def __init__(self, alpha=1.0):
-        self.alpha = alpha  # Laplace smoothing parameter
-        
-    def fit(self, X, y):
-        # Count features for each class
-        # Apply Laplace smoothing
-        # Estimate class-conditional probabilities
-        pass
-```
+**Python:** See `MultinomialNaiveBayes` class in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
 
 ### 3. Bernoulli Naive Bayes
 
-For binary features:
+For binary features. The implementation is provided in the code files:
 
-```python
-class BernoulliNaiveBayes:
-    def __init__(self, alpha=1.0):
-        self.alpha = alpha
-        
-    def fit(self, X, y):
-        # Estimate probability of feature being 1 for each class
-        # Apply Laplace smoothing
-        pass
-```
+**Python:** See `BernoulliNaiveBayes` class in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
 
 ### 4. Categorical Naive Bayes
 
-For categorical features:
+For categorical features. The implementation is provided in the code files:
 
-```python
-class CategoricalNaiveBayes:
-    def __init__(self, alpha=1.0):
-        self.alpha = alpha
-        
-    def fit(self, X, y):
-        # Estimate probability of each category for each class
-        # Apply Laplace smoothing
-        pass
-```
+**Python:** See `CategoricalNaiveBayes` class in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
 
 ## 9.6.7. Real-World Applications
 
 ### Example 1: Text Classification
 
-```python
-def text_classification_example():
-    """
-    Naive Bayes for text classification
-    """
-    from sklearn.feature_extraction.text import CountVectorizer
-    from sklearn.naive_bayes import MultinomialNB
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import classification_report
-    
-    # Sample text data
-    texts = [
-        "great movie amazing acting",
-        "terrible film waste of time", 
-        "excellent performance brilliant",
-        "boring plot disappointing",
-        "fantastic story wonderful",
-        "awful acting bad script",
-        "outstanding film superb",
-        "poor quality terrible",
-        "incredible movie perfect",
-        "horrible waste bad"
-    ]
-    
-    labels = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]  # 1=positive, 0=negative
-    
-    # Vectorize text
-    vectorizer = CountVectorizer()
-    X = vectorizer.fit_transform(texts)
-    
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
-    
-    # Fit Multinomial Naive Bayes
-    nb = MultinomialNB()
-    nb.fit(X_train, y_train)
-    
-    # Predictions
-    y_pred = nb.predict(X_test)
-    
-    print("Text Classification Results:")
-    print("-" * 40)
-    print(classification_report(y_test, y_pred, 
-                               target_names=['Negative', 'Positive']))
-    
-    # Feature importance
-    feature_names = vectorizer.get_feature_names_out()
-    log_probs = nb.feature_log_prob_
-    
-    # Show most discriminative words
-    positive_words = log_probs[1] - log_probs[0]
-    negative_words = log_probs[0] - log_probs[1]
-    
-    print("\nMost Positive Words:")
-    pos_indices = np.argsort(positive_words)[-5:]
-    for idx in pos_indices:
-        print(f"  {feature_names[idx]}: {positive_words[idx]:.3f}")
-    
-    print("\nMost Negative Words:")
-    neg_indices = np.argsort(negative_words)[-5:]
-    for idx in neg_indices:
-        print(f"  {feature_names[idx]}: {negative_words[idx]:.3f}")
-    
-    return nb, vectorizer
-```
+The text classification example is implemented in the code files:
+
+**Python:** See `text_classification_example()` function in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
+
+**R:** See `text_classification_example_r()` function in [`code/r_naive_bayes_implementation.R`](code/r_naive_bayes_implementation.R)
+
+This example demonstrates Naive Bayes for sentiment analysis, showing how to identify the most discriminative words for positive and negative sentiment classification.
 
 ### Example 2: Medical Diagnosis
 
-```python
-def medical_diagnosis_example():
-    """
-    Naive Bayes for medical diagnosis
-    """
-    # Simulate medical data
-    np.random.seed(42)
-    n_samples = 1000
-    
-    # Features: age, blood_pressure, cholesterol, glucose
-    age = np.random.normal(50, 15, n_samples)
-    blood_pressure = np.random.normal(120, 20, n_samples)
-    cholesterol = np.random.normal(200, 40, n_samples)
-    glucose = np.random.normal(100, 20, n_samples)
-    
-    X = np.column_stack([age, blood_pressure, cholesterol, glucose])
-    
-    # Disease risk based on features
-    risk_score = (age * 0.1 + (blood_pressure - 120) * 0.05 + 
-                  (cholesterol - 200) * 0.02 + (glucose - 100) * 0.03 +
-                  np.random.normal(0, 0.1, n_samples))
-    
-    y = (risk_score > np.median(risk_score)).astype(int)
-    
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42, stratify=y
-    )
-    
-    # Fit Naive Bayes
-    nb = NaiveBayesClassifier()
-    nb.fit(X_train, y_train)
-    
-    # Predictions
-    y_pred = nb.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    
-    print("Medical Diagnosis Results:")
-    print("-" * 40)
-    print(f"Accuracy: {accuracy:.4f}")
-    
-    # Feature importance
-    feature_names = ['Age', 'Blood Pressure', 'Cholesterol', 'Glucose']
-    feature_importance = np.zeros(4)
-    
-    for j in range(4):
-        overall_mean = np.mean(X[:, j])
-        between_var = np.sum([np.sum(y == c) * (np.mean(X[y == c, j]) - overall_mean)**2 
-                             for c in np.unique(y)])
-        within_var = np.sum([np.sum((X[y == c, j] - np.mean(X[y == c, j]))**2) 
-                            for c in np.unique(y)])
-        feature_importance[j] = between_var / within_var if within_var > 0 else 0
-    
-    # Plot feature importance
-    plt.figure(figsize=(10, 4))
-    plt.bar(feature_names, feature_importance)
-    plt.title('Feature Importance in Medical Diagnosis')
-    plt.ylabel('Between/Within Variance Ratio')
-    plt.grid(True, alpha=0.3)
-    plt.show()
-    
-    return nb, feature_importance
-```
+The medical diagnosis example is implemented in the code files:
+
+**Python:** See `medical_diagnosis_example()` function in [`code/naive_bayes_implementation.py`](code/naive_bayes_implementation.py)
+
+**R:** See `medical_diagnosis_example_r()` function in [`code/r_naive_bayes_implementation.R`](code/r_naive_bayes_implementation.R)
+
+This example shows Naive Bayes applied to medical data for disease risk assessment, demonstrating feature importance analysis for clinical decision support.
 
 ## 9.6.8. Advantages and Limitations
 
