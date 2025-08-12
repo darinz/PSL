@@ -233,16 +233,13 @@ The diagnostics help assess model assumptions, identify influential observations
 
 ## Summary
 
-Regression splines provide a powerful and flexible approach to nonlinear regression through:
+Regression splines provide a powerful and flexible approach to nonlinear modeling, combining the interpretability of basis functions with the smoothness properties of splines.
 
-1. **Basis Function Representation**: Linear combination of spline basis functions
-2. **Degrees of Freedom Control**: Direct control over model complexity
-3. **Knot Selection Strategies**: Multiple approaches for optimal knot placement
-4. **Model Selection**: Information criteria and cross-validation for optimal DF selection
-5. **Regularization**: Ridge and Lasso methods for coefficient shrinkage
-6. **Comprehensive Diagnostics**: Multiple diagnostic plots and tests
+---
 
-The mathematical framework ensures optimal estimation, while the computational implementation provides both efficiency and interpretability. Regression splines address the limitations of polynomial regression while maintaining local flexibility and global smoothness.
+**Navigation:**
+- **Next Topic:** [Smoothing Splines](04_smoothing_splines.md) - Penalized spline fitting with automatic smoothness control
+- **Previous Topic:** [Cubic Splines](02_cubic_splines.md) - Piecewise polynomial functions with continuity constraints
 
 ## Code Files Summary
 
