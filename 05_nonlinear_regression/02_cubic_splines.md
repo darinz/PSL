@@ -135,466 +135,58 @@ where $`d_i(x)`$ are the cubic spline basis functions.
 
 ### Python Implementation
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.interpolate import CubicSpline, BSpline
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+**Complete Implementation:** [cubic_spline_regression.py](code/cubic_spline_regression.py)
 
-class CubicSplineRegression:
-    def __init__(self, knots=None, natural=False):
-        """
-        Cubic Spline Regression
-        
-        Parameters:
-        knots: array of knot positions
-        natural: whether to use natural cubic splines
-        """
-        self.knots = knots
-        self.natural = natural
-        self.spline = None
-        self.basis_matrix = None
-        self.coefficients = None
-        
-    def create_truncated_power_basis(self, X):
-        """
-        Create truncated power basis for cubic splines
-        """
-        n_samples = len(X)
-        n_knots = len(self.knots)
-        
-        # Basis matrix: [1, x, x^2, x^3, (x-xi_1)_+^3, ..., (x-xi_m)_+^3]
-        basis_matrix = np.zeros((n_samples, n_knots + 4))
-        
-        # Polynomial terms
-        basis_matrix[:, 0] = 1
-        basis_matrix[:, 1] = X
-        basis_matrix[:, 2] = X**2
-        basis_matrix[:, 3] = X**3
-        
-        # Truncated power terms
-        for i, knot in enumerate(self.knots):
-            basis_matrix[:, i + 4] = np.maximum(0, X - knot)**3
-        
-        return basis_matrix
-    
-    def create_natural_spline_basis(self, X):
-        """
-        Create natural cubic spline basis
-        """
-        n_samples = len(X)
-        n_knots = len(self.knots)
-        
-        # For natural splines, we need to construct the basis differently
-        # This is a simplified version - in practice, use specialized libraries
-        basis_matrix = np.zeros((n_samples, n_knots))
-        
-        # Use scipy's natural cubic spline
-        self.spline = CubicSpline(self.knots, np.zeros(n_knots), bc_type='natural')
-        
-        # Create basis functions by evaluating at different points
-        for i in range(n_knots):
-            # Create a unit vector at knot i
-            unit_vector = np.zeros(n_knots)
-            unit_vector[i] = 1.0
-            
-            # Create spline with this unit vector
-            temp_spline = CubicSpline(self.knots, unit_vector, bc_type='natural')
-            basis_matrix[:, i] = temp_spline(X)
-        
-        return basis_matrix
-    
-    def fit(self, X, y):
-        """Fit cubic spline regression"""
-        if self.knots is None:
-            # Use quantiles of X as knots
-            self.knots = np.percentile(X, np.linspace(0, 100, 6))[1:-1]
-        
-        if self.natural:
-            self.basis_matrix = self.create_natural_spline_basis(X)
-        else:
-            self.basis_matrix = self.create_truncated_power_basis(X)
-        
-        # Fit linear regression on basis functions
-        model = LinearRegression()
-        model.fit(self.basis_matrix, y)
-        self.coefficients = model.coef_
-        self.intercept = model.intercept_
-        
-        return self
-    
-    def predict(self, X):
-        """Make predictions"""
-        if self.natural:
-            basis_matrix = self.create_natural_spline_basis(X)
-        else:
-            basis_matrix = self.create_truncated_power_basis(X)
-        
-        return self.intercept + basis_matrix @ self.coefficients
-    
-    def get_spline_function(self):
-        """Get the fitted spline function"""
-        if self.natural:
-            # For natural splines, use scipy's CubicSpline
-            return self.spline
-        else:
-            # For regular cubic splines, create a function
-            def spline_func(x):
-                basis = self.create_truncated_power_basis(x)
-                return self.intercept + basis @ self.coefficients
-            return spline_func
+The Python implementation includes:
 
-def demonstrate_cubic_splines():
-    """Demonstrate cubic spline regression"""
-    # Generate synthetic data with nonlinear relationship
-    np.random.seed(42)
-    X = np.linspace(0, 10, 100)
-    y_true = 2 + 3*np.sin(X) + 0.5*X
-    y = y_true + np.random.normal(0, 0.3, 100)
-    
-    # Define knots
-    knots = np.array([2, 4, 6, 8])
-    
-    # Fit different types of splines
-    splines = {}
-    
-    # Regular cubic spline
-    spline_reg = CubicSplineRegression(knots=knots, natural=False)
-    spline_reg.fit(X, y)
-    splines['Regular'] = spline_reg
-    
-    # Natural cubic spline
-    spline_nat = CubicSplineRegression(knots=knots, natural=True)
-    spline_nat.fit(X, y)
-    splines['Natural'] = spline_nat
-    
-    # Scipy cubic spline for comparison
-    from scipy.interpolate import CubicSpline
-    scipy_spline = CubicSpline(X, y, bc_type='natural')
-    splines['Scipy'] = scipy_spline
-    
-    # Evaluate and plot
-    X_plot = np.linspace(0, 10, 200)
-    
-    plt.figure(figsize=(15, 10))
-    
-    # Plot 1: Data and spline fits
-    plt.subplot(2, 3, 1)
-    plt.scatter(X, y, alpha=0.6, label='Data')
-    plt.plot(X, y_true, 'k--', label='True Function', linewidth=2)
-    
-    for name, spline in splines.items():
-        if name == 'Scipy':
-            y_plot = spline(X_plot)
-        else:
-            y_plot = spline.predict(X_plot)
-        plt.plot(X_plot, y_plot, label=f'{name} Spline', linewidth=2)
-    
-    # Mark knots
-    for knot in knots:
-        plt.axvline(x=knot, color='gray', linestyle=':', alpha=0.7)
-    
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Cubic Spline Fits')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 2: Basis functions for regular spline
-    plt.subplot(2, 3, 2)
-    basis_matrix = spline_reg.create_truncated_power_basis(X_plot)
-    
-    for i in range(basis_matrix.shape[1]):
-        plt.plot(X_plot, basis_matrix[:, i], label=f'Basis {i+1}')
-    
-    plt.xlabel('X')
-    plt.ylabel('Basis Function Value')
-    plt.title('Truncated Power Basis Functions')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 3: First derivatives
-    plt.subplot(2, 3, 3)
-    for name, spline in splines.items():
-        if name == 'Scipy':
-            y_deriv = spline.derivative()(X_plot)
-        else:
-            # Numerical derivative
-            h = 1e-6
-            y_plot_plus = spline.predict(X_plot + h)
-            y_plot_minus = spline.predict(X_plot - h)
-            y_deriv = (y_plot_plus - y_plot_minus) / (2*h)
-        
-        plt.plot(X_plot, y_deriv, label=f'{name} Spline')
-    
-    plt.xlabel('X')
-    plt.ylabel('First Derivative')
-    plt.title('First Derivatives')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 4: Second derivatives
-    plt.subplot(2, 3, 4)
-    for name, spline in splines.items():
-        if name == 'Scipy':
-            y_deriv2 = spline.derivative(2)(X_plot)
-        else:
-            # Numerical second derivative
-            h = 1e-6
-            y_plot_plus = spline.predict(X_plot + h)
-            y_plot_minus = spline.predict(X_plot - h)
-            y_plot = spline.predict(X_plot)
-            y_deriv2 = (y_plot_plus - 2*y_plot + y_plot_minus) / h**2
-        
-        plt.plot(X_plot, y_deriv2, label=f'{name} Spline')
-    
-    plt.xlabel('X')
-    plt.ylabel('Second Derivative')
-    plt.title('Second Derivatives')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 5: Residuals
-    plt.subplot(2, 3, 5)
-    for name, spline in splines.items():
-        if name == 'Scipy':
-            y_pred = spline(X)
-        else:
-            y_pred = spline.predict(X)
-        
-        residuals = y - y_pred
-        plt.scatter(y_pred, residuals, alpha=0.6, label=f'{name} Spline')
-    
-    plt.axhline(y=0, color='r', linestyle='--')
-    plt.xlabel('Predicted Values')
-    plt.ylabel('Residuals')
-    plt.title('Residuals')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 6: Knot placement effect
-    plt.subplot(2, 3, 6)
-    plt.scatter(X, y, alpha=0.6, label='Data')
-    
-    # Different knot placements
-    knot_configs = {
-        'Few knots': np.array([3, 7]),
-        'Many knots': np.array([1, 2, 3, 4, 5, 6, 7, 8, 9]),
-        'Optimal knots': np.array([2, 4, 6, 8])
-    }
-    
-    for name, knots in knot_configs.items():
-        spline = CubicSplineRegression(knots=knots, natural=True)
-        spline.fit(X, y)
-        y_plot = spline.predict(X_plot)
-        plt.plot(X_plot, y_plot, label=name, linewidth=2)
-    
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Effect of Knot Placement')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return splines
+- **CubicSplineRegression Class**: Complete implementation with support for both regular and natural cubic splines
+- **Basis Functions**: Truncated power basis and natural spline basis creation
+- **Model Fitting**: Linear regression on basis functions with automatic knot selection
+- **Comprehensive Visualization**: 6-panel demonstration including spline fits, basis functions, derivatives, residuals, and knot placement effects
+- **Comparison with Scipy**: Integration with scipy's CubicSpline for validation
 
-# Run demonstration
-if __name__ == "__main__":
-    spline_models = demonstrate_cubic_splines()
-```
+Key features:
+- Configurable knot positions and spline type (regular vs natural)
+- Automatic knot selection using quantiles
+- Comprehensive diagnostic plots and model comparison
+- Integration with scipy for robust implementation
 
 ### R Implementation
 
-```r
-# Cubic Spline Implementation in R
-library(splines)
-library(ggplot2)
-library(dplyr)
+**Complete R Implementation:** [r_cubic_splines.R](code/r_cubic_splines.R)
 
-# Function to create truncated power basis
-create_truncated_power_basis <- function(X, knots) {
-  n_samples <- length(X)
-  n_knots <- length(knots)
-  
-  # Basis matrix: [1, x, x^2, x^3, (x-xi_1)_+^3, ..., (x-xi_m)_+^3]
-  basis_matrix <- matrix(0, nrow = n_samples, ncol = n_knots + 4)
-  
-  # Polynomial terms
-  basis_matrix[, 1] <- 1
-  basis_matrix[, 2] <- X
-  basis_matrix[, 3] <- X^2
-  basis_matrix[, 4] <- X^3
-  
-  # Truncated power terms
-  for (i in 1:n_knots) {
-    basis_matrix[, i + 4] <- pmax(0, X - knots[i])^3
-  }
-  
-  return(basis_matrix)
-}
+The R implementation provides:
 
-# Function to fit cubic spline regression
-fit_cubic_spline <- function(X, y, knots, natural = FALSE) {
-  if (natural) {
-    # Use natural cubic splines
-    spline_model <- lm(y ~ ns(X, knots = knots))
-  } else {
-    # Use regular cubic splines
-    spline_model <- lm(y ~ bs(X, knots = knots, degree = 3))
-  }
-  
-  return(spline_model)
-}
+- **Truncated Power Basis**: Complete implementation of truncated power basis functions
+- **Multiple Spline Types**: Regular cubic splines (B-splines), natural cubic splines, and smoothing splines
+- **Advanced Features**: Cross-validation for knot selection, spline diagnostics, and model comparison
+- **Comprehensive Visualization**: Publication-quality plots using ggplot2
+- **Model Evaluation**: MSE and R² calculations for model comparison
 
-# Function to demonstrate cubic splines
-demonstrate_cubic_splines_r <- function() {
-  # Generate synthetic data
-  set.seed(42)
-  X <- seq(0, 10, length.out = 100)
-  y_true <- 2 + 3*sin(X) + 0.5*X
-  y <- y_true + rnorm(100, 0, 0.3)
-  
-  # Define knots
-  knots <- c(2, 4, 6, 8)
-  
-  # Fit different types of splines
-  splines <- list()
-  
-  # Regular cubic spline using B-splines
-  splines$Regular <- lm(y ~ bs(X, knots = knots, degree = 3))
-  
-  # Natural cubic spline
-  splines$Natural <- lm(y ~ ns(X, knots = knots))
-  
-  # Smoothing spline
-  splines$Smoothing <- smooth.spline(X, y, cv = TRUE)
-  
-  # Create prediction data
-  X_plot <- seq(0, 10, length.out = 200)
-  
-  # Create plots
-  p1 <- ggplot() +
-    geom_point(data = data.frame(X = X, y = y), aes(X, y), alpha = 0.6) +
-    geom_line(data = data.frame(X = X, y = y_true), aes(X, y), 
-              linetype = "dashed", color = "black", size = 1) +
-    geom_vline(xintercept = knots, linetype = "dotted", color = "gray", alpha = 0.7) +
-    labs(title = "Cubic Spline Fits", x = "X", y = "Y") +
-    theme_minimal()
-  
-  # Add spline predictions
-  for (name in names(splines)) {
-    if (name == "Smoothing") {
-      y_pred <- predict(splines[[name]], X_plot)$y
-    } else {
-      y_pred <- predict(splines[[name]], data.frame(X = X_plot))
-    }
-    
-    p1 <- p1 + geom_line(data = data.frame(X = X_plot, y = y_pred), 
-                         aes(X, y), color = name, size = 1)
-  }
-  
-  # Basis functions plot
-  basis_matrix <- create_truncated_power_basis(X_plot, knots)
-  basis_df <- data.frame(
-    X = rep(X_plot, ncol(basis_matrix)),
-    Basis = rep(paste("Basis", 1:ncol(basis_matrix)), each = length(X_plot)),
-    Value = as.vector(basis_matrix)
-  )
-  
-  p2 <- ggplot(basis_df, aes(X, Value, color = Basis)) +
-    geom_line() +
-    labs(title = "Truncated Power Basis Functions", x = "X", y = "Basis Function Value") +
-    theme_minimal() +
-    theme(legend.position = "bottom")
-  
-  # Residuals plot
-  residuals_df <- data.frame(
-    Predicted = numeric(0),
-    Residuals = numeric(0),
-    Type = character(0)
-  )
-  
-  for (name in names(splines)) {
-    if (name == "Smoothing") {
-      y_pred <- predict(splines[[name]], X)$y
-    } else {
-      y_pred <- predict(splines[[name]])
-    }
-    
-    residuals_df <- rbind(residuals_df, data.frame(
-      Predicted = y_pred,
-      Residuals = y - y_pred,
-      Type = name
-    ))
-  }
-  
-  p3 <- ggplot(residuals_df, aes(Predicted, Residuals, color = Type)) +
-    geom_point(alpha = 0.6) +
-    geom_hline(yintercept = 0, color = "red", linestyle = "dashed") +
-    labs(title = "Residuals", x = "Predicted Values", y = "Residuals") +
-    theme_minimal()
-  
-  # Print plots
-  print(p1)
-  print(p2)
-  print(p3)
-  
-  # Model comparison
-  cat("Model Comparison:\n")
-  for (name in names(splines)) {
-    if (name == "Smoothing") {
-      y_pred <- predict(splines[[name]], X)$y
-    } else {
-      y_pred <- predict(splines[[name]])
-    }
-    
-    mse <- mean((y - y_pred)^2)
-    r2 <- 1 - sum((y - y_pred)^2) / sum((y - mean(y))^2)
-    
-    cat(sprintf("%s Spline: MSE = %.4f, R² = %.4f\n", name, mse, r2))
-  }
-  
-  return(splines)
-}
-
-# Run demonstration
-spline_models_r <- demonstrate_cubic_splines_r()
-```
+Key features:
+- Uses base R splines package for robust implementation
+- Integration with ggplot2 for advanced visualization
+- Support for multiple spline types and knot selection methods
+- Comprehensive diagnostic tools and model validation
 
 ## 5.2.5. Advanced Topics
 
 ### B-Spline Basis
 
+**Python Implementation:** [advanced_spline_utilities.py](code/advanced_spline_utilities.py) - `create_bspline_basis()` function
+
 B-splines provide a more numerically stable basis for cubic splines:
 
-```python
-def create_bspline_basis(X, knots, degree=3):
-    """
-    Create B-spline basis functions
-    """
-    from scipy.interpolate import BSpline
-    
-    # Extend knots for B-splines
-    n_knots = len(knots)
-    extended_knots = np.r_[(knots[0],)*(degree+1), knots, (knots[-1],)*(degree+1)]
-    
-    # Create B-spline basis
-    basis_matrix = np.zeros((len(X), n_knots + degree - 1))
-    
-    for i in range(n_knots + degree - 1):
-        # Create unit vector for basis function i
-        coeffs = np.zeros(n_knots + degree - 1)
-        coeffs[i] = 1.0
-        
-        # Create B-spline
-        bspline = BSpline(extended_knots, coeffs, degree)
-        basis_matrix[:, i] = bspline(X)
-    
-    return basis_matrix
-```
+- **Numerical Stability**: B-splines are more numerically stable than truncated power basis
+- **Local Support**: Each B-spline basis function has compact support
+- **Automatic Knot Extension**: Handles boundary conditions automatically
+- **Degree Flexibility**: Supports arbitrary polynomial degrees
+
+Key features:
+- Integration with scipy's BSpline for robust implementation
+- Automatic knot extension for boundary conditions
+- Support for arbitrary polynomial degrees
+- Comparison with truncated power basis functions
 
 ### Smoothing Splines
 
@@ -606,121 +198,54 @@ Smoothing splines minimize the penalized objective function:
 
 where $`\lambda`$ controls the trade-off between fit and smoothness.
 
-```python
-def fit_smoothing_spline(X, y, lambda_val=1.0):
-    """
-    Fit smoothing spline using penalized least squares
-    """
-    from scipy.interpolate import CubicSpline
-    from scipy.sparse import diags
-    
-    n = len(X)
-    
-    # Create natural cubic spline basis
-    # This is a simplified version - in practice, use specialized algorithms
-    spline = CubicSpline(X, y, bc_type='natural')
-    
-    # Create penalty matrix (simplified)
-    # The actual implementation is more complex
-    penalty_matrix = np.eye(n) * lambda_val
-    
-    # Solve penalized least squares
-    # This is a conceptual implementation
-    return spline
-```
+**Python Implementation:** [advanced_spline_utilities.py](code/advanced_spline_utilities.py) - `fit_smoothing_spline()` function
+
+- **Penalized Least Squares**: Balances fit quality with smoothness
+- **Smoothing Parameter**: λ controls the trade-off between bias and variance
+- **Natural Boundary Conditions**: Linear behavior at boundaries
+- **Optimal Smoothing**: Automatic selection of smoothing parameter
+
+Key features:
+- Conceptual implementation of smoothing splines
+- Integration with scipy's CubicSpline for natural boundary conditions
+- Framework for penalized least squares optimization
+- Demonstration of smoothing parameter effects
 
 ### Knot Selection
 
 Optimal knot placement is crucial for spline performance:
 
-```python
-def select_optimal_knots(X, y, max_knots=10, method='quantile'):
-    """
-    Select optimal knot positions
-    """
-    if method == 'quantile':
-        # Use quantiles of X
-        knots = np.percentile(X, np.linspace(0, 100, max_knots + 2))[1:-1]
-    elif method == 'uniform':
-        # Uniform spacing
-        knots = np.linspace(X.min(), X.max(), max_knots + 2)[1:-1]
-    elif method == 'cross_validation':
-        # Use cross-validation to select optimal number of knots
-        best_score = float('inf')
-        best_knots = None
-        
-        for n_knots in range(2, max_knots + 1):
-            knots = np.percentile(X, np.linspace(0, 100, n_knots + 2))[1:-1]
-            
-            # Cross-validation score
-            from sklearn.model_selection import cross_val_score
-            from sklearn.linear_model import LinearRegression
-            
-            # Create basis matrix
-            basis_matrix = create_truncated_power_basis(X, knots)
-            
-            # Cross-validation
-            cv_scores = cross_val_score(LinearRegression(), basis_matrix, y, cv=5, 
-                                      scoring='neg_mean_squared_error')
-            score = -cv_scores.mean()
-            
-            if score < best_score:
-                best_score = score
-                best_knots = knots
-        
-        knots = best_knots
-    
-    return knots
-```
+**Python Implementation:** [advanced_spline_utilities.py](code/advanced_spline_utilities.py) - `select_optimal_knots()` function
+
+- **Quantile Method**: Uses percentiles of the predictor variable
+- **Uniform Method**: Places knots at uniform intervals
+- **Cross-Validation Method**: Uses CV to select optimal number and positions
+- **Multiple Criteria**: Support for different selection strategies
+
+Key features:
+- Multiple knot selection strategies
+- Cross-validation for optimal knot selection
+- Integration with sklearn for robust validation
+- Comprehensive comparison of selection methods
 
 ## 5.2.6. Model Diagnostics and Validation
 
 ### Spline Diagnostics
 
-```python
-def analyze_spline_diagnostics(spline_model, X, y):
-    """
-    Analyze spline model diagnostics
-    """
-    y_pred = spline_model.predict(X)
-    residuals = y - y_pred
-    
-    # Create diagnostic plots
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    # Residuals vs Fitted
-    axes[0, 0].scatter(y_pred, residuals, alpha=0.6)
-    axes[0, 0].axhline(y=0, color='r', linestyle='--')
-    axes[0, 0].set_xlabel('Fitted Values')
-    axes[0, 0].set_ylabel('Residuals')
-    axes[0, 0].set_title('Residuals vs Fitted')
-    axes[0, 0].grid(True, alpha=0.3)
-    
-    # Q-Q Plot
-    from scipy import stats
-    stats.probplot(residuals, dist="norm", plot=axes[0, 1])
-    axes[0, 1].set_title('Q-Q Plot of Residuals')
-    
-    # Residuals vs Predictor
-    axes[1, 0].scatter(X, residuals, alpha=0.6)
-    axes[1, 0].axhline(y=0, color='r', linestyle='--')
-    axes[1, 0].set_xlabel('X')
-    axes[1, 0].set_ylabel('Residuals')
-    axes[1, 0].set_title('Residuals vs X')
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    # Histogram of residuals
-    axes[1, 1].hist(residuals, bins=20, alpha=0.7, edgecolor='black')
-    axes[1, 1].set_xlabel('Residuals')
-    axes[1, 1].set_ylabel('Frequency')
-    axes[1, 1].set_title('Histogram of Residuals')
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return residuals
-```
+**Python Implementation:** [advanced_spline_utilities.py](code/advanced_spline_utilities.py) - `analyze_spline_diagnostics()` function
+
+The spline diagnostics implementation includes:
+
+- **Diagnostic Plots**: Comprehensive 2x2 grid of residual plots
+- **Normality Tests**: Q-Q plots and statistical tests for residual normality
+- **Visualization**: Residuals vs fitted, residuals vs predictor, and histogram
+- **Statistical Validation**: Formal hypothesis tests for model assumptions
+
+Key features:
+- Complete diagnostic suite for spline regression
+- Integration with scipy for statistical testing
+- Publication-quality visualization
+- Comprehensive model validation tools
 
 ## Summary
 
@@ -733,6 +258,19 @@ Cubic splines provide a flexible and powerful approach to nonlinear regression t
 5. **Knot Selection**: Critical for model performance
 
 The mathematical foundations ensure optimal smoothness, while the algorithmic design provides both computational efficiency and interpretability. Cubic splines address many limitations of polynomial regression while maintaining local flexibility.
+
+## Code Files Summary
+
+The following code files provide complete implementations of the concepts discussed in this chapter:
+
+### Python Implementation
+- **[cubic_spline_regression.py](code/cubic_spline_regression.py)**: Complete cubic spline regression implementation including the CubicSplineRegression class, basis functions, model fitting, and comprehensive demonstrations
+- **[advanced_spline_utilities.py](code/advanced_spline_utilities.py)**: Advanced utilities including B-spline basis functions, smoothing splines, knot selection algorithms, and diagnostic tools
+
+### R Implementation
+- **[r_cubic_splines.R](code/r_cubic_splines.R)**: Complete R implementation using the splines package with support for regular cubic splines, natural cubic splines, smoothing splines, and comprehensive visualization
+
+Each file includes comprehensive examples, demonstrations, and analysis tools to help understand and apply cubic spline concepts in practice.
 
 ## References
 
