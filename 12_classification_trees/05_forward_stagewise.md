@@ -130,380 +130,46 @@ Solving for $`\alpha`$:
 
 ## 12.5.4. Implementation
 
-### Python Implementation of Forward Stagewise
+The complete Forward Stagewise Additive Modeling implementation is provided in separate code files for both Python and R. These implementations include the full algorithm, comprehensive demonstrations, and real-world applications.
+
+**Python Implementation**: The complete Forward Stagewise Additive Modeling implementation is available in `code/forward_stagewise_implementation.py` and includes:
+- **`ForwardStagewiseAdditiveModel` class**: Complete implementation with `fit()`, `predict()`, `staged_predict()`, and `get_feature_importance()` methods
+- **`demonstrate_basic_forward_stagewise()`**: Basic Forward Stagewise functionality demonstration for both regression and classification
+- **`visualize_training_progress()`**: Training progress visualization with loss progression, estimator weights, and cumulative performance
+- **`demonstrate_loss_functions()`**: Comparison of different loss functions (exponential vs logistic)
+- **`demonstrate_learning_rate_effects()`**: Analysis of learning rate effects on convergence and generalization
+- **`demonstrate_financial_risk_modeling()`**: Financial risk modeling application with feature importance analysis
+- **`demonstrate_medical_diagnosis()`**: Medical diagnosis application using breast cancer dataset
+- **`analyze_theoretical_properties()`**: Theoretical analysis including convergence properties and overfitting analysis
+- **Comprehensive visualizations** and analysis tools
+
+**R Implementation**: The complete Forward Stagewise Additive Modeling implementation is available in `code/r_forward_stagewise_implementation.R` and includes:
+- **`forward_stagewise_additive()` function**: Complete Forward Stagewise algorithm implementation
+- **`predict_fsam()` function**: Prediction function for Forward Stagewise models
+- **`demonstrate_basic_forward_stagewise()`**: Basic demonstration with synthetic regression and classification data
+- **`visualize_training_progress()`**: Training progress visualization using ggplot2
+- **`demonstrate_loss_functions()`**: Loss function comparison with professional plots
+- **`demonstrate_learning_rate_effects()`**: Learning rate effects analysis
+- **`demonstrate_financial_risk_modeling()`**: Financial risk modeling with simulated credit data
+- **`demonstrate_medical_diagnosis()`**: Medical diagnosis with simulated patient data
+- **`analyze_theoretical_properties()`**: Theoretical analysis with convergence plots
+- **Professional visualizations** with proper styling and themes
+
+To run the complete Forward Stagewise Additive Modeling demonstrations:
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.datasets import make_regression, make_classification
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, accuracy_score
-import seaborn as sns
-
-class ForwardStagewiseAdditiveModel:
-    def __init__(self, base_learner, loss_function, n_estimators=100, learning_rate=1.0):
-        """
-        Forward Stagewise Additive Model
-        
-        Parameters:
-        -----------
-        base_learner : estimator
-            Base learner (e.g., DecisionTreeRegressor)
-        loss_function : str
-            Loss function ('squared_error', 'exponential', 'logistic')
-        n_estimators : int
-            Number of base learners
-        learning_rate : float
-            Learning rate (shrinkage)
-        """
-        self.base_learner = base_learner
-        self.loss_function = loss_function
-        self.n_estimators = n_estimators
-        self.learning_rate = learning_rate
-        self.estimators = []
-        self.estimator_weights = []
-        self.training_losses = []
-        
-    def _compute_residuals(self, y, predictions):
-        """Compute residuals based on loss function"""
-        if self.loss_function == 'squared_error':
-            return y - predictions
-        elif self.loss_function == 'exponential':
-            # For exponential loss, residuals are weighted
-            return -y * np.exp(-y * predictions)
-        elif self.loss_function == 'logistic':
-            # For logistic loss
-            prob = 1 / (1 + np.exp(-predictions))
-            return y - prob
-        else:
-            raise ValueError(f"Unknown loss function: {self.loss_function}")
-    
-    def _find_optimal_weight(self, y, current_predictions, base_predictions):
-        """Find optimal weight for the current base learner"""
-        if self.loss_function == 'squared_error':
-            # Closed form solution for squared error
-            numerator = np.sum(base_predictions * (y - current_predictions))
-            denominator = np.sum(base_predictions ** 2)
-            return numerator / denominator if denominator > 0 else 0
-        else:
-            # Line search for other loss functions
-            best_alpha = 0
-            best_loss = float('inf')
-            
-            for alpha in np.linspace(-2, 2, 100):
-                new_predictions = current_predictions + alpha * base_predictions
-                if self.loss_function == 'exponential':
-                    loss = np.mean(np.exp(-y * new_predictions))
-                elif self.loss_function == 'logistic':
-                    loss = np.mean(np.log(1 + np.exp(-y * new_predictions)))
-                
-                if loss < best_loss:
-                    best_loss = loss
-                    best_alpha = alpha
-            
-            return best_alpha
-    
-    def fit(self, X, y):
-        """Fit the forward stagewise additive model"""
-        n_samples = X.shape[0]
-        predictions = np.zeros(n_samples)
-        
-        for t in range(self.n_estimators):
-            # Compute residuals
-            residuals = self._compute_residuals(y, predictions)
-            
-            # Fit base learner to residuals
-            estimator = clone(self.base_learner)
-            estimator.fit(X, residuals)
-            base_predictions = estimator.predict(X)
-            
-            # Find optimal weight
-            alpha = self._find_optimal_weight(y, predictions, base_predictions)
-            alpha *= self.learning_rate  # Apply shrinkage
-            
-            # Update predictions
-            predictions += alpha * base_predictions
-            
-            # Store results
-            self.estimators.append(estimator)
-            self.estimator_weights.append(alpha)
-            
-            # Compute training loss
-            if self.loss_function == 'squared_error':
-                loss = mean_squared_error(y, predictions)
-            elif self.loss_function == 'exponential':
-                loss = np.mean(np.exp(-y * predictions))
-            elif self.loss_function == 'logistic':
-                loss = np.mean(np.log(1 + np.exp(-y * predictions)))
-            
-            self.training_losses.append(loss)
-            
-        return self
-    
-    def predict(self, X):
-        """Make predictions"""
-        predictions = np.zeros(X.shape[0])
-        
-        for alpha, estimator in zip(self.estimator_weights, self.estimators):
-            predictions += alpha * estimator.predict(X)
-            
-        return predictions
-    
-    def staged_predict(self, X):
-        """Return staged predictions"""
-        predictions = np.zeros(X.shape[0])
-        
-        for alpha, estimator in zip(self.estimator_weights, self.estimators):
-            predictions += alpha * estimator.predict(X)
-            yield predictions.copy()
-
-# Example 1: Regression with Squared Error Loss
-print("=== Forward Stagewise Regression ===")
-
-# Generate regression data
-X_reg, y_reg = make_regression(n_samples=1000, n_features=2, noise=0.1, random_state=42)
-X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(
-    X_reg, y_reg, test_size=0.3, random_state=42
-)
-
-# Train forward stagewise model
-base_learner_reg = DecisionTreeRegressor(max_depth=3, random_state=42)
-fsam_reg = ForwardStagewiseAdditiveModel(
-    base_learner=base_learner_reg,
-    loss_function='squared_error',
-    n_estimators=50,
-    learning_rate=0.1
-)
-
-fsam_reg.fit(X_train_reg, y_train_reg)
-
-# Evaluate
-y_pred_reg = fsam_reg.predict(X_test_reg)
-mse = mean_squared_error(y_test_reg, y_pred_reg)
-print(f"Test MSE: {mse:.4f}")
-
-# Example 2: Classification with Exponential Loss (AdaBoost-like)
-print("\n=== Forward Stagewise Classification ===")
-
-# Generate classification data
-X_clf, y_clf = make_classification(n_samples=1000, n_features=2, n_redundant=0,
-                                 n_informative=2, n_clusters_per_class=1,
-                                 random_state=42, class_sep=1.5)
-
-# Convert to {-1, 1}
-y_clf = 2 * y_clf - 1
-
-X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(
-    X_clf, y_clf, test_size=0.3, random_state=42
-)
-
-# Train forward stagewise model
-base_learner_clf = DecisionTreeClassifier(max_depth=1, random_state=42)
-fsam_clf = ForwardStagewiseAdditiveModel(
-    base_learner=base_learner_clf,
-    loss_function='exponential',
-    n_estimators=50,
-    learning_rate=1.0
-)
-
-fsam_clf.fit(X_train_clf, y_train_clf)
-
-# Evaluate
-y_pred_clf = np.sign(fsam_clf.predict(X_test_clf))
-accuracy = accuracy_score(y_test_clf, y_pred_clf)
-print(f"Test Accuracy: {accuracy:.4f}")
-
-# Visualization
-plt.figure(figsize=(15, 5))
-
-# Plot 1: Training loss progression
-plt.subplot(1, 3, 1)
-plt.plot(fsam_reg.training_losses, 'b-', label='Regression (Squared Error)')
-plt.plot(fsam_clf.training_losses, 'r-', label='Classification (Exponential)')
-plt.xlabel('Iteration')
-plt.ylabel('Training Loss')
-plt.title('Training Loss vs Iterations')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-# Plot 2: Estimator weights
-plt.subplot(1, 3, 2)
-plt.plot(fsam_reg.estimator_weights, 'b-', label='Regression Weights')
-plt.plot(fsam_clf.estimator_weights, 'r-', label='Classification Weights')
-plt.xlabel('Iteration')
-plt.ylabel('Weight (α)')
-plt.title('Estimator Weights')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-# Plot 3: Cumulative predictions
-plt.subplot(1, 3, 3)
-reg_predictions = list(fsam_reg.staged_predict(X_test_reg))
-clf_predictions = list(fsam_clf.staged_predict(X_test_clf))
-
-plt.plot([mean_squared_error(y_test_reg, pred) for pred in reg_predictions], 
-         'b-', label='Regression MSE')
-plt.plot([accuracy_score(y_test_clf, np.sign(pred)) for pred in clf_predictions], 
-         'r-', label='Classification Accuracy')
-plt.xlabel('Iteration')
-plt.ylabel('Performance')
-plt.title('Performance vs Iterations')
-plt.legend()
-plt.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
+# Python
+from code.forward_stagewise_implementation import main
+results = main()
 ```
-
-### R Implementation
 
 ```r
-# Forward Stagewise Additive Modeling in R
-library(rpart)
-library(ggplot2)
-library(gridExtra)
-
-forward_stagewise_additive <- function(X, y, base_learner = "tree", 
-                                      loss_function = "squared_error",
-                                      n_estimators = 100, learning_rate = 1.0) {
-  n_samples <- nrow(X)
-  
-  # Initialize
-  predictions <- rep(0, n_samples)
-  estimators <- list()
-  estimator_weights <- numeric(n_estimators)
-  training_losses <- numeric(n_estimators)
-  
-  for (t in 1:n_estimators) {
-    # Compute residuals
-    if (loss_function == "squared_error") {
-      residuals <- y - predictions
-    } else if (loss_function == "exponential") {
-      residuals <- -y * exp(-y * predictions)
-    } else if (loss_function == "logistic") {
-      prob <- 1 / (1 + exp(-predictions))
-      residuals <- y - prob
-    }
-    
-    # Fit base learner
-    if (base_learner == "tree") {
-      formula <- as.formula(paste("residuals ~", paste(colnames(X), collapse = " + ")))
-      estimator <- rpart(formula, data = data.frame(X, residuals), 
-                        control = rpart.control(maxdepth = 3))
-      base_predictions <- predict(estimator, data.frame(X))
-    }
-    
-    # Find optimal weight
-    if (loss_function == "squared_error") {
-      numerator <- sum(base_predictions * (y - predictions))
-      denominator <- sum(base_predictions^2)
-      alpha <- ifelse(denominator > 0, numerator / denominator, 0)
-    } else {
-      # Line search for other loss functions
-      best_alpha <- 0
-      best_loss <- Inf
-      
-      for (alpha_candidate in seq(-2, 2, length.out = 100)) {
-        new_predictions <- predictions + alpha_candidate * base_predictions
-        
-        if (loss_function == "exponential") {
-          loss <- mean(exp(-y * new_predictions))
-        } else if (loss_function == "logistic") {
-          loss <- mean(log(1 + exp(-y * new_predictions)))
-        }
-        
-        if (loss < best_loss) {
-          best_loss <- loss
-          best_alpha <- alpha_candidate
-        }
-      }
-      alpha <- best_alpha
-    }
-    
-    # Apply learning rate
-    alpha <- alpha * learning_rate
-    
-    # Update predictions
-    predictions <- predictions + alpha * base_predictions
-    
-    # Store results
-    estimators[[t]] <- estimator
-    estimator_weights[t] <- alpha
-    
-    # Compute training loss
-    if (loss_function == "squared_error") {
-      training_losses[t] <- mean((y - predictions)^2)
-    } else if (loss_function == "exponential") {
-      training_losses[t] <- mean(exp(-y * predictions))
-    } else if (loss_function == "logistic") {
-      training_losses[t] <- mean(log(1 + exp(-y * predictions)))
-    }
-  }
-  
-  return(list(estimators = estimators,
-              estimator_weights = estimator_weights,
-              training_losses = training_losses,
-              final_predictions = predictions))
-}
-
-predict_fsam <- function(model, X) {
-  predictions <- rep(0, nrow(X))
-  
-  for (i in seq_along(model$estimators)) {
-    pred <- predict(model$estimators[[i]], data.frame(X))
-    predictions <- predictions + model$estimator_weights[i] * pred
-  }
-  
-  return(predictions)
-}
-
-# Generate synthetic data
-set.seed(42)
-n_samples <- 1000
-
-# Regression data
-X_reg <- data.frame(
-  x1 = rnorm(n_samples),
-  x2 = rnorm(n_samples)
-)
-y_reg <- 2 * X_reg$x1 + 3 * X_reg$x2 + rnorm(n_samples, 0, 0.1)
-
-# Classification data
-X_clf <- data.frame(
-  x1 = rnorm(n_samples),
-  x2 = rnorm(n_samples)
-)
-y_clf <- ifelse(X_clf$x1 + X_clf$x2 > 0, 1, -1)
-
-# Train models
-fsam_reg <- forward_stagewise_additive(X_reg, y_reg, "tree", "squared_error", 50, 0.1)
-fsam_clf <- forward_stagewise_additive(X_clf, y_clf, "tree", "exponential", 50, 1.0)
-
-# Create visualization
-results_df <- data.frame(
-  iteration = rep(1:50, 2),
-  loss = c(fsam_reg$training_losses, fsam_clf$training_losses),
-  weight = c(fsam_reg$estimator_weights, fsam_clf$estimator_weights),
-  type = rep(c("Regression", "Classification"), each = 50)
-)
-
-# Plot training losses
-p1 <- ggplot(results_df, aes(x = iteration, y = loss, color = type)) +
-  geom_line() +
-  labs(title = "Training Loss vs Iterations",
-       x = "Iteration", y = "Training Loss") +
-  theme_minimal()
-
-# Plot estimator weights
-p2 <- ggplot(results_df, aes(x = iteration, y = weight, color = type)) +
-  geom_line() +
-  labs(title = "Estimator Weights",
-       x = "Iteration", y = "Weight (α)") +
-  theme_minimal()
-
-grid.arrange(p1, p2, ncol = 2)
+# R
+source("code/r_forward_stagewise_implementation.R")
+results <- main_r()
 ```
+
+The implementations demonstrate all aspects of Forward Stagewise Additive Modeling including the core algorithm, training progress visualization, loss function comparison, learning rate effects, theoretical properties, and real-world applications in both financial risk modeling and medical diagnosis domains.
 
 ## 12.5.5. Mathematical Analysis
 
@@ -696,100 +362,43 @@ where $`\text{Importance}_t(j)`$ is the importance of feature $`j`$ in base lear
 
 ### Financial Risk Modeling
 
-```python
-# Example: Credit risk prediction
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
+The financial risk modeling application using Forward Stagewise Additive Modeling is demonstrated in both Python and R implementations:
 
-# Simulate financial data
-np.random.seed(42)
-n_samples = 10000
+**Python Implementation** (`code/forward_stagewise_implementation.py`):
+- **`demonstrate_financial_risk_modeling()`**: Uses simulated financial data with realistic features
+- **Implements credit risk prediction** with features including income, age, credit score, debt ratio, and payment history
+- **Extracts feature importance** to identify the most critical risk factors
+- **Demonstrates Forward Stagewise effectiveness** in high-dimensional financial data
+- **Provides comprehensive visualization** of feature importance rankings
 
-# Features: income, age, credit_score, debt_ratio, payment_history
-X_fin = pd.DataFrame({
-    'income': np.random.lognormal(10, 0.5, n_samples),
-    'age': np.random.normal(45, 15, n_samples),
-    'credit_score': np.random.normal(700, 100, n_samples),
-    'debt_ratio': np.random.beta(2, 5, n_samples),
-    'payment_history': np.random.poisson(2, n_samples)
-})
+**R Implementation** (`code/r_forward_stagewise_implementation.R`):
+- **`demonstrate_financial_risk_modeling()`**: Uses simulated credit data with realistic distributions
+- **Simulates financial features** including income (lognormal), age, credit score, debt ratio (beta), and payment history (Poisson)
+- **Implements default prediction** based on debt ratio and credit score thresholds
+- **Provides feature importance analysis** with professional bar plots
+- **Demonstrates interpretability** crucial for financial applications
 
-# Target: default (1) or not (0)
-y_fin = (X_fin['debt_ratio'] > 0.4) | (X_fin['credit_score'] < 600)
-y_fin = 2 * y_fin.astype(int) - 1  # Convert to {-1, 1}
-
-# Train forward stagewise model
-base_learner_fin = DecisionTreeClassifier(max_depth=4, random_state=42)
-fsam_fin = ForwardStagewiseAdditiveModel(
-    base_learner=base_learner_fin,
-    loss_function='exponential',
-    n_estimators=100,
-    learning_rate=0.1
-)
-
-fsam_fin.fit(X_fin, y_fin)
-
-# Feature importance analysis
-feature_importance = np.zeros(X_fin.shape[1])
-total_weight = sum(fsam_fin.estimator_weights)
-
-for alpha, estimator in zip(fsam_fin.estimator_weights, fsam_fin.estimators):
-    if hasattr(estimator, 'feature_importances_'):
-        feature_importance += (alpha / total_weight) * estimator.feature_importances_
-
-# Display feature importance
-feature_names = X_fin.columns
-importance_df = pd.DataFrame({
-    'feature': feature_names,
-    'importance': feature_importance
-}).sort_values('importance', ascending=False)
-
-print("Feature Importance for Credit Risk:")
-print(importance_df)
-```
+Both implementations show how Forward Stagewise Additive Modeling can effectively handle financial risk assessment by identifying the most important features and providing interpretable results that are essential for regulatory compliance and business decision-making.
 
 ### Medical Diagnosis
 
-```python
-# Example: Disease prediction
-from sklearn.datasets import load_breast_cancer
+The medical diagnosis application using Forward Stagewise Additive Modeling is demonstrated in both Python and R implementations:
 
-# Load medical data
-cancer = load_breast_cancer()
-X_med = cancer.data
-y_med = 2 * cancer.target - 1  # Convert to {-1, 1}
+**Python Implementation** (`code/forward_stagewise_implementation.py`):
+- **`demonstrate_medical_diagnosis()`**: Uses the breast cancer dataset from scikit-learn
+- **Implements disease prediction** with comprehensive evaluation metrics
+- **Analyzes model convergence** through staged predictions
+- **Demonstrates Forward Stagewise effectiveness** in medical diagnosis scenarios
+- **Provides convergence visualization** showing model stability over iterations
 
-# Train forward stagewise model
-base_learner_med = DecisionTreeClassifier(max_depth=3, random_state=42)
-fsam_med = ForwardStagewiseAdditiveModel(
-    base_learner=base_learner_med,
-    loss_function='logistic',  # More robust than exponential
-    n_estimators=50,
-    learning_rate=0.1
-)
+**R Implementation** (`code/r_forward_stagewise_implementation.R`):
+- **`demonstrate_medical_diagnosis()`**: Uses simulated medical data with realistic patient features
+- **Simulates medical features** including age, BMI, blood pressure, and cholesterol
+- **Implements disease probability modeling** based on medical risk factors
+- **Provides comprehensive medical metrics** including accuracy, sensitivity, and specificity
+- **Analyzes model convergence** with professional convergence plots
 
-fsam_med.fit(X_med, y_med)
-
-# Model evaluation
-y_pred_med = np.sign(fsam_med.predict(X_med))
-accuracy = accuracy_score(y_med, y_pred_med)
-
-print(f"Medical Diagnosis Accuracy: {accuracy:.4f}")
-
-# Analyze model stability
-staged_predictions = list(fsam_med.staged_predict(X_med))
-staged_accuracies = [accuracy_score(y_med, np.sign(pred)) for pred in staged_predictions]
-
-plt.figure(figsize=(10, 6))
-plt.plot(staged_accuracies, 'b-', linewidth=2)
-plt.axhline(y=accuracy, color='r', linestyle='--', label='Final Accuracy')
-plt.xlabel('Iteration')
-plt.ylabel('Accuracy')
-plt.title('Model Convergence in Medical Diagnosis')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-```
+Both implementations demonstrate how Forward Stagewise Additive Modeling can be effectively applied to medical diagnosis problems, providing reliable performance metrics and interpretable results that are crucial in healthcare applications where model transparency and accuracy are paramount.
 
 ## 12.5.10. Summary
 
