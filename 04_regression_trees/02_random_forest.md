@@ -80,82 +80,14 @@ f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B f_b(x)
 
 where each tree $`f_b`$ is trained on bootstrap sample $`\mathcal{D}^{(b)}`$.
 
-**Implementation:**
-```python
-import numpy as np
-from sklearn.tree import DecisionTreeRegressor
+**Python Implementation:** [bootstrap_bagging.py](code/bootstrap_bagging.py)
 
-def bootstrap_sample(X, y, n_samples=None):
-    """
-    Create a bootstrap sample from the data
-    
-    Parameters:
-    X: feature matrix (n_samples, n_features)
-    y: target vector (n_samples,)
-    n_samples: number of samples to draw (default: n_samples)
-    
-    Returns:
-    X_boot, y_boot: bootstrap sample
-    """
-    if n_samples is None:
-        n_samples = len(y)
-    
-    # Sample with replacement
-    indices = np.random.choice(len(y), size=n_samples, replace=True)
-    X_boot = X[indices]
-    y_boot = y[indices]
-    
-    return X_boot, y_boot
-
-def bagging_regression(X, y, n_trees=100, max_depth=None, min_samples_split=2):
-    """
-    Implement bagging for regression trees
-    
-    Parameters:
-    X: feature matrix
-    y: target vector
-    n_trees: number of trees in ensemble
-    max_depth: maximum depth of each tree
-    min_samples_split: minimum samples required to split
-    
-    Returns:
-    trees: list of trained trees
-    """
-    trees = []
-    
-    for b in range(n_trees):
-        # Create bootstrap sample
-        X_boot, y_boot = bootstrap_sample(X, y)
-        
-        # Train tree on bootstrap sample
-        tree = DecisionTreeRegressor(
-            max_depth=max_depth,
-            min_samples_split=min_samples_split,
-            random_state=b
-        )
-        tree.fit(X_boot, y_boot)
-        trees.append(tree)
-    
-    return trees
-
-def predict_bagging(trees, X):
-    """
-    Make predictions using bagging ensemble
-    
-    Parameters:
-    trees: list of trained trees
-    X: feature matrix for prediction
-    
-    Returns:
-    predictions: ensemble predictions
-    """
-    predictions = np.zeros(len(X))
-    
-    for tree in trees:
-        predictions += tree.predict(X)
-    
-    return predictions / len(trees)
-```
+The bootstrap sampling and bagging implementation includes:
+- `bootstrap_sample()`: Create bootstrap samples with replacement
+- `bagging_regression()`: Implement bagging for regression trees
+- `predict_bagging()`: Make predictions using bagging ensemble
+- `calculate_oob_score()`: Calculate Out-of-Bag score for validation
+- Demonstration functions for bootstrap sampling properties and ensemble size analysis
 
 ## 4.2.3. Random Forest Algorithm
 
