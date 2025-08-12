@@ -26,28 +26,9 @@ The fact that we only need inner products $`x_i^T x`$ in the prediction phase is
 
 ### The Need for Nonlinearity
 
-Linear SVMs can only create linear decision boundaries. However, many real-world classification problems require nonlinear decision boundaries. Consider the classic XOR problem:
+Linear SVMs can only create linear decision boundaries. However, many real-world classification problems require nonlinear decision boundaries. Consider the classic XOR problem, which demonstrates the fundamental limitation of linear classifiers.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-# XOR-like data
-X = np.array([[0, 0], [1, 1], [0, 1], [1, 0]])
-y = np.array([-1, -1, 1, 1])
-
-plt.figure(figsize=(8, 6))
-plt.scatter(X[y == 1][:, 0], X[y == 1][:, 1], c='red', s=100, label='Class 1')
-plt.scatter(X[y == -1][:, 0], X[y == -1][:, 1], c='blue', s=100, label='Class -1')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.title('XOR Problem - Not Linearly Separable')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-```
-
-This data cannot be separated by a linear boundary, motivating the need for nonlinear methods.
+The XOR problem shows that some data patterns cannot be separated by a linear boundary, motivating the need for nonlinear methods. The implementation demonstrates this concept using the `generate_xor_data()` function in both Python and R code files.
 
 ### Feature Space Embedding
 
@@ -188,215 +169,65 @@ This shows that the penalty term becomes $`\frac{1}{2}\alpha^T K \alpha`$, a gen
 
 ## 11.4.6. Implementation and Examples
 
+The implementation and demonstration of nonlinear SVM concepts is provided in separate code files for both Python and R. These files contain comprehensive examples covering all the theoretical concepts discussed above.
+
 ### Python Implementation
 
+The complete Python implementation is available in the file `code/nonlinear_svms_implementation.py`. This file includes:
+
+- **KernelSVM class from scratch** using quadratic programming with cvxopt
+- **Data generation functions** for different types of nonlinear data (circles, moons, XOR)
+- **Kernel function implementations** for linear, polynomial, RBF, and sigmoid kernels
+- **Decision boundary visualization** with support vector highlighting
+- **Kernel comparison demonstrations** showing different kernel performances
+- **Parameter effects analysis** showing how γ affects RBF kernel behavior
+- **Cross-validation for kernel selection** using GridSearchCV
+- **Representer theorem demonstration** showing finite representation
+- **Advantages and limitations analysis** with practical demonstrations
+- **Comprehensive demonstrations** of all nonlinear SVM concepts
+
+To run the Python demonstrations:
+
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_circles, make_moons
-from sklearn.preprocessing import StandardScaler
-import cvxopt
-from cvxopt import matrix, solvers
-
-class KernelSVM:
-    def __init__(self, C=1.0, kernel='rbf', gamma=1.0, degree=3, coef0=0):
-        self.C = C
-        self.kernel = kernel
-        self.gamma = gamma
-        self.degree = degree
-        self.coef0 = coef0
-        self.support_vectors = None
-        self.lambda_values = None
-        self.beta_0 = None
-        
-    def kernel_function(self, X1, X2):
-        """Compute kernel matrix between X1 and X2"""
-        if self.kernel == 'linear':
-            return np.dot(X1, X2.T)
-        elif self.kernel == 'poly':
-            return (self.gamma * np.dot(X1, X2.T) + self.coef0) ** self.degree
-        elif self.kernel == 'rbf':
-            # Compute pairwise distances
-            X1_norm = np.sum(X1**2, axis=1).reshape(-1, 1)
-            X2_norm = np.sum(X2**2, axis=1).reshape(1, -1)
-            K = np.exp(-self.gamma * (X1_norm + X2_norm - 2 * np.dot(X1, X2.T)))
-            return K
-        else:
-            raise ValueError(f"Unknown kernel: {self.kernel}")
-    
-    def fit(self, X, y):
-        n_samples = X.shape[0]
-        
-        # Compute kernel matrix
-        K = self.kernel_function(X, X)
-        
-        # Prepare the quadratic programming problem
-        P = matrix(np.outer(y, y) * K)
-        q = matrix(-np.ones(n_samples))
-        
-        # Constraints: 0 <= lambda_i <= C
-        G = matrix(np.vstack([-np.eye(n_samples), np.eye(n_samples)]))
-        h = matrix(np.hstack([np.zeros(n_samples), self.C * np.ones(n_samples)]))
-        
-        A = matrix(y.reshape(1, -1))
-        b = matrix(0.0)
-        
-        # Solve the quadratic programming problem
-        solvers.options['show_progress'] = False
-        solution = solvers.qp(P, q, G, h, A, b)
-        
-        # Extract Lagrange multipliers
-        self.lambda_values = np.array(solution['x']).flatten()
-        
-        # Find support vectors
-        support_vector_indices = self.lambda_values > 1e-5
-        self.support_vectors = X[support_vector_indices]
-        support_vector_lambdas = self.lambda_values[support_vector_indices]
-        support_vector_y = y[support_vector_indices]
-        
-        # Compute beta_0
-        self.beta_0 = np.mean(support_vector_y - 
-                             np.sum(support_vector_lambdas.reshape(-1, 1) * 
-                                   support_vector_y.reshape(-1, 1) * 
-                                   self.kernel_function(self.support_vectors, self.support_vectors), axis=0))
-        
-    def predict(self, X):
-        return np.sign(self.decision_function(X))
-    
-    def decision_function(self, X):
-        if self.support_vectors is None:
-            return np.zeros(X.shape[0])
-        
-        K = self.kernel_function(X, self.support_vectors)
-        support_vector_lambdas = self.lambda_values[self.lambda_values > 1e-5]
-        support_vector_y = np.array([1 if i == 1 else -1 for i in range(len(self.lambda_values)) if self.lambda_values[i] > 1e-5])
-        
-        return np.sum(support_vector_lambdas.reshape(-1, 1) * 
-                     support_vector_y.reshape(-1, 1) * K.T, axis=0) + self.beta_0
-
-# Generate non-linear data
-X, y = make_circles(n_samples=100, noise=0.1, factor=0.5, random_state=42)
-y = 2 * y - 1  # Convert to {-1, 1}
-
-# Scale the data
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Compare different kernels
-kernels = ['linear', 'poly', 'rbf']
-fig, axes = plt.subplots(1, 3, figsize=(18, 6))
-
-for i, kernel in enumerate(kernels):
-    # Fit SVM
-    svm = KernelSVM(C=1.0, kernel=kernel, gamma=1.0)
-    svm.fit(X_scaled, y)
-    
-    # Plotting
-    ax = axes[i]
-    
-    # Plot data points
-    ax.scatter(X_scaled[y == 1][:, 0], X_scaled[y == 1][:, 1], 
-              c='red', label='Class 1', alpha=0.6)
-    ax.scatter(X_scaled[y == -1][:, 0], X_scaled[y == -1][:, 1], 
-              c='blue', label='Class -1', alpha=0.6)
-    
-    # Plot decision boundary
-    x_min, x_max = X_scaled[:, 0].min() - 1, X_scaled[:, 0].max() + 1
-    y_min, y_max = X_scaled[:, 1].min() - 1, X_scaled[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
-                         np.arange(y_min, y_max, 0.01))
-    
-    Z = svm.decision_function(np.c_[xx.ravel(), yy.ravel()])
-    Z = Z.reshape(xx.shape)
-    
-    ax.contour(xx, yy, Z, levels=[0], alpha=0.8, colors='black')
-    ax.contourf(xx, yy, Z, levels=[-1, 0, 1], alpha=0.1, 
-                colors=['blue', 'white', 'red'])
-    
-    # Highlight support vectors
-    if svm.support_vectors is not None:
-        ax.scatter(svm.support_vectors[:, 0], svm.support_vectors[:, 1], 
-                   s=100, linewidth=1, facecolors='none', edgecolors='k', 
-                   label='Support Vectors')
-    
-    ax.set_xlabel('Feature 1')
-    ax.set_ylabel('Feature 2')
-    ax.set_title(f'Kernel SVM ({kernel.upper()})')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-
-# Print model information
-for kernel in kernels:
-    svm = KernelSVM(C=1.0, kernel=kernel, gamma=1.0)
-    svm.fit(X_scaled, y)
-    n_support_vectors = len(svm.support_vectors) if svm.support_vectors is not None else 0
-    print(f"{kernel.upper()} kernel: {n_support_vectors} support vectors")
+# Import and run the main demonstration
+from code.nonlinear_svms_implementation import main
+results = main()
 ```
 
 ### R Implementation
 
+The complete R implementation is available in the file `code/r_nonlinear_svms_implementation.R`. This file includes:
+
+- **Data generation functions** for nonlinear data patterns
+- **SVM fitting and visualization** using e1071 package with different kernels
+- **Kernel function demonstrations** showing mathematical properties
+- **Parameter effects analysis** across different γ values
+- **Cross-validation for kernel selection** using tune function
+- **Representer theorem verification** showing finite representation
+- **Advantages and limitations analysis** with practical demonstrations
+- **Kernel performance comparison** across different data types
+- **Comprehensive demonstrations** of all nonlinear SVM concepts
+
+To run the R demonstrations:
+
 ```r
-library(e1071)
-library(ggplot2)
-
-# Generate non-linear data
-set.seed(42)
-n <- 100
-theta <- runif(n, 0, 2*pi)
-r <- runif(n, 0.5, 1.5)
-X <- cbind(r * cos(theta), r * sin(theta))
-y <- ifelse(r < 1, 1, -1)
-
-# Function to fit and plot kernel SVM
-plot_kernel_svm <- function(X, y, kernel_type, gamma=1, degree=3) {
-  # Fit SVM
-  svm_model <- svm(X, y, kernel=kernel_type, gamma=gamma, degree=degree, scale=FALSE)
-  
-  # Create prediction grid
-  x_min <- min(X[,1]) - 0.5
-  x_max <- max(X[,1]) + 0.5
-  y_min <- min(X[,2]) - 0.5
-  y_max <- max(X[,2]) + 0.5
-  
-  grid_points <- expand.grid(
-    x1 = seq(x_min, x_max, length.out=50),
-    x2 = seq(y_min, y_max, length.out=50)
-  )
-  
-  # Make predictions
-  grid_points$pred <- predict(svm_model, grid_points)
-  
-  # Plot
-  p <- ggplot() +
-    geom_point(data=data.frame(X, y=factor(y)), 
-               aes(x=X1, y=X2, color=y), size=2) +
-    geom_contour(data=grid_points, 
-                 aes(x=x1, y=x2, z=as.numeric(pred)), 
-                 breaks=c(0.5), color="black", size=1) +
-    geom_point(data=data.frame(X[svm_model$index,]), 
-               aes(x=X1, y=X2), shape=21, size=3, 
-               fill="transparent", color="black") +
-    labs(title=paste("Kernel SVM (", toupper(kernel_type), ")", sep=""), 
-         x="Feature 1", y="Feature 2") +
-    theme_minimal()
-  
-  return(list(plot=p, model=svm_model))
-}
-
-# Compare different kernels
-kernels <- c("linear", "polynomial", "radial")
-plots <- lapply(kernels, function(k) plot_kernel_svm(X, y, k))
-
-# Display plots
-for(i in 1:length(plots)) {
-  print(plots[[i]]$plot)
-  cat("Kernel =", kernels[i], ": Number of support vectors =", 
-      length(plots[[i]]$model$index), "\n")
-}
+# Source and run the main demonstration
+source("code/r_nonlinear_svms_implementation.R")
+results <- main_r()
 ```
+
+### Key Demonstrations
+
+Both implementations provide comprehensive demonstrations of:
+
+1. **Kernel Comparison**: Shows how different kernels handle nonlinear data
+2. **Kernel Functions**: Demonstrates mathematical properties of different kernels
+3. **Parameter Effects**: Illustrates how γ controls kernel behavior
+4. **Cross-Validation**: Demonstrates systematic kernel and parameter selection
+5. **Representer Theorem**: Shows finite representation using support vectors
+6. **Advantages and Limitations**: Compares kernel performance across data types
+7. **XOR Problem**: Demonstrates the need for nonlinear classification
+8. **Practical Considerations**: Shows when to use different kernels
 
 ## 11.4.7. Kernel Selection and Parameter Tuning
 
@@ -421,36 +252,24 @@ for(i in 1:length(plots)) {
 
 ### Cross-Validation for Kernel Selection
 
-```python
-from sklearn.model_selection import GridSearchCV
-from sklearn.svm import SVC
+Cross-validation is essential for selecting the optimal kernel and parameters. The implementation demonstrates systematic parameter selection using grid search with cross-validation.
 
-# Define parameter grids for different kernels
-param_grids = {
-    'linear': {'C': [0.1, 1, 10, 100]},
-    'poly': {'C': [0.1, 1, 10], 'degree': [2, 3, 4], 'gamma': [0.1, 1, 10]},
-    'rbf': {'C': [0.1, 1, 10, 100], 'gamma': [0.001, 0.01, 0.1, 1, 10]}
-}
+The cross-validation implementation is available in both Python and R code files:
 
-best_scores = {}
-best_params = {}
+**Python**: The `demonstrate_cross_validation()` function in `code/nonlinear_svms_implementation.py` shows:
+- Grid search with `GridSearchCV` from scikit-learn
+- Systematic exploration of parameter space for different kernels
+- Cross-validation accuracy plotting
+- Best kernel and parameter identification
+- Performance comparison across kernel types
 
-for kernel, param_grid in param_grids.items():
-    svm = SVC(kernel=kernel, random_state=42)
-    grid_search = GridSearchCV(svm, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
-    grid_search.fit(X_scaled, y)
-    
-    best_scores[kernel] = grid_search.best_score_
-    best_params[kernel] = grid_search.best_params_
-    
-    print(f"{kernel.upper()} kernel:")
-    print(f"  Best score: {grid_search.best_score_:.3f}")
-    print(f"  Best parameters: {grid_search.best_params_}")
+**R**: The `demonstrate_cross_validation()` function in `code/r_nonlinear_svms_implementation.R` shows:
+- Grid search with `tune()` function from e1071
+- Cross-validation error analysis for different kernels
+- Parameter space exploration
+- Best model selection and comparison
 
-# Find best kernel
-best_kernel = max(best_scores, key=best_scores.get)
-print(f"\nBest kernel: {best_kernel.upper()} with score {best_scores[best_kernel]:.3f}")
-```
+Both implementations demonstrate how to systematically find the optimal kernel and parameters that provide the best classification performance for the given dataset.
 
 ## 11.4.8. The Kernel Machine Perspective
 
