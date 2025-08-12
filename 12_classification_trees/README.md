@@ -128,3 +128,9 @@ $`f(x) = \alpha_1 g_1(x) + \alpha_2 g_2(x) + \cdots + \alpha_T g_T(x)`$
 - Python implementations available for classification trees
 - R code examples for boosting algorithms
 - Practical examples with real datasets
+
+---
+
+**Navigation:**
+- **Start Learning:** [Introduction to Classification Trees](01_introduction.md) - Three essential aspects and mathematical foundations
+- **Previous Section:** [Variable Selection and Regularization](../03_variable_selection_regularization/README.md) - Overview of variable selection and regularization techniques
