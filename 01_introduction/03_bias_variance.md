@@ -443,3 +443,9 @@ The bias-variance tradeoff provides a fundamental framework for understanding pr
 4. **Algorithm Choice**: Consider bias-variance characteristics of different methods
 
 Understanding this tradeoff is crucial for making informed decisions about model complexity, feature selection, and algorithm choice in real-world applications. The mathematical framework provides both theoretical insights and practical guidance for building effective machine learning models.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Least Squares and k-Nearest Neighbors](04_ls_and_knn.md) - Practical implementation and comparison of fundamental learning algorithms
+- **Previous Topic:** [Learning Theory](02_learning_theory.md) - Mathematical foundations and theoretical understanding of machine learning algorithms
