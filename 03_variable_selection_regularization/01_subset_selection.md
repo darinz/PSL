@@ -702,3 +702,9 @@ See the complete implementation in [`code/screening_stepwise.py`](code/screening
 - Preprocessing step for more sophisticated methods
 
 Although this elementary procedure might overlook crucial variables, the subsequent stepwise process can potentially reincorporate them into the model, making screening a valuable tool for high-dimensional variable selection.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Regularization Framework](02_regularization.md) - Mathematical foundations and unified approach to regularization
+- **Previous Topic:** [Variable Selection and Regularization Overview](README.md) - Overview of variable selection and regularization techniques
