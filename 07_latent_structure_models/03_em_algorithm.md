@@ -257,3 +257,9 @@ The implementation includes:
 - **Factorized VEM**: When full variational distribution is too complex, use mean field approximation
 
 This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of the EM algorithm and its variants. The code examples demonstrate both the theoretical concepts and their practical application.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Latent Dirichlet Allocation Model](04_latent_dirichlet_allocation_model.md) - Topic modeling and document analysis
+- **Previous Topic:** [Mixture Models](02_mixture_models.md) - Mathematical foundation and data generation process
