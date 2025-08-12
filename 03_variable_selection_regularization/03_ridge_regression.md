@@ -412,3 +412,9 @@ Ridge regression is a powerful regularization technique that addresses the bias-
 5. **Bayesian interpretation**: Equivalent to maximum a posteriori estimation with Gaussian prior
 
 Proper implementation requires careful attention to data preprocessing, parameter selection, and model validation. Ridge regression is particularly valuable in high-dimensional settings with correlated predictors.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Lasso Regression](04_lasso_regression.md) - L1 regularization and automatic variable selection
+- **Previous Topic:** [Regularization Framework](02_regularization.md) - Mathematical foundations and unified approach to regularization
