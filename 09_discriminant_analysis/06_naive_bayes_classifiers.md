@@ -343,3 +343,9 @@ This example shows Naive Bayes applied to medical data for disease risk assessme
 - [ ] Cross-validate model performance
 
 Naive Bayes remains a powerful and interpretable classification method that provides an excellent baseline for many machine learning problems, especially when computational efficiency and interpretability are important.
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the discriminant analysis section*
+- **Previous Topic:** [Fisher Discriminant Analysis](05_fisher_discriminant_analysis.md) - Supervised dimensionality reduction and optimal projection directions
