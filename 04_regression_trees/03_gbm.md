@@ -210,164 +210,57 @@ where $`\rho`$ is the correlation between trees and $`\eta`$ is the learning rat
 
 ### Performance Comparison Code
 
-```python
-def compare_rf_gbm(X, y):
-    """
-    Compare Random Forest and GBM performance
-    """
-    from sklearn.model_selection import cross_val_score
-    from sklearn.ensemble import RandomForestRegressor
-    
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    
-    # Random Forest
-    rf = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=10,
-        random_state=42
-    )
-    
-    # GBM
-    gbm = GradientBoostingRegressor(
-        n_estimators=100,
-        learning_rate=0.1,
-        max_depth=3,
-        random_state=42
-    )
-    
-    # Cross-validation scores
-    rf_scores = cross_val_score(rf, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
-    gbm_scores = cross_val_score(gbm, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
-    
-    # Train final models
-    rf.fit(X_train, y_train)
-    gbm.fit(X_train, y_train)
-    
-    # Test predictions
-    rf_pred = rf.predict(X_test)
-    gbm_pred = gbm.predict(X_test)
-    
-    # Results
-    results = {
-        'Random Forest': {
-            'CV MSE': -rf_scores.mean(),
-            'CV Std': rf_scores.std(),
-            'Test MSE': mean_squared_error(y_test, rf_pred),
-            'Test R²': r2_score(y_test, rf_pred)
-        },
-        'Gradient Boosting': {
-            'CV MSE': -gbm_scores.mean(),
-            'CV Std': gbm_scores.std(),
-            'Test MSE': mean_squared_error(y_test, gbm_pred),
-            'Test R²': r2_score(y_test, gbm_pred)
-        }
-    }
-    
-    print("Performance Comparison:")
-    for model, metrics in results.items():
-        print(f"\n{model}:")
-        for metric, value in metrics.items():
-            print(f"  {metric}: {value:.4f}")
-    
-    return results
-```
+**Python Implementation:** [advanced_gbm.py](code/advanced_gbm.py) - `compare_rf_gbm()` function
+
+The performance comparison implementation includes:
+
+- **Cross-Validation**: 5-fold cross-validation for robust performance estimation
+- **Multiple Metrics**: MSE and R² scores for comprehensive evaluation
+- **Statistical Comparison**: Standard deviation of CV scores for uncertainty assessment
+- **Fair Comparison**: Equivalent hyperparameters for both models
+- **Detailed Reporting**: Comprehensive results with all relevant metrics
+
+Key features:
+- Systematic comparison between Random Forest and GBM
+- Cross-validation for reliable performance estimation
+- Multiple evaluation metrics
+- Statistical significance assessment
 
 ## 4.3.7. Advanced Topics
 
 ### Early Stopping
 
-```python
-def gbm_with_early_stopping(X_train, y_train, X_val, y_val, patience=10):
-    """
-    GBM with early stopping based on validation performance
-    """
-    gbm = GradientBoostingRegressor(
-        n_estimators=1000,  # Large number
-        learning_rate=0.1,
-        max_depth=3,
-        random_state=42
-    )
-    
-    best_val_score = float('inf')
-    best_iteration = 0
-    patience_counter = 0
-    
-    # Initialize
-    F = np.full(len(X_train), np.mean(y_train))
-    val_predictions = np.full(len(X_val), np.mean(y_train))
-    
-    for t in range(gbm.n_estimators):
-        # Fit tree to residuals
-        residuals = y_train - F
-        
-        tree = DecisionTreeRegressor(max_depth=3, random_state=t)
-        tree.fit(X_train, residuals)
-        
-        # Update predictions
-        tree_pred_train = tree.predict(X_train)
-        tree_pred_val = tree.predict(X_val)
-        
-        F += gbm.learning_rate * tree_pred_train
-        val_predictions += gbm.learning_rate * tree_pred_val
-        
-        # Check validation performance
-        val_score = mean_squared_error(y_val, val_predictions)
-        
-        if val_score < best_val_score:
-            best_val_score = val_score
-            best_iteration = t
-            patience_counter = 0
-        else:
-            patience_counter += 1
-        
-        # Early stopping
-        if patience_counter >= patience:
-            print(f"Early stopping at iteration {t}")
-            break
-    
-    return best_iteration, best_val_score
-```
+**Python Implementation:** [advanced_gbm.py](code/advanced_gbm.py) - `gbm_with_early_stopping()` function
+
+The early stopping implementation includes:
+
+- **Validation Monitoring**: Continuous monitoring of validation performance
+- **Patience Mechanism**: Configurable patience parameter to prevent premature stopping
+- **Best Model Tracking**: Keeps track of the best performing iteration
+- **Automatic Termination**: Stops training when validation performance plateaus
+
+Key features:
+- Prevents overfitting by monitoring validation performance
+- Configurable patience parameter
+- Tracks best iteration for optimal model selection
+- Efficient training termination
 
 ### Feature Importance Analysis
 
-```python
-def analyze_gbm_feature_importance(gbm_model, X, feature_names=None):
-    """
-    Analyze feature importance in GBM
-    """
-    if feature_names is None:
-        feature_names = [f"Feature_{i}" for i in range(X.shape[1])]
-    
-    # Calculate feature importance based on RSS reduction
-    importance = np.zeros(X.shape[1])
-    
-    for tree in gbm_model.trees:
-        if hasattr(tree, 'feature_importances_'):
-            importance += tree.feature_importances_
-    
-    importance /= len(gbm_model.trees)
-    
-    # Create importance dataframe
-    importance_df = pd.DataFrame({
-        'feature': feature_names,
-        'importance': importance
-    }).sort_values('importance', ascending=False)
-    
-    # Plot
-    plt.figure(figsize=(10, 6))
-    plt.barh(range(len(importance_df)), importance_df['importance'])
-    plt.yticks(range(len(importance_df)), importance_df['feature'])
-    plt.xlabel('Feature Importance')
-    plt.title('GBM Feature Importance')
-    plt.gca().invert_yaxis()
-    plt.tight_layout()
-    plt.show()
-    
-    return importance_df
-```
+**Python Implementation:** [advanced_gbm.py](code/advanced_gbm.py) - `analyze_gbm_feature_importance()` function
+
+The feature importance analysis includes:
+
+- **RSS-Based Importance**: Calculates importance based on RSS reduction
+- **Aggregation**: Combines importance across all trees in the ensemble
+- **Visualization**: Comprehensive bar plot of feature importance
+- **Ranking**: Sorts features by importance for easy interpretation
+
+Key features:
+- Comprehensive feature importance calculation
+- Built-in visualization tools
+- Automatic feature ranking
+- Integration with pandas for data manipulation
 
 ## Summary
 
@@ -380,6 +273,19 @@ Gradient Boosting Machines provide a powerful approach to regression through:
 5. **Performance**: Often achieves state-of-the-art results with proper tuning
 
 The mathematical foundations ensure optimal convergence, while the algorithmic design provides both computational efficiency and predictive power. GBM requires careful hyperparameter tuning but can outperform Random Forest when properly configured.
+
+## Code Files Summary
+
+The following code files provide complete implementations of the concepts discussed in this chapter:
+
+### Python Implementation
+- **[gbm_implementation.py](code/gbm_implementation.py)**: Basic GBM implementation with sequential learning, subsampling, and training progress monitoring
+- **[advanced_gbm.py](code/advanced_gbm.py)**: Advanced GBM features including feature subsampling, hyperparameter tuning, early stopping, feature importance analysis, and comparison with Random Forest
+
+### R Implementation
+- **[r_gbm.R](code/r_gbm.R)**: Complete R implementation using gbm package with training, evaluation, hyperparameter tuning, model comparison, and advanced analysis tools
+
+Each file includes comprehensive examples, demonstrations, and analysis tools to help understand and apply GBM concepts in practice.
 
 ## References
 
