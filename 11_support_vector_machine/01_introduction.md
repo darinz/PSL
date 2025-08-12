@@ -287,3 +287,9 @@ Support Vector Machines are powerful classification algorithms that:
 5. **Have strong theoretical foundations** in statistical learning theory
 
 SVMs are particularly effective for high-dimensional data and when the number of support vectors is small relative to the dataset size.
+
+---
+
+**Navigation:**
+- **Next Topic:** [The Separable Case](02_separable_case.md) - Max-margin problem, KKT conditions, duality, and prediction
+- **Previous Topic:** [Support Vector Machine Overview](README.md) - Overview of SVM concepts and mathematical framework
