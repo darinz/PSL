@@ -243,38 +243,17 @@ See the implementation in `code/lda_implementation.py` for the complete temporal
 
 ### Hierarchical LDA
 
-Hierarchical LDA extends LDA to model hierarchical topic structures:
+Hierarchical LDA extends LDA to model hierarchical topic structures. The `HierarchicalLDA` class implements a simplified version of hierarchical topic modeling that creates multi-level topic hierarchies.
 
-```python
-class HierarchicalLDA:
-    def __init__(self, n_topics_per_level=3, n_levels=2):
-        self.n_topics_per_level = n_topics_per_level
-        self.n_levels = n_levels
-        
-    def fit(self, documents):
-        """Fit hierarchical LDA (simplified implementation)"""
-        # This is a simplified version - full hLDA is more complex
-        self.level_topics = []
-        
-        for level in range(self.n_levels):
-            # Fit LDA at this level
-            vectorizer = CountVectorizer(max_features=1000)
-            dtm = vectorizer.fit_transform(documents)
-            
-            lda = LatentDirichletAllocation(
-                n_components=self.n_topics_per_level, 
-                random_state=42
-            )
-            lda.fit(dtm)
-            
-            self.level_topics.append(lda.components_)
-            
-            # Use topic assignments to create "documents" for next level
-            topic_assignments = lda.transform(dtm)
-            documents = [f"topic_{i}" for i in np.argmax(topic_assignments, axis=1)]
-        
-        return self
-```
+**Key Functions:**
+- `HierarchicalLDA.__init__()`: Initialize hierarchical LDA with level and topic parameters
+- `HierarchicalLDA.fit()`: Fit hierarchical LDA using recursive LDA fitting
+- Creates topic hierarchies by using topic assignments as "documents" for higher levels
+- Returns topic-word distributions for each level of the hierarchy
+
+The implementation demonstrates how topic modeling can be extended to capture hierarchical relationships between topics, enabling more nuanced analysis of document structure and topic organization.
+
+See the implementation in `code/lda_implementation.py` for the complete hierarchical LDA workflow.
 
 This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of LDA and its variants. The code examples demonstrate both the theoretical concepts and their practical application in topic modeling.
 
