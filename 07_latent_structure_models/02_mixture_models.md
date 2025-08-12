@@ -43,64 +43,13 @@ This two-stage process is crucial for understanding mixture models and implement
 
 ### Example: Visualizing Mixture Models
 
-Let's create a simple example to illustrate mixture models:
+**Implementation:** See `visualize_mixture_model()` function in [mixture_models_implementation.py](code/mixture_models_implementation.py)
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-import seaborn as sns
-
-# Set random seed for reproducibility
-np.random.seed(42)
-
-# Parameters for a two-component Gaussian mixture
-mu1, sigma1 = 0, 1
-mu2, sigma2 = 4, 1.5
-pi1 = 0.6
-pi2 = 1 - pi1
-
-# Generate data
-n_samples = 1000
-z = np.random.choice([0, 1], size=n_samples, p=[pi1, pi2])
-x = np.zeros(n_samples)
-
-x[z == 0] = np.random.normal(mu1, sigma1, size=np.sum(z == 0))
-x[z == 1] = np.random.normal(mu2, sigma2, size=np.sum(z == 1))
-
-# Plot the mixture
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-
-# Histogram of data
-ax1.hist(x, bins=50, density=True, alpha=0.7, color='skyblue', edgecolor='black')
-ax1.set_title('Histogram of Mixture Data')
-ax1.set_xlabel('x')
-ax1.set_ylabel('Density')
-
-# True mixture density
-x_range = np.linspace(-3, 8, 1000)
-true_density = pi1 * norm.pdf(x_range, mu1, sigma1) + pi2 * norm.pdf(x_range, mu2, sigma2)
-ax1.plot(x_range, true_density, 'r-', linewidth=2, label='True Mixture Density')
-ax1.legend()
-
-# Individual components
-ax2.plot(x_range, pi1 * norm.pdf(x_range, mu1, sigma1), 'b--', 
-         label=f'Component 1 (π={pi1:.1f})')
-ax2.plot(x_range, pi2 * norm.pdf(x_range, mu2, sigma2), 'g--', 
-         label=f'Component 2 (π={pi2:.1f})')
-ax2.plot(x_range, true_density, 'r-', linewidth=2, label='Mixture')
-ax2.set_title('Mixture Components')
-ax2.set_xlabel('x')
-ax2.set_ylabel('Density')
-ax2.legend()
-
-plt.tight_layout()
-plt.show()
-
-print(f"Generated {n_samples} samples from mixture model")
-print(f"Component 1: μ={mu1}, σ={sigma1}, π={pi1}")
-print(f"Component 2: μ={mu2}, σ={sigma2}, π={pi2}")
-```
+The implementation demonstrates:
+- **Data generation**: Creating synthetic data from a two-component Gaussian mixture
+- **Visualization**: Histogram of generated data with true mixture density overlay
+- **Component analysis**: Individual component densities and their weighted combination
+- **Parameter specification**: Clear demonstration of mixing weights and component parameters
 
 ```r
 # R implementation
