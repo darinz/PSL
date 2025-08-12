@@ -118,174 +118,23 @@ Feature subsampling serves two purposes:
 
 ### Complete Random Forest Implementation
 
-```python
-import numpy as np
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error, r2_score
+**Python Implementation:** [random_forest_implementation.py](code/random_forest_implementation.py)
 
-class RandomForestRegressor:
-    def __init__(self, n_trees=100, max_features='sqrt', max_depth=None, 
-                 min_samples_split=2, min_samples_leaf=1, bootstrap=True, 
-                 random_state=None):
-        """
-        Random Forest Regressor
-        
-        Parameters:
-        n_trees: number of trees in forest
-        max_features: number of features to consider at each split
-        max_depth: maximum depth of trees
-        min_samples_split: minimum samples required to split
-        min_samples_leaf: minimum samples required at leaf node
-        bootstrap: whether to use bootstrap samples
-        random_state: random seed
-        """
-        self.n_trees = n_trees
-        self.max_features = max_features
-        self.max_depth = max_depth
-        self.min_samples_split = min_samples_split
-        self.min_samples_leaf = min_samples_leaf
-        self.bootstrap = bootstrap
-        self.random_state = random_state
-        self.trees = []
-        self.feature_importances_ = None
-        
-    def _get_max_features(self, n_features):
-        """Determine number of features to consider at each split"""
-        if self.max_features == 'sqrt':
-            return max(1, int(np.sqrt(n_features)))
-        elif self.max_features == 'log2':
-            return max(1, int(np.log2(n_features)))
-        elif isinstance(self.max_features, float):
-            return max(1, int(self.max_features * n_features))
-        elif isinstance(self.max_features, int):
-            return min(self.max_features, n_features)
-        else:
-            return n_features
-    
-    def _bootstrap_sample(self, X, y):
-        """Create bootstrap sample"""
-        n_samples = len(y)
-        indices = np.random.choice(n_samples, size=n_samples, replace=True)
-        return X[indices], y[indices]
-    
-    def fit(self, X, y):
-        """Train Random Forest"""
-        np.random.seed(self.random_state)
-        
-        n_samples, n_features = X.shape
-        max_features = self._get_max_features(n_features)
-        
-        self.trees = []
-        feature_importances = np.zeros(n_features)
-        
-        for b in range(self.n_trees):
-            # Create bootstrap sample
-            if self.bootstrap:
-                X_boot, y_boot = self._bootstrap_sample(X, y)
-            else:
-                X_boot, y_boot = X, y
-            
-            # Train tree with feature subsampling
-            tree = DecisionTreeRegressor(
-                max_depth=self.max_depth,
-                min_samples_split=self.min_samples_split,
-                min_samples_leaf=self.min_samples_leaf,
-                max_features=max_features,
-                random_state=b
-            )
-            tree.fit(X_boot, y_boot)
-            self.trees.append(tree)
-            
-            # Accumulate feature importances
-            feature_importances += tree.feature_importances_
-        
-        # Average feature importances
-        self.feature_importances_ = feature_importances / self.n_trees
-        
-        return self
-    
-    def predict(self, X):
-        """Make predictions"""
-        predictions = np.zeros(len(X))
-        
-        for tree in self.trees:
-            predictions += tree.predict(X)
-        
-        return predictions / self.n_trees
-    
-    def get_oob_score(self, X, y):
-        """Calculate Out-of-Bag score"""
-        oob_predictions = np.zeros(len(y))
-        oob_counts = np.zeros(len(y))
-        
-        for b, tree in enumerate(self.trees):
-            # Find OOB samples for this tree
-            if self.bootstrap:
-                # This is a simplified version - in practice, you'd track OOB samples during training
-                indices = np.random.choice(len(y), size=len(y), replace=True)
-                oob_mask = ~np.isin(np.arange(len(y)), indices)
-            else:
-                oob_mask = np.ones(len(y), dtype=bool)
-            
-            if np.any(oob_mask):
-                oob_pred = tree.predict(X[oob_mask])
-                oob_predictions[oob_mask] += oob_pred
-                oob_counts[oob_mask] += 1
-        
-        # Average OOB predictions
-        valid_oob = oob_counts > 0
-        oob_predictions[valid_oob] /= oob_counts[valid_oob]
-        
-        # Calculate OOB score
-        oob_score = r2_score(y[valid_oob], oob_predictions[valid_oob])
-        return oob_score
+The complete Random Forest implementation includes:
 
-# Example usage
-def demonstrate_random_forest():
-    """Demonstrate Random Forest on synthetic data"""
-    from sklearn.datasets import make_regression
-    from sklearn.model_selection import train_test_split
-    
-    # Generate synthetic data
-    X, y = make_regression(n_samples=1000, n_features=20, n_informative=10, 
-                          noise=0.1, random_state=42)
-    
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    
-    # Train Random Forest
-    rf = RandomForestRegressor(n_trees=100, max_features='sqrt', 
-                              max_depth=10, random_state=42)
-    rf.fit(X_train, y_train)
-    
-    # Make predictions
-    y_pred = rf.predict(X_test)
-    
-    # Evaluate
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-    oob_score = rf.get_oob_score(X_train, y_train)
-    
-    print(f"Test MSE: {mse:.4f}")
-    print(f"Test R²: {r2:.4f}")
-    print(f"OOB Score: {oob_score:.4f}")
-    
-    # Feature importance
-    print("\nTop 10 Feature Importances:")
-    feature_importance_pairs = list(enumerate(rf.feature_importances_))
-    feature_importance_pairs.sort(key=lambda x: x[1], reverse=True)
-    
-    for i, (feature_idx, importance) in enumerate(feature_importance_pairs[:10]):
-        print(f"  Feature {feature_idx}: {importance:.4f}")
-    
-    return rf
+- **RandomForestRegressor Class**: A comprehensive class with methods for training, prediction, and evaluation
+- **Feature Subsampling**: Automatic feature selection at each split using various strategies (sqrt, log2, fraction)
+- **Bootstrap Sampling**: Optional bootstrap sampling for training each tree
+- **Out-of-Bag Estimation**: Built-in OOB score calculation for validation
+- **Feature Importance**: Automatic calculation of feature importance scores
+- **Demonstration Functions**: Complete examples with synthetic data and evaluation metrics
 
-# Run demonstration
-if __name__ == "__main__":
-    rf_model = demonstrate_random_forest()
-```
+Key features:
+- Configurable hyperparameters (n_trees, max_features, max_depth, etc.)
+- Support for different feature subsampling strategies
+- Built-in OOB estimation for model validation
+- Comprehensive feature importance analysis
+- Integration with scikit-learn for data handling and evaluation
 
 ## 4.2.4. Variable Importance Measures
 
