@@ -115,104 +115,21 @@ Key features:
 
 ### Advanced GBM Features
 
-```python
-class AdvancedGBMRegressor(GradientBoostingRegressor):
-    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, 
-                 min_samples_split=2, min_samples_leaf=1, subsample=1.0,
-                 colsample_bytree=1.0, random_state=None):
-        """
-        Advanced GBM with additional features
-        """
-        super().__init__(n_estimators, learning_rate, max_depth, 
-                        min_samples_split, min_samples_leaf, subsample, random_state)
-        self.colsample_bytree = colsample_bytree
-        self.feature_importances_ = None
-        
-    def fit(self, X, y, validation_data=None):
-        """Train with validation monitoring"""
-        np.random.seed(self.random_state)
-        
-        n_samples, n_features = X.shape
-        self.initial_prediction = np.mean(y)
-        F = np.full(n_samples, self.initial_prediction)
-        
-        self.trees = []
-        self.train_scores = []
-        self.val_scores = []
-        feature_importances = np.zeros(n_features)
-        
-        for t in range(self.n_estimators):
-            # Compute residuals
-            residuals = y - F
-            
-            # Subsample data
-            if self.subsample < 1.0:
-                n_subsample = int(self.subsample * n_samples)
-                indices = np.random.choice(n_samples, size=n_subsample, replace=False)
-                X_sub = X[indices]
-                residuals_sub = residuals[indices]
-            else:
-                X_sub = X
-                residuals_sub = residuals
-            
-            # Feature subsampling
-            if self.colsample_bytree < 1.0:
-                n_features_sub = int(self.colsample_bytree * n_features)
-                feature_indices = np.random.choice(n_features, size=n_features_sub, replace=False)
-                X_sub = X_sub[:, feature_indices]
-            else:
-                feature_indices = np.arange(n_features)
-            
-            # Fit tree
-            tree = DecisionTreeRegressor(
-                max_depth=self.max_depth,
-                min_samples_split=self.min_samples_split,
-                min_samples_leaf=self.min_samples_leaf,
-                random_state=t
-            )
-            tree.fit(X_sub, residuals_sub)
-            
-            # Update predictions
-            if self.colsample_bytree < 1.0:
-                X_pred = X[:, feature_indices]
-                tree_pred = tree.predict(X_pred)
-            else:
-                tree_pred = tree.predict(X)
-            
-            F += self.learning_rate * tree_pred
-            
-            # Store tree and feature indices
-            self.trees.append((tree, feature_indices))
-            
-            # Update feature importances
-            if hasattr(tree, 'feature_importances_'):
-                feature_importances[feature_indices] += tree.feature_importances_
-            
-            # Calculate scores
-            train_score = mean_squared_error(y, F)
-            self.train_scores.append(train_score)
-            
-            if validation_data is not None:
-                X_val, y_val = validation_data
-                y_val_pred = self.predict(X_val)
-                val_score = mean_squared_error(y_val, y_val_pred)
-                self.val_scores.append(val_score)
-        
-        # Average feature importances
-        self.feature_importances_ = feature_importances / self.n_estimators
-        
-        return self
-    
-    def predict(self, X):
-        """Make predictions with feature subsampling"""
-        predictions = np.full(len(X), self.initial_prediction)
-        
-        for tree, feature_indices in self.trees:
-            X_sub = X[:, feature_indices]
-            predictions += self.learning_rate * tree.predict(X_sub)
-        
-        return predictions
-```
+**Advanced GBM Implementation:** [advanced_gbm.py](code/advanced_gbm.py)
+
+The advanced GBM implementation includes:
+
+- **AdvancedGBMRegressor Class**: Extended implementation with feature subsampling and validation monitoring
+- **Feature Subsampling**: Column-wise subsampling for additional regularization
+- **Validation Monitoring**: Built-in validation score tracking during training
+- **Feature Importance**: Automatic calculation of feature importance scores
+- **Enhanced Prediction**: Support for feature subsampling in predictions
+
+Key advanced features:
+- Column-wise subsampling (colsample_bytree parameter)
+- Validation data monitoring during training
+- Comprehensive feature importance analysis
+- Enhanced regularization capabilities
 
 ## 4.3.4. Hyperparameter Tuning
 
@@ -226,240 +143,43 @@ class AdvancedGBMRegressor(GradientBoostingRegressor):
 
 ### Grid Search Implementation
 
-```python
-from sklearn.model_selection import GridSearchCV, train_test_split
+**Python Implementation:** [advanced_gbm.py](code/advanced_gbm.py) - `tune_gbm_hyperparameters()` and `demonstrate_hyperparameter_tuning()` functions
 
-def tune_gbm_hyperparameters(X, y):
-    """
-    Tune GBM hyperparameters using grid search
-    """
-    # Split data for validation
-    X_train, X_val, y_train, y_val = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    
-    # Define parameter grid
-    param_grid = {
-        'n_estimators': [50, 100, 200],
-        'learning_rate': [0.01, 0.1, 0.2],
-        'max_depth': [3, 5, 7],
-        'subsample': [0.8, 1.0],
-        'colsample_bytree': [0.8, 1.0]
-    }
-    
-    best_score = float('inf')
-    best_params = None
-    best_model = None
-    
-    # Grid search
-    for n_estimators in param_grid['n_estimators']:
-        for learning_rate in param_grid['learning_rate']:
-            for max_depth in param_grid['max_depth']:
-                for subsample in param_grid['subsample']:
-                    for colsample_bytree in param_grid['colsample_bytree']:
-                        
-                        # Train model
-                        gbm = AdvancedGBMRegressor(
-                            n_estimators=n_estimators,
-                            learning_rate=learning_rate,
-                            max_depth=max_depth,
-                            subsample=subsample,
-                            colsample_bytree=colsample_bytree,
-                            random_state=42
-                        )
-                        
-                        gbm.fit(X_train, y_train, validation_data=(X_val, y_val))
-                        
-                        # Evaluate
-                        y_val_pred = gbm.predict(X_val)
-                        val_score = mean_squared_error(y_val, y_val_pred)
-                        
-                        if val_score < best_score:
-                            best_score = val_score
-                            best_params = {
-                                'n_estimators': n_estimators,
-                                'learning_rate': learning_rate,
-                                'max_depth': max_depth,
-                                'subsample': subsample,
-                                'colsample_bytree': colsample_bytree
-                            }
-                            best_model = gbm
-    
-    print("Best parameters:", best_params)
-    print("Best validation MSE:", best_score)
-    
-    return best_model, best_params
+The hyperparameter tuning implementation includes:
 
-# Example usage
-def demonstrate_hyperparameter_tuning():
-    """Demonstrate hyperparameter tuning"""
-    from sklearn.datasets import make_regression
-    
-    # Generate data
-    X, y = make_regression(n_samples=1000, n_features=20, n_informative=10, 
-                          noise=0.1, random_state=42)
-    
-    # Tune hyperparameters
-    best_gbm, best_params = tune_gbm_hyperparameters(X, y)
-    
-    # Evaluate on test set
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
-    
-    best_gbm.fit(X_train, y_train)
-    y_pred = best_gbm.predict(X_test)
-    
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-    
-    print(f"Test MSE: {mse:.4f}")
-    print(f"Test R²: {r2:.4f}")
-    
-    return best_gbm
-```
+- **Grid Search**: Comprehensive search over key hyperparameters
+- **Validation Strategy**: Proper train/validation split for parameter selection
+- **Parameter Grid**: Covers n_estimators, learning_rate, max_depth, subsample, and colsample_bytree
+- **Best Model Selection**: Automatic selection of best performing model
+- **Complete Demonstration**: End-to-end example with synthetic data
+
+Key features:
+- Systematic exploration of hyperparameter space
+- Validation-based model selection
+- Integration with advanced GBM implementation
+- Comprehensive evaluation and reporting
 
 ## 4.3.5. R Implementation
 
-```r
-# GBM Implementation in R
-library(gbm)
-library(ggplot2)
-library(dplyr)
+**Complete R Implementation:** [r_gbm.R](code/r_gbm.R)
 
-# Function to demonstrate GBM
-demonstrate_gbm_r <- function() {
-  # Load data
-  data(Boston, package = "MASS")
-  
-  # Prepare data
-  X <- Boston[, -ncol(Boston)]
-  y <- Boston$medv
-  
-  # Split data
-  set.seed(42)
-  train_indices <- sample(1:nrow(Boston), size = 0.8 * nrow(Boston))
-  X_train <- X[train_indices, ]
-  y_train <- y[train_indices]
-  X_test <- X[-train_indices, ]
-  y_test <- y[-train_indices]
-  
-  # Train GBM
-  gbm_model <- gbm(
-    medv ~ .,
-    data = data.frame(X_train, medv = y_train),
-    distribution = "gaussian",
-    n.trees = 100,
-    interaction.depth = 3,
-    shrinkage = 0.1,
-    bag.fraction = 0.8,
-    cv.folds = 5,
-    verbose = FALSE
-  )
-  
-  # Find optimal number of trees
-  best_iter <- gbm.perf(gbm_model, method = "cv")
-  
-  # Make predictions
-  predictions <- predict(gbm_model, X_test, n.trees = best_iter)
-  
-  # Calculate metrics
-  mse <- mean((y_test - predictions)^2)
-  r2 <- 1 - sum((y_test - predictions)^2) / sum((y_test - mean(y_test))^2)
-  
-  cat("Test MSE:", round(mse, 4), "\n")
-  cat("Test R²:", round(r2, 4), "\n")
-  cat("Optimal trees:", best_iter, "\n")
-  
-  # Variable importance
-  importance_df <- summary(gbm_model, n.trees = best_iter, plotit = FALSE)
-  
-  print("Variable Importance:")
-  print(importance_df)
-  
-  # Visualize results
-  par(mfrow = c(2, 2))
-  
-  # CV error vs number of trees
-  plot(gbm_model$cv.error, type = "l", xlab = "Number of Trees",
-       ylab = "CV Error", main = "Cross-Validation Error")
-  abline(v = best_iter, col = "red", lty = 2)
-  
-  # Predictions vs actual
-  plot(y_test, predictions, pch = 19, col = "blue", alpha = 0.6,
-       xlab = "Actual Values", ylab = "Predicted Values",
-       main = "GBM Predictions")
-  abline(0, 1, col = "red", lty = 2)
-  
-  # Variable importance plot
-  barplot(importance_df$rel.inf, names.arg = importance_df$var,
-          main = "Variable Importance", las = 2)
-  
-  # Residuals
-  residuals <- y_test - predictions
-  plot(predictions, residuals, pch = 19, col = "blue", alpha = 0.6,
-       xlab = "Predicted Values", ylab = "Residuals",
-       main = "Residual Plot")
-  abline(h = 0, col = "red", lty = 2)
-  
-  return(gbm_model)
-}
+The R implementation provides:
 
-# Function to tune hyperparameters
-tune_gbm_r <- function() {
-  # Load data
-  data(Boston, package = "MASS")
-  
-  # Define parameter grid
-  param_grid <- expand.grid(
-    n.trees = c(50, 100, 200),
-    interaction.depth = c(1, 3, 5),
-    shrinkage = c(0.01, 0.1, 0.2),
-    bag.fraction = c(0.5, 0.8, 1.0)
-  )
-  
-  # Train models
-  results <- list()
-  for (i in 1:nrow(param_grid)) {
-    cat("Training model", i, "of", nrow(param_grid), "\n")
-    
-    gbm_model <- gbm(
-      medv ~ .,
-      data = Boston,
-      distribution = "gaussian",
-      n.trees = param_grid$n.trees[i],
-      interaction.depth = param_grid$interaction.depth[i],
-      shrinkage = param_grid$shrinkage[i],
-      bag.fraction = param_grid$bag.fraction[i],
-      cv.folds = 5,
-      verbose = FALSE
-    )
-    
-    # Get CV error
-    best_iter <- gbm.perf(gbm_model, method = "cv", plotit = FALSE)
-    cv_error <- gbm_model$cv.error[best_iter]
-    
-    results[[i]] <- cv_error
-  }
-  
-  # Find best parameters
-  best_idx <- which.min(unlist(results))
-  best_params <- param_grid[best_idx, ]
-  
-  cat("Best parameters:\n")
-  cat("n.trees:", best_params$n.trees, "\n")
-  cat("interaction.depth:", best_params$interaction.depth, "\n")
-  cat("shrinkage:", best_params$shrinkage, "\n")
-  cat("bag.fraction:", best_params$bag.fraction, "\n")
-  cat("Best CV MSE:", results[[best_idx]], "\n")
-  
-  return(best_params)
-}
+- **GBM Training**: Complete implementation using the `gbm` package
+- **Cross-Validation**: Built-in cross-validation for optimal tree selection
+- **Hyperparameter Tuning**: Grid search implementation for parameter optimization
+- **Variable Importance**: Built-in variable importance calculation and visualization
+- **Model Comparison**: Comparison with Random Forest performance
+- **Early Stopping**: Demonstration of early stopping based on CV performance
+- **Learning Rate Analysis**: Analysis of learning rate effects on model performance
 
-# Run demonstrations
-gbm_model_r <- demonstrate_gbm_r()
-best_params_r <- tune_gbm_r()
-```
+Key features:
+- Uses `gbm` package for efficient implementation
+- Built-in cross-validation and optimal tree selection
+- Comprehensive hyperparameter tuning
+- Integration with `MASS` package for dataset access
+- Advanced visualization and analysis tools
+- Modular function design for easy customization
 
 ## 4.3.6. Comparison with Random Forest
 
