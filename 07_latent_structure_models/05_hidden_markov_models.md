@@ -219,99 +219,31 @@ See the implementation in `code/hmm_implementation.py` for the complete Baum-Wel
 
 ### Speech Recognition
 
-HMMs are widely used in speech recognition systems:
+HMMs are widely used in speech recognition systems. The `speech_recognition_example()` function demonstrates how HMMs can be applied to phoneme recognition using acoustic features.
 
-```python
-def speech_recognition_example():
-    """Example of HMM for speech recognition"""
-    # States: phonemes (simplified)
-    phonemes = ['a', 'e', 'i', 'o', 'u']
-    
-    # Observations: acoustic features
-    features = ['low', 'mid', 'high']
-    
-    # Initialize HMM for speech recognition
-    pi = np.array([0.2, 0.2, 0.2, 0.2, 0.2])  # Equal initial probability
-    
-    # Transition matrix (phoneme transitions)
-    A = np.array([
-        [0.6, 0.1, 0.1, 0.1, 0.1],  # 'a' transitions
-        [0.1, 0.6, 0.1, 0.1, 0.1],  # 'e' transitions
-        [0.1, 0.1, 0.6, 0.1, 0.1],  # 'i' transitions
-        [0.1, 0.1, 0.1, 0.6, 0.1],  # 'o' transitions
-        [0.1, 0.1, 0.1, 0.1, 0.6]   # 'u' transitions
-    ])
-    
-    # Emission matrix (phoneme to feature mapping)
-    B = np.array([
-        [0.7, 0.2, 0.1],  # 'a' -> features
-        [0.2, 0.7, 0.1],  # 'e' -> features
-        [0.1, 0.2, 0.7],  # 'i' -> features
-        [0.6, 0.3, 0.1],  # 'o' -> features
-        [0.1, 0.3, 0.6]   # 'u' -> features
-    ])
-    
-    return pi, A, B
+**Key Functions:**
+- `speech_recognition_example()`: Create HMM parameters for phoneme recognition
+- `demonstrate_speech_recognition()`: Complete demonstration with Viterbi decoding
+- Models phoneme transitions and acoustic feature emissions
+- Demonstrates the application of HMMs in natural language processing
 
-# Example usage
-pi, A, B = speech_recognition_example()
-speech_hmm = ViterbiHMM(pi, A, B)
+The implementation shows how HMMs can model the sequential nature of speech, where phonemes follow Markov transitions and acoustic features are emitted based on the current phoneme state.
 
-# Simulate speech features
-speech_features = [0, 1, 2, 0, 1, 2, 0, 1, 2, 0]
-phoneme_sequence = speech_hmm.decode(speech_features)[0]
-
-print("Speech recognition example:")
-print("Features:", speech_features)
-print("Decoded phonemes:", [phonemes[i] for i in phoneme_sequence])
-```
+See the implementation in `code/hmm_implementation.py` for the complete speech recognition workflow.
 
 ### Bioinformatics: Gene Finding
 
-HMMs are used to identify genes in DNA sequences:
+HMMs are used to identify genes in DNA sequences. The `gene_finding_example()` function demonstrates how HMMs can be applied to bioinformatics for gene structure prediction.
 
-```python
-def gene_finding_example():
-    """Example of HMM for gene finding"""
-    # States: coding, non-coding, start codon, stop codon
-    states = ['coding', 'non-coding', 'start', 'stop']
-    
-    # Observations: DNA bases
-    bases = ['A', 'T', 'G', 'C']
-    
-    # Initialize HMM for gene finding
-    pi = np.array([0.1, 0.8, 0.05, 0.05])  # Most DNA is non-coding
-    
-    # Transition matrix
-    A = np.array([
-        [0.95, 0.02, 0.02, 0.01],  # coding transitions
-        [0.01, 0.98, 0.005, 0.005], # non-coding transitions
-        [0.99, 0.01, 0.0, 0.0],     # start transitions
-        [0.01, 0.99, 0.0, 0.0]      # stop transitions
-    ])
-    
-    # Emission matrix (base composition)
-    B = np.array([
-        [0.25, 0.25, 0.25, 0.25],  # coding (random)
-        [0.30, 0.30, 0.20, 0.20],  # non-coding
-        [0.25, 0.25, 0.25, 0.25],  # start
-        [0.25, 0.25, 0.25, 0.25]   # stop
-    ])
-    
-    return pi, A, B
+**Key Functions:**
+- `gene_finding_example()`: Create HMM parameters for gene finding
+- `demonstrate_gene_finding()`: Complete demonstration with Viterbi decoding
+- Models different DNA regions (coding, non-coding, start/stop codons)
+- Demonstrates the application of HMMs in bioinformatics
 
-# Example usage
-pi, A, B = gene_finding_example()
-gene_hmm = ViterbiHMM(pi, A, B)
+The implementation shows how HMMs can model the structure of DNA sequences, where different regions have distinct base composition patterns and transition probabilities.
 
-# Simulate DNA sequence
-dna_sequence = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
-gene_states = gene_hmm.decode(dna_sequence)[0]
-
-print("Gene finding example:")
-print("DNA sequence:", [bases[i] for i in dna_sequence])
-print("Gene states:", [states[i] for i in gene_states])
-```
+See the implementation in `code/hmm_implementation.py` for the complete gene finding workflow.
 
 ### Continuous HMMs
 
