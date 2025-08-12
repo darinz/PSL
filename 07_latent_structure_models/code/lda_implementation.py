@@ -2,7 +2,7 @@
 Latent Dirichlet Allocation (LDA) Implementation
 ===============================================
 
-This module provides comprehensive implementations of Latent Dirichlet Allocation,
+This module provides comprehensive implementations of LDA and its variants,
 including basic LDA, variational inference, Gibbs sampling, model evaluation,
 and various applications and extensions.
 """
@@ -23,22 +23,6 @@ class LDAModel:
     """
     
     def __init__(self, n_topics=3, alpha=0.1, beta=0.1, max_iter=100, random_state=42):
-        """
-        Initialize LDA model.
-        
-        Parameters:
-        -----------
-        n_topics : int
-            Number of topics
-        alpha : float
-            Prior for document-topic distributions
-        beta : float
-            Prior for topic-word distributions
-        max_iter : int
-            Maximum number of iterations
-        random_state : int
-            Random seed for reproducibility
-        """
         self.n_topics = n_topics
         self.alpha = alpha
         self.beta = beta
@@ -48,14 +32,14 @@ class LDAModel:
         
     def fit(self, documents, vocabulary=None):
         """
-        Fit LDA model to documents.
+        Fit LDA model to documents
         
         Parameters:
         -----------
         documents : list
             List of document strings
         vocabulary : list, optional
-            Predefined vocabulary
+            Pre-defined vocabulary
             
         Returns:
         --------
@@ -155,21 +139,47 @@ class LDAModel:
             self.theta[doc_idx] = topic_counts / np.sum(topic_counts)
     
     def get_top_words(self, topic_idx, n_words=10):
-        """Get top words for a given topic"""
+        """
+        Get top words for a given topic
+        
+        Parameters:
+        -----------
+        topic_idx : int
+            Topic index
+        n_words : int
+            Number of top words to return
+            
+        Returns:
+        --------
+        top_words : list
+            List of (word, probability) tuples
+        """
         topic_word_probs = self.beta[topic_idx]
         top_word_indices = np.argsort(topic_word_probs)[-n_words:][::-1]
         return [(self.vocabulary[i], topic_word_probs[i]) for i in top_word_indices]
     
     def get_document_topics(self, doc_idx):
-        """Get topic distribution for a given document"""
+        """
+        Get topic distribution for a given document
+        
+        Parameters:
+        -----------
+        doc_idx : int
+            Document index
+            
+        Returns:
+        --------
+        doc_topics : array
+            Topic distribution for the document
+        """
         return self.theta[doc_idx]
 
 def demonstrate_basic_lda():
     """
-    Demonstrate basic LDA model.
+    Demonstrate basic LDA implementation with synthetic data.
     """
     np.random.seed(42)
-
+    
     # Create synthetic documents
     documents = [
         "machine learning artificial intelligence data science",
@@ -183,26 +193,26 @@ def demonstrate_basic_lda():
         "technology innovation startup entrepreneurship",
         "science research discovery experiment laboratory"
     ]
-
+    
     # Fit LDA model
     lda = LDAModel(n_topics=3, alpha=0.1, beta=0.1, max_iter=50)
     lda.fit(documents)
-
+    
     # Display results
     print("Top words for each topic:")
     for topic_idx in range(lda.n_topics):
         top_words = lda.get_top_words(topic_idx, n_words=5)
         print(f"Topic {topic_idx + 1}: {[word for word, prob in top_words]}")
-
+    
     print("\nDocument-topic distributions:")
     for doc_idx in range(min(5, lda.n_docs)):
         doc_topics = lda.get_document_topics(doc_idx)
         print(f"Document {doc_idx + 1}: {doc_topics}")
-
+    
     # Compare with sklearn implementation
     sklearn_lda = LatentDirichletAllocation(n_components=3, random_state=42, max_iter=50)
     sklearn_lda.fit(lda.word_doc_matrix)
-
+    
     print("\nSklearn LDA results:")
     feature_names = lda.vocabulary
     for topic_idx, topic in enumerate(sklearn_lda.components_):
@@ -210,30 +220,14 @@ def demonstrate_basic_lda():
         top_words = [feature_names[i] for i in top_words_idx]
         print(f"Topic {topic_idx + 1}: {top_words}")
     
-    return lda, documents
+    return lda
 
 class VariationalLDA:
     """
-    Variational inference implementation for LDA.
+    LDA implementation using variational inference.
     """
     
     def __init__(self, n_topics=3, alpha=0.1, beta=0.1, max_iter=100, tol=1e-6):
-        """
-        Initialize variational LDA.
-        
-        Parameters:
-        -----------
-        n_topics : int
-            Number of topics
-        alpha : float
-            Prior for document-topic distributions
-        beta : float
-            Prior for topic-word distributions
-        max_iter : int
-            Maximum number of iterations
-        tol : float
-            Convergence tolerance
-        """
         self.n_topics = n_topics
         self.alpha = alpha
         self.beta = beta
@@ -242,7 +236,7 @@ class VariationalLDA:
         
     def fit(self, word_doc_matrix, vocabulary):
         """
-        Fit LDA using variational inference.
+        Fit LDA using variational inference
         
         Parameters:
         -----------
@@ -371,28 +365,25 @@ class VariationalLDA:
             doc_topic_probs[i] = self.gamma[i] / np.sum(self.gamma[i])
         return doc_topic_probs
 
-def demonstrate_variational_lda():
+def demonstrate_variational_lda(lda_model):
     """
-    Demonstrate variational LDA.
+    Demonstrate variational LDA implementation.
     """
-    # Get basic LDA model for comparison
-    lda, documents = demonstrate_basic_lda()
-    
     # Fit variational LDA
     vlda = VariationalLDA(n_topics=3, alpha=0.1, beta=0.1, max_iter=100)
-    vlda.fit(lda.word_doc_matrix, lda.vocabulary)
-
+    vlda.fit(lda_model.word_doc_matrix, lda_model.vocabulary)
+    
     # Get results
     topic_word_probs = vlda.get_topic_word_distributions()
     doc_topic_probs = vlda.get_document_topic_distributions()
-
+    
     print("Variational LDA Results:")
     print("Top words for each topic:")
     for topic_idx in range(vlda.n_topics):
         top_word_indices = np.argsort(topic_word_probs[topic_idx])[-5:][::-1]
         top_words = [vlda.vocabulary[i] for i in top_word_indices]
         print(f"Topic {topic_idx + 1}: {top_words}")
-
+    
     print("\nDocument-topic distributions:")
     for doc_idx in range(min(5, vlda.n_docs)):
         print(f"Document {doc_idx + 1}: {doc_topic_probs[doc_idx]}")
@@ -401,26 +392,10 @@ def demonstrate_variational_lda():
 
 class GibbsSamplingLDA:
     """
-    Gibbs sampling implementation for LDA.
+    LDA implementation using Gibbs sampling.
     """
     
     def __init__(self, n_topics=3, alpha=0.1, beta=0.1, n_iterations=1000, burn_in=100):
-        """
-        Initialize Gibbs sampling LDA.
-        
-        Parameters:
-        -----------
-        n_topics : int
-            Number of topics
-        alpha : float
-            Prior for document-topic distributions
-        beta : float
-            Prior for topic-word distributions
-        n_iterations : int
-            Number of Gibbs sampling iterations
-        burn_in : int
-            Number of burn-in iterations
-        """
         self.n_topics = n_topics
         self.alpha = alpha
         self.beta = beta
@@ -429,7 +404,7 @@ class GibbsSamplingLDA:
         
     def fit(self, word_doc_matrix, vocabulary):
         """
-        Fit LDA using Gibbs sampling.
+        Fit LDA using Gibbs sampling
         
         Parameters:
         -----------
@@ -537,28 +512,39 @@ class GibbsSamplingLDA:
                                      (np.sum(self.n_dk[i]) + self.n_topics * self.alpha)
     
     def get_top_words(self, topic_idx, n_words=10):
-        """Get top words for a given topic"""
+        """
+        Get top words for a given topic
+        
+        Parameters:
+        -----------
+        topic_idx : int
+            Topic index
+        n_words : int
+            Number of top words to return
+            
+        Returns:
+        --------
+        top_words : list
+            List of (word, probability) tuples
+        """
         top_word_indices = np.argsort(self.topic_word_probs[topic_idx])[-n_words:][::-1]
         return [(self.vocabulary[i], self.topic_word_probs[topic_idx, i]) 
                 for i in top_word_indices]
 
-def demonstrate_gibbs_sampling_lda():
+def demonstrate_gibbs_sampling_lda(lda_model):
     """
-    Demonstrate Gibbs sampling LDA.
+    Demonstrate Gibbs sampling LDA implementation.
     """
-    # Get basic LDA model for comparison
-    lda, documents = demonstrate_basic_lda()
-    
     # Fit Gibbs sampling LDA
     gibbs_lda = GibbsSamplingLDA(n_topics=3, alpha=0.1, beta=0.1, n_iterations=500, burn_in=100)
-    gibbs_lda.fit(lda.word_doc_matrix, lda.vocabulary)
-
+    gibbs_lda.fit(lda_model.word_doc_matrix, lda_model.vocabulary)
+    
     print("Gibbs Sampling LDA Results:")
     print("Top words for each topic:")
     for topic_idx in range(gibbs_lda.n_topics):
         top_words = gibbs_lda.get_top_words(topic_idx, n_words=5)
         print(f"Topic {topic_idx + 1}: {[word for word, prob in top_words]}")
-
+    
     print("\nDocument-topic distributions:")
     for doc_idx in range(min(5, gibbs_lda.n_docs)):
         print(f"Document {doc_idx + 1}: {gibbs_lda.doc_topic_probs[doc_idx]}")
@@ -567,7 +553,7 @@ def demonstrate_gibbs_sampling_lda():
 
 def evaluate_lda_models(word_doc_matrix, vocabulary, n_topics_range=[2, 3, 4, 5]):
     """
-    Evaluate LDA models with different numbers of topics.
+    Evaluate LDA models with different numbers of topics
     
     Parameters:
     -----------
@@ -611,7 +597,7 @@ def evaluate_lda_models(word_doc_matrix, vocabulary, n_topics_range=[2, 3, 4, 5]
 
 def compute_topic_coherence(lda_model, vocabulary, n_words=10):
     """
-    Compute topic coherence score.
+    Compute topic coherence score
     
     Parameters:
     -----------
@@ -649,12 +635,14 @@ def compute_topic_coherence(lda_model, vocabulary, n_words=10):
 
 def compute_word_similarity(word1, word2):
     """
-    Compute similarity between two words (simplified).
+    Compute similarity between two words (simplified)
     
     Parameters:
     -----------
-    word1, word2 : str
-        Words to compare
+    word1 : str
+        First word
+    word2 : str
+        Second word
         
     Returns:
     --------
@@ -664,25 +652,22 @@ def compute_word_similarity(word1, word2):
     # In practice, you'd use word embeddings or co-occurrence statistics
     return 0.1  # Placeholder
 
-def demonstrate_model_evaluation():
+def demonstrate_model_evaluation(lda_model):
     """
     Demonstrate LDA model evaluation.
     """
-    # Get basic LDA model
-    lda, documents = demonstrate_basic_lda()
-    
     # Evaluate models
-    evaluation_results = evaluate_lda_models(lda.word_doc_matrix, lda.vocabulary)
-
+    evaluation_results = evaluate_lda_models(lda_model.word_doc_matrix, lda_model.vocabulary)
+    
     print("Model Evaluation Results:")
     for result in evaluation_results:
         print(f"Topics: {result['n_topics']}, "
               f"Perplexity: {result['perplexity']:.2f}, "
               f"Coherence: {result['coherence']:.3f}")
-
+    
     # Plot results
     plt.figure(figsize=(12, 5))
-
+    
     plt.subplot(1, 2, 1)
     n_topics = [r['n_topics'] for r in evaluation_results]
     perplexities = [r['perplexity'] for r in evaluation_results]
@@ -690,14 +675,14 @@ def demonstrate_model_evaluation():
     plt.xlabel('Number of Topics')
     plt.ylabel('Perplexity')
     plt.title('Perplexity vs Number of Topics')
-
+    
     plt.subplot(1, 2, 2)
     coherences = [r['coherence'] for r in evaluation_results]
     plt.plot(n_topics, coherences, 'ro-')
     plt.xlabel('Number of Topics')
     plt.ylabel('Coherence')
     plt.title('Coherence vs Number of Topics')
-
+    
     plt.tight_layout()
     plt.show()
     
@@ -705,7 +690,7 @@ def demonstrate_model_evaluation():
 
 def lda_classification(word_doc_matrix, labels, n_topics=3):
     """
-    Use LDA for document classification.
+    Use LDA for document classification
     
     Parameters:
     -----------
@@ -733,7 +718,7 @@ def lda_classification(word_doc_matrix, labels, n_topics=3):
 
 def temporal_lda(documents, timestamps, n_topics=3, time_windows=5):
     """
-    Simple temporal LDA implementation.
+    Simple temporal LDA implementation
     
     Parameters:
     -----------
@@ -749,7 +734,7 @@ def temporal_lda(documents, timestamps, n_topics=3, time_windows=5):
     Returns:
     --------
     temporal_topics : dict
-        Topics for each time window
+        Dictionary of topics for each time window
     """
     # Group documents by time windows
     time_groups = {}
@@ -778,22 +763,12 @@ class HierarchicalLDA:
     """
     
     def __init__(self, n_topics_per_level=3, n_levels=2):
-        """
-        Initialize hierarchical LDA.
-        
-        Parameters:
-        -----------
-        n_topics_per_level : int
-            Number of topics per level
-        n_levels : int
-            Number of hierarchy levels
-        """
         self.n_topics_per_level = n_topics_per_level
         self.n_levels = n_levels
         
     def fit(self, documents):
         """
-        Fit hierarchical LDA (simplified implementation).
+        Fit hierarchical LDA (simplified implementation)
         
         Parameters:
         -----------
@@ -827,49 +802,57 @@ class HierarchicalLDA:
         
         return self
 
-def demonstrate_applications():
+def demonstrate_applications(lda_model):
     """
     Demonstrate LDA applications.
     """
-    # Get basic LDA model
-    lda, documents = demonstrate_basic_lda()
-    
     # Document classification
-    labels = np.random.randint(0, 2, size=lda.word_doc_matrix.shape[0])
-    classification_score = lda_classification(lda.word_doc_matrix, labels)
+    labels = np.random.randint(0, 2, size=lda_model.word_doc_matrix.shape[0])
+    classification_score = lda_classification(lda_model.word_doc_matrix, labels)
     print(f"Classification accuracy: {classification_score:.3f}")
     
-    # Temporal LDA
-    timestamps = np.random.randint(0, 10, size=len(documents))
+    # Temporal LDA (with synthetic timestamps)
+    documents = [
+        "machine learning artificial intelligence data science",
+        "machine learning algorithms neural networks deep learning",
+        "artificial intelligence robotics automation technology",
+        "data science statistics analysis visualization",
+        "business finance economics market investment",
+        "business strategy management leadership",
+        "finance banking stocks bonds investment",
+        "technology software programming coding",
+        "technology innovation startup entrepreneurship",
+        "science research discovery experiment laboratory"
+    ]
+    timestamps = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4]
+    
     temporal_topics = temporal_lda(documents, timestamps)
-    print(f"Temporal topics computed for {len(temporal_topics)} time windows")
+    print(f"Temporal LDA fitted for {len(temporal_topics)} time windows")
     
     # Hierarchical LDA
-    hlda = HierarchicalLDA(n_topics_per_level=3, n_levels=2)
+    hlda = HierarchicalLDA(n_topics_per_level=2, n_levels=2)
     hlda.fit(documents)
     print(f"Hierarchical LDA fitted with {len(hlda.level_topics)} levels")
-    
-    return classification_score, temporal_topics, hlda
 
 if __name__ == "__main__":
     print("Demonstrating LDA Implementation...")
     
-    # Basic LDA demonstration
-    print("\n1. Basic LDA Model")
-    lda, documents = demonstrate_basic_lda()
+    # Basic LDA
+    print("\n1. Basic LDA Implementation")
+    lda_model = demonstrate_basic_lda()
     
-    # Variational LDA demonstration
-    print("\n2. Variational LDA")
-    vlda = demonstrate_variational_lda()
+    # Variational LDA
+    print("\n2. Variational LDA Implementation")
+    vlda_model = demonstrate_variational_lda(lda_model)
     
-    # Gibbs sampling LDA demonstration
-    print("\n3. Gibbs Sampling LDA")
-    gibbs_lda = demonstrate_gibbs_sampling_lda()
+    # Gibbs Sampling LDA
+    print("\n3. Gibbs Sampling LDA Implementation")
+    gibbs_model = demonstrate_gibbs_sampling_lda(lda_model)
     
-    # Model evaluation demonstration
+    # Model Evaluation
     print("\n4. Model Evaluation")
-    evaluation_results = demonstrate_model_evaluation()
+    evaluation_results = demonstrate_model_evaluation(lda_model)
     
-    # Applications demonstration
+    # Applications
     print("\n5. LDA Applications")
-    classification_score, temporal_topics, hlda = demonstrate_applications()
+    demonstrate_applications(lda_model)
