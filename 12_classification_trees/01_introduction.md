@@ -208,3 +208,9 @@ Key insights:
 - **Tree structure** provides interpretability
 
 This foundation sets the stage for more advanced tree-based methods like random forests and gradient boosting, which address many of the limitations of single classification trees.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Impurity Measures](02_impurity_measures.md) - Mathematical foundations and properties of impurity measures for classification
+- **Previous Topic:** [Classification Trees Overview](README.md) - Overview of classification trees and boosting algorithms
