@@ -249,87 +249,17 @@ See the implementation in `code/discriminant_analysis_implementation.py` for the
 | **LDA** | Shared covariance | Linear | $`O(p^2)`$ |
 | **Naive Bayes** | Feature independence | Piecewise linear | $`O(p)`$ |
 
-### Practical Comparison
+The comprehensive model comparison implementation provides systematic evaluation of different discriminant analysis methods, including both custom implementations and scikit-learn equivalents. The comparison framework evaluates multiple performance metrics and computational efficiency.
 
-```python
-def comprehensive_model_comparison(X_train, y_train, X_test, y_test):
-    """Comprehensive comparison of discriminant analysis methods"""
-    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as SklearnLDA
-    from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as SklearnQDA
-    from sklearn.naive_bayes import GaussianNB
-    from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-    import time
-    
-    models = {
-        'Our QDA': QuadraticDiscriminantAnalysis(),
-        'Our LDA': LinearDiscriminantAnalysis(),
-        'Our Naive Bayes': GaussianNaiveBayes(),
-        'Sklearn LDA': SklearnLDA(),
-        'Sklearn QDA': SklearnQDA(),
-        'Sklearn Naive Bayes': GaussianNB()
-    }
-    
-    results = {}
-    
-    for name, model in models.items():
-        # Time the fitting
-        start_time = time.time()
-        model.fit(X_train, y_train)
-        fit_time = time.time() - start_time
-        
-        # Make predictions
-        start_time = time.time()
-        y_pred = model.predict(X_test)
-        predict_time = time.time() - start_time
-        
-        # Compute metrics
-        accuracy = accuracy_score(y_test, y_pred)
-        precision = precision_score(y_test, y_pred, average='weighted')
-        recall = recall_score(y_test, y_pred, average='weighted')
-        f1 = f1_score(y_test, y_pred, average='weighted')
-        
-        results[name] = {
-            'accuracy': accuracy,
-            'precision': precision,
-            'recall': recall,
-            'f1': f1,
-            'fit_time': fit_time,
-            'predict_time': predict_time
-        }
-    
-    # Create comparison table
-    df_results = pd.DataFrame(results).T
-    print("Model Comparison Results:")
-    print(df_results.round(4))
-    
-    return results, df_results
+**Key Functions:**
+- `comprehensive_model_comparison()`: Compare multiple discriminant analysis methods
+- `demonstrate_model_comparison()`: Complete demonstration with visualization
+- Evaluates accuracy, precision, recall, F1-score, fit time, and prediction time
+- Compares custom implementations with scikit-learn equivalents
 
-# Run comprehensive comparison
-results, df_results = comprehensive_model_comparison(X_train, y_train, X_test, y_test)
+The comparison provides insights into the relative performance of different discriminant analysis approaches and helps guide model selection decisions.
 
-# Visualize results
-fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-metrics = ['accuracy', 'precision', 'recall', 'f1']
-
-for i, metric in enumerate(metrics):
-    ax = axes[i//2, i%2]
-    values = [results[name][metric] for name in results.keys()]
-    names = list(results.keys())
-    
-    bars = ax.bar(range(len(values)), values, alpha=0.8)
-    ax.set_title(f'{metric.capitalize()} Comparison')
-    ax.set_ylabel(metric.capitalize())
-    ax.set_xticks(range(len(names)))
-    ax.set_xticklabels(names, rotation=45, ha='right')
-    
-    # Add value labels on bars
-    for bar, value in zip(bars, values):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                f'{value:.3f}', ha='center', va='bottom')
-
-plt.tight_layout()
-plt.show()
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete model comparison workflow.
 
 ## 9.2.8. Practical Considerations
 
