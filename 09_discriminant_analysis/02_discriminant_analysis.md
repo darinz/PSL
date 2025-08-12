@@ -226,111 +226,18 @@ The optimal projection vector is the eigenvector corresponding to the largest ei
 S_W^{-1} S_B w = \lambda w
 ```
 
-### Implementation: FDA
+The Fisher's Discriminant Analysis implementation provides dimensionality reduction by finding optimal linear projections that maximize between-class variance while minimizing within-class variance. The `FishersDiscriminantAnalysis` class implements the complete FDA algorithm.
 
-```python
-class FishersDiscriminantAnalysis:
-    """Fisher's Discriminant Analysis"""
-    
-    def __init__(self, n_components=None):
-        self.n_components = n_components
-        self.eigenvalues_ = None
-        self.eigenvectors_ = None
-        self.explained_variance_ratio_ = None
-    
-    def fit(self, X, y):
-        """Fit FDA"""
-        n_samples, n_features = X.shape
-        classes = np.unique(y)
-        n_classes = len(classes)
-        
-        # Compute overall mean
-        overall_mean = np.mean(X, axis=0)
-        
-        # Compute class means
-        class_means = np.zeros((n_classes, n_features))
-        for i, k in enumerate(classes):
-            class_means[i] = np.mean(X[y == k], axis=0)
-        
-        # Compute between-class scatter matrix
-        S_B = np.zeros((n_features, n_features))
-        for i, k in enumerate(classes):
-            n_k = np.sum(y == k)
-            diff = class_means[i] - overall_mean
-            S_B += n_k * np.outer(diff, diff)
-        
-        # Compute within-class scatter matrix
-        S_W = np.zeros((n_features, n_features))
-        for i, k in enumerate(classes):
-            X_k = X[y == k]
-            diff = X_k - class_means[i]
-            S_W += diff.T @ diff
-        
-        # Solve generalized eigenvalue problem
-        eigenvals, eigenvecs = np.linalg.eigh(np.linalg.inv(S_W) @ S_B)
-        
-        # Sort eigenvalues and eigenvectors in descending order
-        idx = np.argsort(eigenvals)[::-1]
-        eigenvals = eigenvals[idx]
-        eigenvecs = eigenvecs[:, idx]
-        
-        # Store results
-        self.eigenvalues_ = eigenvals
-        self.eigenvectors_ = eigenvecs
-        
-        # Determine number of components
-        if self.n_components is None:
-            self.n_components = min(n_classes - 1, n_features)
-        
-        # Compute explained variance ratio
-        self.explained_variance_ratio_ = eigenvals[:self.n_components] / np.sum(eigenvals)
-        
-        return self
-    
-    def transform(self, X):
-        """Transform data using FDA projection"""
-        return X @ self.eigenvectors_[:, :self.n_components]
-    
-    def fit_transform(self, X, y):
-        """Fit FDA and transform data"""
-        return self.fit(X, y).transform(X)
+**Key Functions:**
+- `FishersDiscriminantAnalysis.__init__()`: Initialize FDA with number of components
+- `FishersDiscriminantAnalysis.fit()`: Fit FDA by computing scatter matrices and solving eigenvalue problem
+- `FishersDiscriminantAnalysis.transform()`: Transform data using FDA projection
+- `FishersDiscriminantAnalysis.fit_transform()`: Fit FDA and transform data in one step
+- `demonstrate_fda()`: Complete demonstration with visualization and LDA application
 
-# Apply FDA for dimensionality reduction
-fda = FishersDiscriminantAnalysis(n_components=2)
-X_train_fda = fda.fit_transform(X_train, y_train)
-X_test_fda = fda.transform(X_test)
+FDA is particularly useful for dimensionality reduction in classification problems, providing optimal projections that preserve class separability.
 
-print("FDA Results:")
-print(f"Explained variance ratio: {fda.explained_variance_ratio_}")
-print(f"Eigenvalues: {fda.eigenvalues_[:2]}")
-
-# Visualize FDA projection
-plt.figure(figsize=(12, 5))
-
-# Original data
-plt.subplot(1, 2, 1)
-plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, alpha=0.8, edgecolors='k')
-plt.title('Original Data')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-
-# FDA projection
-plt.subplot(1, 2, 2)
-plt.scatter(X_test_fda[:, 0], X_test_fda[:, 1], c=y_test, alpha=0.8, edgecolors='k')
-plt.title('FDA Projection')
-plt.xlabel('First Discriminant')
-plt.ylabel('Second Discriminant')
-
-plt.tight_layout()
-plt.show()
-
-# Apply LDA on FDA-transformed data
-lda_fda = LinearDiscriminantAnalysis()
-lda_fda.fit(X_train_fda, y_train)
-fda_lda_accuracy = lda_fda.score(X_test_fda, y_test)
-
-print(f"LDA on FDA-transformed data accuracy: {fda_lda_accuracy:.3f}")
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete FDA workflow.
 
 ## 9.2.7. Model Comparison and Selection
 
