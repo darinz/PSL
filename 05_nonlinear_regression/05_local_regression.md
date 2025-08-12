@@ -168,49 +168,16 @@ Key features:
 
 ## 5.5.5. Model Diagnostics
 
-```python
-def local_regression_diagnostics(model, X, y):
-    """
-    Comprehensive diagnostics for local regression
-    """
-    y_pred = model.predict(X)
-    residuals = y - y_pred
-    
-    # Create diagnostic plots
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    # Residuals vs Fitted
-    axes[0, 0].scatter(y_pred, residuals, alpha=0.6)
-    axes[0, 0].axhline(y=0, color='r', linestyle='--')
-    axes[0, 0].set_xlabel('Fitted Values')
-    axes[0, 0].set_ylabel('Residuals')
-    axes[0, 0].set_title('Residuals vs Fitted')
-    axes[0, 0].grid(True, alpha=0.3)
-    
-    # Q-Q Plot
-    stats.probplot(residuals, dist="norm", plot=axes[0, 1])
-    axes[0, 1].set_title('Q-Q Plot of Residuals')
-    
-    # Residuals vs Predictor
-    axes[1, 0].scatter(X, residuals, alpha=0.6)
-    axes[1, 0].axhline(y=0, color='r', linestyle='--')
-    axes[1, 0].set_xlabel('X')
-    axes[1, 0].set_ylabel('Residuals')
-    axes[1, 0].set_title('Residuals vs X')
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    # Histogram of residuals
-    axes[1, 1].hist(residuals, bins=20, alpha=0.7, edgecolor='black')
-    axes[1, 1].set_xlabel('Residuals')
-    axes[1, 1].set_ylabel('Frequency')
-    axes[1, 1].set_title('Histogram of Residuals')
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return residuals
-```
+**Implementation:** [advanced_local_utilities.py](code/advanced_local_utilities.py) - `local_regression_diagnostics()`
+
+The comprehensive diagnostics function provides:
+
+- **Residuals vs Fitted**: Assessment of model fit and homoscedasticity
+- **Q-Q Plot**: Normality assessment of residuals
+- **Residuals vs Predictor**: Detection of systematic patterns
+- **Histogram of Residuals**: Distribution analysis
+
+The diagnostics help assess model assumptions, identify potential issues, and understand the local regression behavior across the data range.
 
 ## Summary
 
@@ -230,6 +197,28 @@ The method is particularly useful for:
 - Exploratory data analysis
 
 Local regression provides a good balance between flexibility and interpretability, making it a valuable tool in the nonparametric regression toolkit.
+
+## Code Files Summary
+
+The following code files contain the complete implementations for local regression:
+
+### Python Files
+- **[local_regression_implementation.py](code/local_regression_implementation.py)**: Main implementation with LocalRegression class, cross-validation, and comprehensive demonstrations
+- **[advanced_local_utilities.py](code/advanced_local_utilities.py)**: Advanced utilities including confidence intervals, adaptive bandwidth, and diagnostics
+
+### R Files
+- **[r_local_regression.R](code/r_local_regression.R)**: Complete R implementation with ggplot2 visualizations, cross-validation, and model comparison
+
+### Key Features Implemented
+- **LocalRegression Class**: Complete local regression implementation with multiple kernel functions and robust fitting
+- **Kernel Functions**: Tricube, Gaussian, and Epanechnikov kernels with efficient weight computation
+- **Bandwidth Selection**: Nearest neighbor bandwidth with automatic computation and cross-validation
+- **Robust Fitting**: LOWESS algorithm with iterative robust weight computation
+- **Confidence Intervals**: Bootstrap-based prediction uncertainty quantification
+- **Adaptive Bandwidth**: Variable bandwidth selection using pilot estimates
+- **Comprehensive Diagnostics**: 4-panel diagnostic suite including residuals, Q-Q plots, and model summary
+- **Outlier Analysis**: Comparison of standard and robust local regression on data with outliers
+- **Visualization**: Publication-quality plots and demonstrations
 
 ## References
 
