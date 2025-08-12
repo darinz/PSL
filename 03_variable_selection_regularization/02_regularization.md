@@ -333,3 +333,9 @@ For model comparison, consider:
 ## Summary
 
 Regularization provides a powerful framework for addressing the bias-variance tradeoff in statistical learning. Ridge regression offers stability and handles multicollinearity, while lasso provides automatic variable selection and sparsity. The choice between methods depends on the specific problem context, goals, and data characteristics. Proper implementation requires careful attention to data preprocessing, parameter selection, and model validation.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Ridge Regression](03_ridge_regression.md) - L2 regularization and coefficient shrinkage
+- **Previous Topic:** [Subset Selection](01_subset_selection.md) - Understanding variable selection and model complexity
