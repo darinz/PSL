@@ -247,57 +247,18 @@ See the implementation in `code/hmm_implementation.py` for the complete gene fin
 
 ### Continuous HMMs
 
-For continuous observations, we can use Gaussian emissions:
+For continuous observations, we can use Gaussian emissions. The `GaussianHMM` class extends HMMs to handle continuous data using multivariate Gaussian distributions.
 
-```python
-from scipy.stats import multivariate_normal
+**Key Functions:**
+- `GaussianHMM.__init__()`: Initialize with number of states and features
+- `GaussianHMM.initialize_parameters()`: Initialize parameters including Gaussian means and covariances
+- `GaussianHMM.emission_probability()`: Compute emission probability for continuous observations
+- `GaussianHMM.fit()`: Fit Gaussian HMM using EM algorithm
+- `demonstrate_gaussian_hmm()`: Complete demonstration with synthetic data
 
-class GaussianHMM:
-    def __init__(self, n_states, n_features):
-        self.n_states = n_states
-        self.n_features = n_features
-        
-    def initialize_parameters(self):
-        """Initialize parameters for Gaussian HMM"""
-        self.pi = np.random.dirichlet(np.ones(self.n_states))
-        self.A = np.random.dirichlet(np.ones(self.n_states), size=self.n_states)
-        
-        # Gaussian parameters
-        self.means = np.random.randn(self.n_states, self.n_features)
-        self.covs = np.array([np.eye(self.n_features) for _ in range(self.n_states)])
-        
-    def emission_probability(self, observation, state):
-        """Compute emission probability for continuous observation"""
-        return multivariate_normal.pdf(observation, self.means[state], self.covs[state])
-    
-    def fit(self, observations, max_iter=100):
-        """Fit Gaussian HMM using EM"""
-        self.initialize_parameters()
-        
-        for iteration in range(max_iter):
-            # E-step and M-step (simplified)
-            if iteration % 10 == 0:
-                print(f"Iteration {iteration}")
-        
-        return self
+The implementation shows how HMMs can be extended to handle continuous observations, which is essential for many real-world applications such as financial time series, sensor data, and signal processing.
 
-# Example usage
-np.random.seed(42)
-n_samples = 1000
-n_features = 2
-
-# Generate data from two Gaussian components
-data = np.vstack([
-    np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 1]], n_samples//2),
-    np.random.multivariate_normal([3, 3], [[1, -0.5], [-0.5, 1]], n_samples//2)
-])
-
-# Fit Gaussian HMM
-gaussian_hmm = GaussianHMM(n_states=2, n_features=2)
-gaussian_hmm.fit(data)
-
-print("Gaussian HMM fitted successfully!")
-```
+See the implementation in `code/hmm_implementation.py` for the complete Gaussian HMM workflow.
 
 This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of HMMs and their algorithms. The code examples demonstrate both the theoretical concepts and their practical application in various domains.
 
