@@ -267,16 +267,13 @@ The diagnostics help assess model assumptions, identify influential observations
 
 ## Summary
 
-Smoothing splines provide an elegant solution to the knot selection problem through:
+Smoothing splines provide an elegant solution to the bias-variance tradeoff in nonlinear regression, automatically determining the optimal level of smoothness through penalized likelihood optimization.
 
-1. **Automatic Knot Placement**: Knots at every unique data point
-2. **Roughness Penalty**: Controls smoothness via integrated squared second derivative
-3. **Finite-Dimensional Solution**: Infinite-dimensional problem reduces to ridge regression
-4. **Effective Degrees of Freedom**: Measures model complexity
-5. **Cross-Validation**: Automatic selection of smoothing parameter
-6. **Theoretical Foundation**: Optimal solution is a natural cubic spline
+---
 
-The mathematical framework ensures optimal estimation, while the computational implementation provides both efficiency and interpretability. Smoothing splines eliminate the arbitrariness of knot selection while maintaining flexibility and smoothness.
+**Navigation:**
+- **Next Topic:** [Local Regression](05_local_regression.md) - Locally weighted polynomial regression
+- **Previous Topic:** [Regression Splines](03_regression_splines.md) - Basis function approach to spline modeling
 
 ## Code Files Summary
 
