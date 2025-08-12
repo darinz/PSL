@@ -694,42 +694,7 @@ Errors have constant variance across all values of predictors.
 
 **Python Example: Linearity Check**
 
-```python
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.linear_model import LinearRegression
-
-# Generate data with nonlinear relationship
-np.random.seed(42)
-X = np.random.uniform(0, 10, 100)
-y = 2 + 0.5 * X + 0.1 * X**2 + np.random.normal(0, 0.5, 100)
-
-# Fit linear model
-model = LinearRegression()
-model.fit(X.reshape(-1, 1), y)
-y_pred = model.predict(X.reshape(-1, 1))
-residuals = y - y_pred
-
-# Plot residuals vs fitted values
-plt.figure(figsize=(12, 4))
-
-plt.subplot(1, 2, 1)
-plt.scatter(y_pred, residuals)
-plt.axhline(y=0, color='r', linestyle='--')
-plt.xlabel('Fitted Values')
-plt.ylabel('Residuals')
-plt.title('Residuals vs Fitted Values')
-
-plt.subplot(1, 2, 2)
-plt.scatter(X, residuals)
-plt.axhline(y=0, color='r', linestyle='--')
-plt.xlabel('X')
-plt.ylabel('Residuals')
-plt.title('Residuals vs X')
-
-plt.tight_layout()
-plt.show()
-```
+Linearity assumption checking is included in [`code/model_assumptions_diagnostics.py`](code/model_assumptions_diagnostics.py) which provides comprehensive diagnostic plots and tests for all model assumptions.
 
 **2. Normality:**
 - Q-Q plot of residuals
@@ -738,32 +703,7 @@ plt.show()
 
 **Python Example: Normality Check**
 
-```python
-from scipy import stats
-import matplotlib.pyplot as plt
-
-# Q-Q plot
-plt.figure(figsize=(12, 4))
-
-plt.subplot(1, 2, 1)
-stats.probplot(residuals, dist="norm", plot=plt)
-plt.title('Q-Q Plot of Residuals')
-
-plt.subplot(1, 2, 2)
-plt.hist(residuals, bins=20, density=True, alpha=0.7)
-x = np.linspace(residuals.min(), residuals.max(), 100)
-plt.plot(x, stats.norm.pdf(x, residuals.mean(), residuals.std()), 'r-')
-plt.title('Histogram of Residuals')
-plt.xlabel('Residuals')
-plt.ylabel('Density')
-
-plt.tight_layout()
-plt.show()
-
-# Shapiro-Wilk test
-statistic, p_value = stats.shapiro(residuals)
-print(f"Shapiro-Wilk test: statistic = {statistic:.3f}, p-value = {p_value:.3f}")
-```
+Normality assumption checking is included in [`code/model_assumptions_diagnostics.py`](code/model_assumptions_diagnostics.py) which provides Q-Q plots, histograms, and statistical tests for normality.
 
 **3. Homoscedasticity:**
 - Plot residuals vs. fitted values
@@ -799,65 +739,7 @@ D_i = \frac{(\hat{\beta} - \hat{\beta}_{(i)})^T (X^T X) (\hat{\beta} - \hat{\bet
 
 **Python Example: Outlier Detection**
 
-```python
-import numpy as np
-from sklearn.linear_model import LinearRegression
-
-def calculate_leverage(X):
-    """Calculate leverage (hat values)"""
-    H = X @ np.linalg.inv(X.T @ X) @ X.T
-    return np.diag(H)
-
-def calculate_cooks_distance(X, y, model):
-    """Calculate Cook's distance for each observation"""
-    n = len(y)
-    p = X.shape[1]
-    residuals = y - model.predict(X)
-    mse = np.sum(residuals**2) / (n - p - 1)
-    
-    cooks_d = []
-    for i in range(n):
-        # Remove observation i
-        X_i = np.delete(X, i, axis=0)
-        y_i = np.delete(y, i)
-        
-        # Fit model without observation i
-        model_i = LinearRegression()
-        model_i.fit(X_i, y_i)
-        
-        # Calculate Cook's distance
-        beta_diff = model.coef_ - model_i.coef_
-        cooks_d_i = (beta_diff @ X.T @ X @ beta_diff) / ((p + 1) * mse)
-        cooks_d.append(cooks_d_i)
-    
-    return np.array(cooks_d)
-
-# Example with outliers
-np.random.seed(42)
-X = np.random.normal(0, 1, (50, 2))
-y = 2 + 1.5 * X[:, 0] - 0.8 * X[:, 1] + np.random.normal(0, 0.5, 50)
-
-# Add an outlier
-X[0] = [10, 10]  # High leverage point
-y[0] = 50        # Large residual
-
-# Add intercept
-X_with_intercept = np.column_stack([np.ones(len(X)), X])
-
-# Calculate diagnostics
-leverage = calculate_leverage(X_with_intercept)
-model = LinearRegression()
-model.fit(X, y)
-cooks_d = calculate_cooks_distance(X_with_intercept, y, model)
-
-print("Leverage values:")
-for i, lev in enumerate(leverage[:5]):
-    print(f"Observation {i+1}: {lev:.3f}")
-
-print("\nCook's distance:")
-for i, cd in enumerate(cooks_d[:5]):
-    print(f"Observation {i+1}: {cd:.3f}")
-```
+Outlier detection and analysis is included in [`code/model_assumptions_diagnostics.py`](code/model_assumptions_diagnostics.py) which provides comprehensive outlier detection using leverage, Cook's distance, and standardized residuals.
 
 ### Practical Recommendations
 
