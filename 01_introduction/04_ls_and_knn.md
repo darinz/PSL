@@ -681,3 +681,9 @@ See the complete implementation in [`code/performance_comparison.py`](code/perfo
    - kNN should outperform linear regression
 
 This simulation study will provide concrete evidence of the bias-variance tradeoff and help us understand the strengths and limitations of each method. The results will demonstrate when each algorithm is most appropriate and how to choose optimal parameters for different types of data.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Bayes Rule](05_bayes_rule.md) - Understanding Bayesian decision theory and optimal classification
+- **Previous Topic:** [Bias and Variance Tradeoff](03_bias_variance.md) - Understanding the fundamental tradeoff between model complexity and generalization
