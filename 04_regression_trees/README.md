@@ -243,4 +243,10 @@ The code examples include comprehensive visualizations:
 
 ## Contributing
 
-Feel free to contribute improvements to the code examples or documentation. This module is designed to be a comprehensive resource for learning tree-based regression methods in statistical learning. 
+Feel free to contribute improvements to the code examples or documentation. This module is designed to be a comprehensive resource for learning tree-based regression methods in statistical learning.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Regression Trees](01_regression_trees.md) - Understanding tree structure and recursive binary splitting
+- **Previous Section:** [Nonlinear Regression](../05_nonlinear_regression/README.md) - Overview of nonlinear regression methods and applications 
