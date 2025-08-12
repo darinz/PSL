@@ -259,6 +259,14 @@ Cubic splines provide a flexible and powerful approach to nonlinear regression t
 
 The mathematical foundations ensure optimal smoothness, while the algorithmic design provides both computational efficiency and interpretability. Cubic splines address many limitations of polynomial regression while maintaining local flexibility.
 
+Cubic splines provide a flexible framework for modeling complex nonlinear relationships while maintaining smoothness and avoiding the overfitting issues of high-degree polynomials.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Regression Splines](03_regression_splines.md) - Basis function approach to spline modeling
+- **Previous Topic:** [Polynomial Regression](01_polynomial_regression.md) - Extending linear models with polynomial terms
+
 ## Code Files Summary
 
 The following code files provide complete implementations of the concepts discussed in this chapter:
