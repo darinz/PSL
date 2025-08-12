@@ -144,4 +144,10 @@ This module is based on classical statistical learning theory and modern machine
 
 ---
 
-*For questions or contributions, please refer to the main course documentation or contact the course instructors.* 
+*For questions or contributions, please refer to the main course documentation or contact the course instructors.*
+
+---
+
+**Navigation:**
+- **Start Learning:** [Introduction to Support Vector Machines](01_introduction.md) - SVM motivation, linear separable case, duality, and kernel trick
+- **Previous Section:** [Classification Trees and Boosting](../12_classification_trees/README.md) - Overview of classification trees and ensemble methods 
