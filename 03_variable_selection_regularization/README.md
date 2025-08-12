@@ -165,4 +165,10 @@ The code examples include comprehensive visualizations:
 
 ## Contributing
 
-Feel free to contribute improvements to the code examples or documentation. This module is designed to be a comprehensive resource for learning variable selection and regularization techniques in statistical learning. 
+Feel free to contribute improvements to the code examples or documentation. This module is designed to be a comprehensive resource for learning variable selection and regularization techniques in statistical learning.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Subset Selection](01_subset_selection.md) - Understanding variable selection and model complexity
+- **Previous Section:** [Linear Regression](../02_linear_regression/README.md) - Foundation of statistical learning with linear models 
