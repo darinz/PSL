@@ -291,3 +291,9 @@ Each file includes comprehensive examples, demonstrations, and analysis tools to
 - Breiman, L. (2001). Random forests. Machine learning, 45(1), 5-32.
 - Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: data mining, inference, and prediction. Springer Science & Business Media.
 - Liaw, A., & Wiener, M. (2002). Classification and regression by randomForest. R news, 2(3), 18-22.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Gradient Boosting Machines](03_gbm.md) - Sequential ensemble learning with gradient descent
+- **Previous Topic:** [Regression Trees](01_regression_trees.md) - Understanding tree structure and recursive binary splitting
