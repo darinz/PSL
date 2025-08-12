@@ -282,24 +282,40 @@ See the implementation in `code/discriminant_analysis_implementation.py` for the
 
 ### Regularization and Robustness
 
-```python
-def regularized_lda(X_train, y_train, X_test, y_test, alpha=0.1):
-    """Regularized LDA with shrinkage"""
-    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-    
-    # Regularized LDA with shrinkage
-    lda_reg = LinearDiscriminantAnalysis(solver='lsqr', shrinkage=alpha)
-    lda_reg.fit(X_train, y_train)
-    
-    accuracy = lda_reg.score(X_test, y_test)
-    print(f"Regularized LDA (α={alpha}) accuracy: {accuracy:.3f}")
-    
-    return lda_reg
+The regularization implementation provides techniques to improve LDA performance in high-dimensional settings where the covariance matrix may be ill-conditioned. Regularization helps stabilize parameter estimation and improve generalization.
 
-# Test regularization
-regularized_lda(X_train, y_train, X_test, y_test, alpha=0.1)
-regularized_lda(X_train, y_train, X_test, y_test, alpha=0.5)
-regularized_lda(X_train, y_train, X_test, y_test, alpha=0.9)
-```
+**Key Functions:**
+- `regularized_lda()`: Implement LDA with shrinkage regularization
+- `demonstrate_regularization()`: Complete demonstration with different regularization levels
+- Uses scikit-learn's LDA with shrinkage parameter for robust estimation
 
-This comprehensive expansion provides detailed mathematical foundations, practical implementations, and clear explanations of discriminant analysis methods. The code examples demonstrate both theoretical concepts and their practical application, including visualization, evaluation, and comparison of different approaches.
+Regularization is particularly important when the number of features is large relative to the sample size, helping to prevent overfitting and improve model stability.
+
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete regularization workflow.
+
+---
+
+## Code Files Summary
+
+The discriminant analysis concepts have been implemented in the following code files:
+
+### Python Implementation (`code/discriminant_analysis_implementation.py`)
+- **Bayes Classifier Framework**: `BayesClassifier` base class with core functionality
+- **Quadratic Discriminant Analysis**: `QuadraticDiscriminantAnalysis` class with class-specific covariances
+- **Linear Discriminant Analysis**: `LinearDiscriminantAnalysis` class with shared covariance
+- **Gaussian Naive Bayes**: `GaussianNaiveBayes` class with feature independence assumption
+- **Fisher's Discriminant Analysis**: `FishersDiscriminantAnalysis` class for dimensionality reduction
+- **Model Comparison**: Comprehensive evaluation framework with multiple metrics
+- **Regularization**: LDA with shrinkage for robust estimation
+- **Demonstration Functions**: Complete workflows for each method and comparison
+
+### R Implementation (`code/r_discriminant_analysis_implementation.R`)
+- **Bayes Classifier Framework**: Conceptual framework for R implementations
+- **QDA, LDA, Naive Bayes**: Model fitting functions using established R packages
+- **Fisher's Discriminant Analysis**: FDA implementation using MASS package
+- **Visualization**: Decision boundary plotting and FDA projection visualization
+- **Model Comparison**: Comprehensive comparison framework in R
+- **Regularization**: Regularized LDA with shrinkage parameter
+- **Demonstration Functions**: Complete workflows for each method
+
+Both implementations provide comprehensive coverage of discriminant analysis concepts with practical examples and demonstrate the relationship between theoretical foundations and practical applications in classification problems.
