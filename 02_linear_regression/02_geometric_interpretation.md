@@ -601,3 +601,9 @@ Throughout this document, we've implemented comprehensive Python code examples:
 - **Advanced diagnostics** including leverage and influence measures: [`code/advanced_diagnostics.py`](code/advanced_diagnostics.py)
 
 This comprehensive geometric understanding provides the foundation for mastering linear regression and understanding more advanced statistical learning methods.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Practical Issues](03_practical_issues.md) - Real-world implementation considerations and best practices
+- **Previous Topic:** [Multiple Linear Regression](01_mulitple_linear_regression.md) - Core concepts and mathematical foundations
