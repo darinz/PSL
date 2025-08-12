@@ -160,4 +160,10 @@ The materials reference concepts from:
 
 ## Contributing
 
-This material is part of a comprehensive statistical learning course. For questions or suggestions, please refer to the main course documentation. 
+This material is part of a comprehensive statistical learning course. For questions or suggestions, please refer to the main course documentation.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Multiple Linear Regression](01_mulitple_linear_regression.md) - Core concepts and mathematical foundations
+- **Previous Section:** [Introduction to Statistical Learning](../01_introduction/README.md) - Overview of supervised vs unsupervised learning 
