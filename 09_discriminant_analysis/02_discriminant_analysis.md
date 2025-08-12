@@ -192,67 +192,16 @@ The decision function becomes:
 \delta_k(x) = \log \pi_k + \sum_{j=1}^p \log f_{kj}(x_j)
 ```
 
-### Implementation: Gaussian Naive Bayes
+The Gaussian Naive Bayes implementation extends the Bayes Classifier framework to assume conditional independence of features given the class. The `GaussianNaiveBayes` class implements the complete naive Bayes algorithm with independent Gaussian distributions.
 
-```python
-class GaussianNaiveBayes(BayesClassifier):
-    """Gaussian Naive Bayes classifier"""
-    
-    def _fit_conditional_densities(self, X, y):
-        """Fit independent Gaussian densities for each feature and class"""
-        n_classes = len(self.classes_)
-        n_features = X.shape[1]
-        
-        self.means_ = np.zeros((n_classes, n_features))
-        self.variances_ = np.zeros((n_classes, n_features))
-        self.conditional_densities_ = []
-        
-        for i, k in enumerate(self.classes_):
-            X_k = X[y == k]
-            
-            # Estimate means and variances for each feature
-            self.means_[i] = np.mean(X_k, axis=0)
-            self.variances_[i] = np.var(X_k, axis=0, ddof=1)
-            
-            # Create independent Gaussian distributions
-            density = multivariate_normal(
-                mean=self.means_[i],
-                cov=np.diag(self.variances_[i])  # Diagonal covariance matrix
-            )
-            self.conditional_densities_.append(density)
-    
-    def decision_function(self, X):
-        """Compute naive Bayes decision function values"""
-        n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        decisions = np.zeros((n_samples, n_classes))
-        
-        for i, k in enumerate(self.classes_):
-            # Compute log-likelihood for each feature independently
-            log_likelihood = 0
-            for j in range(X.shape[1]):
-                # Log density of univariate Gaussian
-                diff = X[:, j] - self.means_[i, j]
-                log_likelihood += (-0.5 * np.log(2 * np.pi * self.variances_[i, j]) - 
-                                  0.5 * diff**2 / self.variances_[i, j])
-            
-            decisions[:, i] = log_likelihood + np.log(self.priors_[i])
-        
-        return decisions
+**Key Functions:**
+- `GaussianNaiveBayes._fit_conditional_densities()`: Fit independent Gaussian densities for each feature
+- `GaussianNaiveBayes.decision_function()`: Compute naive Bayes decision function values
+- `demonstrate_naive_bayes()`: Complete demonstration with model fitting and evaluation
 
-# Fit Gaussian Naive Bayes
-gnb = GaussianNaiveBayes()
-gnb.fit(X_train, y_train)
+Naive Bayes is particularly effective when features are approximately independent given the class, providing fast and often surprisingly accurate predictions even with the independence assumption.
 
-# Make predictions
-gnb_predictions = gnb.predict(X_test)
-gnb_probabilities = gnb.predict_proba(X_test)
-
-print("Gaussian Naive Bayes Results:")
-print(f"Accuracy: {gnb.score(X_test, y_test):.3f}")
-print("\nClassification Report:")
-print(classification_report(y_test, gnb_predictions))
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete Gaussian Naive Bayes workflow.
 
 ## 9.2.6. Fisher's Discriminant Analysis (FDA)
 
