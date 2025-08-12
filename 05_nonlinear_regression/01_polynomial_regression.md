@@ -98,49 +98,19 @@ where $`\alpha_j`$ and $`\beta_j`$ are chosen to ensure orthogonality.
 
 ### Implementation of Orthogonal Polynomials
 
-```python
-import numpy as np
-from scipy.special import legendre
-from sklearn.preprocessing import PolynomialFeatures
+**Python Implementation:** [polynomial_utilities.py](code/polynomial_utilities.py) - `create_orthogonal_polynomials()` and `create_standard_polynomials()` functions
 
-def create_orthogonal_polynomials(X, degree):
-    """
-    Create orthogonal polynomial features
-    
-    Parameters:
-    X: predictor variable (n_samples,)
-    degree: polynomial degree
-    
-    Returns:
-    X_poly: orthogonal polynomial features (n_samples, degree+1)
-    """
-    n_samples = len(X)
-    X_poly = np.zeros((n_samples, degree + 1))
-    
-    # Normalize X to [-1, 1] for better numerical stability
-    X_norm = 2 * (X - X.min()) / (X.max() - X.min()) - 1
-    
-    for d in range(degree + 1):
-        # Use Legendre polynomials (orthogonal on [-1, 1])
-        poly = legendre(d)
-        X_poly[:, d] = poly(X_norm)
-    
-    return X_poly
+The orthogonal polynomials implementation includes:
 
-def create_standard_polynomials(X, degree):
-    """
-    Create standard polynomial features
-    
-    Parameters:
-    X: predictor variable (n_samples,)
-    degree: polynomial degree
-    
-    Returns:
-    X_poly: polynomial features (n_samples, degree+1)
-    """
-    poly = PolynomialFeatures(degree=degree, include_bias=True)
-    return poly.fit_transform(X.reshape(-1, 1))
-```
+- **Legendre Polynomials**: Uses scipy's Legendre polynomials for numerical stability
+- **Normalization**: Scales input to [-1, 1] interval for optimal orthogonality
+- **Standard Polynomials**: Alternative implementation using sklearn's PolynomialFeatures
+- **Feature Creation**: Efficient creation of polynomial basis functions
+
+Key features:
+- Numerical stability through proper normalization
+- Support for both orthogonal and standard polynomial bases
+- Integration with scipy and sklearn libraries
 
 ## 5.1.3. Model Selection and Degree Selection
 
@@ -184,89 +154,22 @@ where $`\hat{y}_j^{(-i)}`$ is the prediction for observation $`j`$ using the mod
 
 ### Forward and Backward Selection
 
-#### Forward Selection Algorithm
+#### Forward and Backward Selection Algorithms
 
-```python
-def forward_polynomial_selection(X, y, max_degree=10, criterion='aic'):
-    """
-    Forward selection for polynomial degree
-    
-    Parameters:
-    X: predictor variable
-    y: response variable
-    max_degree: maximum degree to consider
-    criterion: 'aic', 'bic', or 'cv'
-    
-    Returns:
-    best_degree: optimal polynomial degree
-    scores: scores for each degree
-    """
-    n = len(y)
-    scores = []
-    
-    for degree in range(1, max_degree + 1):
-        # Create polynomial features
-        X_poly = create_standard_polynomials(X, degree)
-        
-        if criterion in ['aic', 'bic']:
-            # Fit model
-            beta_hat = np.linalg.inv(X_poly.T @ X_poly) @ X_poly.T @ y
-            y_hat = X_poly @ beta_hat
-            rss = np.sum((y - y_hat)**2)
-            
-            if criterion == 'aic':
-                score = n * np.log(rss/n) + 2 * (degree + 1)
-            else:  # bic
-                score = n * np.log(rss/n) + (degree + 1) * np.log(n)
-        else:  # cv
-            from sklearn.model_selection import cross_val_score
-            from sklearn.linear_model import LinearRegression
-            
-            model = LinearRegression()
-            cv_scores = cross_val_score(model, X_poly, y, cv=5, scoring='neg_mean_squared_error')
-            score = -cv_scores.mean()
-        
-        scores.append(score)
-    
-    best_degree = np.argmin(scores) + 1
-    return best_degree, scores
+**Python Implementation:** [polynomial_utilities.py](code/polynomial_utilities.py) - `forward_polynomial_selection()` and `backward_polynomial_selection()` functions
 
-def backward_polynomial_selection(X, y, max_degree=10, criterion='aic'):
-    """
-    Backward selection for polynomial degree
-    """
-    n = len(y)
-    scores = []
-    
-    for degree in range(max_degree, 0, -1):
-        # Create polynomial features
-        X_poly = create_standard_polynomials(X, degree)
-        
-        if criterion in ['aic', 'bic']:
-            # Fit model
-            beta_hat = np.linalg.inv(X_poly.T @ X_poly) @ X_poly.T @ y
-            y_hat = X_poly @ beta_hat
-            rss = np.sum((y - y_hat)**2)
-            
-            if criterion == 'aic':
-                score = n * np.log(rss/n) + 2 * (degree + 1)
-            else:  # bic
-                score = n * np.log(rss/n) + (degree + 1) * np.log(n)
-        else:  # cv
-            from sklearn.model_selection import cross_val_score
-            from sklearn.linear_model import LinearRegression
-            
-            model = LinearRegression()
-            cv_scores = cross_val_score(model, X_poly, y, cv=5, scoring='neg_mean_squared_error')
-            score = -cv_scores.mean()
-        
-        scores.append(score)
-    
-    # Reverse to get ascending order
-    scores = scores[::-1]
-    best_degree = max_degree - np.argmin(scores)
-    return best_degree, scores
-```
+The model selection algorithms include:
+
+- **Forward Selection**: Incrementally adds polynomial terms from degree 1 to max_degree
+- **Backward Selection**: Starts with max_degree and removes terms sequentially
+- **Multiple Criteria**: Support for AIC, BIC, and cross-validation based selection
+- **Comprehensive Evaluation**: Calculates all relevant metrics for each degree
+
+Key features:
+- Systematic exploration of polynomial degrees
+- Multiple information criteria for model selection
+- Cross-validation integration for robust evaluation
+- Visualization of selection results
 
 ## 5.1.4. Complete Polynomial Regression Implementation
 
