@@ -446,3 +446,9 @@ However, understanding forward stagewise additive modeling remains crucial for:
 - **Troubleshooting**: Diagnosing model issues
 
 The framework continues to be relevant for both theoretical understanding and practical applications in machine learning.
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the classification trees section*
+- **Previous Topic:** [AdaBoosting](04_ada-boosting.md) - Sequential ensemble learning with exponential loss
