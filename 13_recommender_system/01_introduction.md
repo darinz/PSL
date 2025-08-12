@@ -154,341 +154,47 @@ where:
 
 ## 13.1.5. Implementation Examples
 
-### Python Implementation: Basic Recommender System Framework
+The complete Recommender System Introduction implementation is provided in separate code files for both Python and R. These implementations include comprehensive demonstrations of all major recommendation paradigms and evaluation techniques.
+
+**Python Implementation**: The complete Recommender System Introduction implementation is available in `code/introduction_implementation.py` and includes:
+- **`RecommenderSystem` class**: Complete implementation with `fit()`, `predict()`, and `recommend()` methods supporting collaborative, content-based, and latent factor approaches
+- **`generate_synthetic_data()`**: Synthetic data generation for testing and demonstration
+- **`demonstrate_basic_recommender_system()`**: Basic recommender system functionality demonstration with method comparison
+- **`visualize_recommender_system()`**: Comprehensive visualizations including rating distribution, user-item matrix heatmap, and method comparison
+- **`demonstrate_collaborative_filtering()`**: Detailed collaborative filtering analysis with similarity matrices and neighborhood analysis
+- **`demonstrate_latent_factor_models()`**: Latent factor model implementation using NMF with factor importance analysis and visualization
+- **`demonstrate_content_based_filtering()`**: Content-based filtering with item features, user preferences, and similarity analysis
+- **`demonstrate_evaluation_metrics()`**: Comprehensive evaluation including MAE, RMSE, and prediction vs actual analysis
+- **`demonstrate_challenges()`**: Analysis of sparsity, cold start, and popularity bias challenges
+- **Professional visualizations** with matplotlib and seaborn
+
+**R Implementation**: The complete Recommender System Introduction implementation is available in `code/r_introduction_implementation.R` and includes:
+- **`generate_synthetic_data()`**: Synthetic data generation function
+- **`create_rating_matrix()`**: Rating matrix creation utility
+- **`demonstrate_basic_recommender_system()`**: Basic demonstration using recommenderlab package
+- **`visualize_recommender_system()`**: Professional visualizations using ggplot2
+- **`demonstrate_collaborative_filtering()`**: User-based and item-based collaborative filtering with similarity analysis
+- **`demonstrate_latent_factor_models()`**: SVD-based latent factor models with factor importance visualization
+- **`demonstrate_content_based_filtering()`**: Content-based filtering with feature analysis and similarity computation
+- **`demonstrate_evaluation_metrics()`**: Evaluation metrics using recommenderlab's built-in functions
+- **`demonstrate_challenges()`**: Analysis of recommender system challenges with visualizations
+- **Professional visualizations** with ggplot2 and gridExtra
+
+To run the complete Recommender System Introduction demonstrations:
 
 ```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.decomposition import NMF
-from sklearn.preprocessing import StandardScaler
-import warnings
-warnings.filterwarnings('ignore')
-
-class RecommenderSystem:
-    def __init__(self, method='collaborative'):
-        """
-        Basic Recommender System
-        
-        Parameters:
-        -----------
-        method : str
-            Recommendation method ('collaborative', 'content', 'latent')
-        """
-        self.method = method
-        self.user_item_matrix = None
-        self.user_similarity = None
-        self.item_similarity = None
-        self.user_factors = None
-        self.item_factors = None
-        
-    def fit(self, ratings_df):
-        """
-        Fit the recommender system
-        
-        Parameters:
-        -----------
-        ratings_df : pandas.DataFrame
-            DataFrame with columns ['user_id', 'item_id', 'rating']
-        """
-        # Create user-item matrix
-        self.user_item_matrix = ratings_df.pivot_table(
-            index='user_id', 
-            columns='item_id', 
-            values='rating', 
-            fill_value=0
-        )
-        
-        if self.method == 'collaborative':
-            self._fit_collaborative()
-        elif self.method == 'latent':
-            self._fit_latent()
-        elif self.method == 'content':
-            self._fit_content(ratings_df)
-            
-    def _fit_collaborative(self):
-        """Fit collaborative filtering model"""
-        # Compute user similarity
-        self.user_similarity = cosine_similarity(self.user_item_matrix)
-        
-        # Compute item similarity
-        self.item_similarity = cosine_similarity(self.user_item_matrix.T)
-        
-    def _fit_latent(self, n_factors=10):
-        """Fit latent factor model using NMF"""
-        # Apply NMF for matrix factorization
-        nmf = NMF(n_components=n_factors, random_state=42)
-        self.user_factors = nmf.fit_transform(self.user_item_matrix)
-        self.item_factors = nmf.components_.T
-        
-    def _fit_content(self, ratings_df):
-        """Fit content-based model (simplified)"""
-        # For simplicity, we'll use item popularity as content features
-        item_popularity = ratings_df.groupby('item_id')['rating'].mean()
-        self.item_features = item_popularity.to_dict()
-        
-    def predict(self, user_id, item_id):
-        """Predict rating for user-item pair"""
-        if self.method == 'collaborative':
-            return self._predict_collaborative(user_id, item_id)
-        elif self.method == 'latent':
-            return self._predict_latent(user_id, item_id)
-        elif self.method == 'content':
-            return self._predict_content(user_id, item_id)
-            
-    def _predict_collaborative(self, user_id, item_id):
-        """User-based collaborative filtering prediction"""
-        if user_id not in self.user_item_matrix.index or item_id not in self.user_item_matrix.columns:
-            return self.user_item_matrix.values.mean()
-            
-        user_idx = self.user_item_matrix.index.get_loc(user_id)
-        item_idx = self.user_item_matrix.columns.get_loc(item_id)
-        
-        # Find similar users who rated this item
-        user_ratings = self.user_item_matrix.iloc[:, item_idx]
-        similar_users = self.user_similarity[user_idx]
-        
-        # Weighted average of similar users' ratings
-        valid_ratings = user_ratings[user_ratings > 0]
-        if len(valid_ratings) == 0:
-            return self.user_item_matrix.values.mean()
-            
-        user_indices = valid_ratings.index
-        similarities = [similar_users[self.user_item_matrix.index.get_loc(uid)] for uid in user_indices]
-        
-        weighted_sum = sum(sim * rating for sim, rating in zip(similarities, valid_ratings))
-        total_similarity = sum(abs(sim) for sim in similarities)
-        
-        return weighted_sum / total_similarity if total_similarity > 0 else valid_ratings.mean()
-        
-    def _predict_latent(self, user_id, item_id):
-        """Latent factor model prediction"""
-        if user_id not in self.user_item_matrix.index or item_id not in self.user_item_matrix.columns:
-            return self.user_item_matrix.values.mean()
-            
-        user_idx = self.user_item_matrix.index.get_loc(user_id)
-        item_idx = self.user_item_matrix.columns.get_loc(item_id)
-        
-        return np.dot(self.user_factors[user_idx], self.item_factors[item_idx])
-        
-    def _predict_content(self, user_id, item_id):
-        """Content-based prediction (simplified)"""
-        if item_id in self.item_features:
-            return self.item_features[item_id]
-        return self.user_item_matrix.values.mean()
-        
-    def recommend(self, user_id, n_recommendations=5):
-        """Generate top-n recommendations for a user"""
-        if user_id not in self.user_item_matrix.index:
-            return []
-            
-        user_idx = self.user_item_matrix.index.get_loc(user_id)
-        user_ratings = self.user_item_matrix.iloc[user_idx]
-        
-        # Find items the user hasn't rated
-        unrated_items = user_ratings[user_ratings == 0].index
-        
-        # Predict ratings for unrated items
-        predictions = []
-        for item_id in unrated_items:
-            pred_rating = self.predict(user_id, item_id)
-            predictions.append((item_id, pred_rating))
-            
-        # Sort by predicted rating and return top-n
-        predictions.sort(key=lambda x: x[1], reverse=True)
-        return predictions[:n_recommendations]
-
-# Generate synthetic data
-np.random.seed(42)
-n_users = 100
-n_items = 50
-n_ratings = 1000
-
-# Create synthetic ratings
-user_ids = np.random.randint(0, n_users, n_ratings)
-item_ids = np.random.randint(0, n_items, n_ratings)
-ratings = np.random.randint(1, 6, n_ratings)  # 1-5 scale
-
-# Create DataFrame
-ratings_df = pd.DataFrame({
-    'user_id': user_ids,
-    'item_id': item_ids,
-    'rating': ratings
-})
-
-# Remove duplicates
-ratings_df = ratings_df.drop_duplicates(['user_id', 'item_id'])
-
-print("Synthetic Ratings Dataset:")
-print(f"Number of users: {n_users}")
-print(f"Number of items: {n_items}")
-print(f"Number of ratings: {len(ratings_df)}")
-print(f"Sparsity: {1 - len(ratings_df) / (n_users * n_items):.3f}")
-
-# Test different recommendation methods
-methods = ['collaborative', 'latent', 'content']
-results = {}
-
-for method in methods:
-    print(f"\n=== Testing {method.upper()} Filtering ===")
-    
-    # Initialize and fit model
-    recommender = RecommenderSystem(method=method)
-    recommender.fit(ratings_df)
-    
-    # Test predictions for a sample user
-    test_user = 0
-    recommendations = recommender.recommend(test_user, n_recommendations=5)
-    
-    print(f"Top 5 recommendations for user {test_user}:")
-    for item_id, pred_rating in recommendations:
-        print(f"  Item {item_id}: Predicted rating = {pred_rating:.3f}")
-    
-    # Evaluate on a few test cases
-    test_cases = [
-        (0, 10), (0, 20), (1, 15), (1, 25), (2, 30)
-    ]
-    
-    predictions = []
-    for user_id, item_id in test_cases:
-        pred = recommender.predict(user_id, item_id)
-        predictions.append(pred)
-        print(f"  User {user_id}, Item {item_id}: Predicted = {pred:.3f}")
-    
-    results[method] = predictions
-
-# Visualization
-plt.figure(figsize=(15, 5))
-
-# Plot 1: Rating distribution
-plt.subplot(1, 3, 1)
-ratings_df['rating'].value_counts().sort_index().plot(kind='bar')
-plt.title('Rating Distribution')
-plt.xlabel('Rating')
-plt.ylabel('Count')
-
-# Plot 2: User-item matrix heatmap (sample)
-plt.subplot(1, 3, 2)
-sample_matrix = ratings_df.pivot_table(
-    index='user_id', columns='item_id', values='rating', fill_value=0
-).iloc[:20, :20]
-sns.heatmap(sample_matrix, cmap='viridis', cbar_kws={'label': 'Rating'})
-plt.title('User-Item Matrix (Sample)')
-plt.xlabel('Item ID')
-plt.ylabel('User ID')
-
-# Plot 3: Method comparison
-plt.subplot(1, 3, 3)
-methods_list = list(results.keys())
-predictions_matrix = np.array(list(results.values())).T
-
-x = np.arange(len(test_cases))
-width = 0.25
-
-for i, method in enumerate(methods_list):
-    plt.bar(x + i*width, predictions_matrix[:, i], width, label=method.capitalize())
-
-plt.xlabel('Test Cases')
-plt.ylabel('Predicted Rating')
-plt.title('Method Comparison')
-plt.xticks(x + width, [f'({u},{i})' for u, i in test_cases])
-plt.legend()
-
-plt.tight_layout()
-plt.show()
+# Python
+from code.introduction_implementation import main
+results = main()
 ```
-
-### R Implementation
 
 ```r
-# Recommender System Implementation in R
-library(recommenderlab)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-# Generate synthetic data
-set.seed(42)
-n_users <- 100
-n_items <- 50
-n_ratings <- 1000
-
-# Create synthetic ratings
-user_ids <- sample(1:n_users, n_ratings, replace = TRUE)
-item_ids <- sample(1:n_items, n_ratings, replace = TRUE)
-ratings <- sample(1:5, n_ratings, replace = TRUE)
-
-# Create data frame
-ratings_df <- data.frame(
-  user_id = user_ids,
-  item_id = item_ids,
-  rating = ratings
-)
-
-# Remove duplicates
-ratings_df <- ratings_df[!duplicated(ratings_df[, c("user_id", "item_id")]), ]
-
-# Create rating matrix
-rating_matrix <- ratings_df %>%
-  spread(item_id, rating, fill = 0) %>%
-  select(-user_id) %>%
-  as.matrix()
-
-# Convert to realRatingMatrix for recommenderlab
-rating_matrix_real <- as(rating_matrix, "realRatingMatrix")
-
-# Test different recommendation methods
-methods <- c("UBCF", "IBCF", "POPULAR")
-
-results <- list()
-
-for (method in methods) {
-  cat("=== Testing", method, "===\n")
-  
-  # Train model
-  model <- Recommender(rating_matrix_real, method = method)
-  
-  # Generate recommendations
-  recommendations <- predict(model, rating_matrix_real[1:5], n = 5)
-  
-  # Display recommendations
-  for (i in 1:5) {
-    cat("User", i, "recommendations:", as(recommendations[i], "list")[[1]], "\n")
-  }
-  
-  # Store results
-  results[[method]] <- model
-}
-
-# Visualization
-# Rating distribution
-p1 <- ggplot(ratings_df, aes(x = factor(rating))) +
-  geom_bar(fill = "steelblue") +
-  labs(title = "Rating Distribution",
-       x = "Rating", y = "Count") +
-  theme_minimal()
-
-# User-item matrix heatmap (sample)
-sample_matrix <- rating_matrix[1:20, 1:20]
-sample_df <- expand.grid(
-  user_id = 1:20,
-  item_id = 1:20
-)
-sample_df$rating <- as.vector(sample_matrix)
-
-p2 <- ggplot(sample_df, aes(x = item_id, y = user_id, fill = rating)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "User-Item Matrix (Sample)",
-       x = "Item ID", y = "User ID") +
-  theme_minimal()
-
-# Combine plots
-library(gridExtra)
-grid.arrange(p1, p2, ncol = 2)
+# R
+source("code/r_introduction_implementation.R")
+results <- main_r()
 ```
+
+The implementations demonstrate all aspects of recommender system introduction including the core algorithms, collaborative filtering, latent factor models, content-based filtering, evaluation metrics, and common challenges. Both implementations provide comprehensive analysis tools and professional visualizations to understand the fundamental concepts of recommender systems.
 
 ## 13.1.6. Evaluation Metrics
 
