@@ -258,3 +258,9 @@ The choice of impurity measure significantly affects the behavior of classificat
 - **Differentiability** affects optimization behavior
 
 The choice between these measures often depends on the specific application, computational considerations, and the desired balance between interpretability and performance.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Misclassification Rate vs. Entropy](03_misclassification.md) - Mathematical distinctions and practical implications
+- **Previous Topic:** [Introduction to Classification Trees](01_introduction.md) - Three essential aspects and mathematical foundations
