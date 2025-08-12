@@ -76,118 +76,20 @@ Or equivalently, minimizing the negative log-likelihood:
 \hat{y} = \arg\min_k [-\log \pi_k - \log f_k(x)]
 ```
 
-### Implementation: Bayes Classifier Framework
+The Bayes Classifier framework provides the foundation for all discriminant analysis methods. The `BayesClassifier` base class implements the core functionality for estimating class priors and computing posterior probabilities using Bayes' theorem.
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
-from scipy.stats import multivariate_normal
-import pandas as pd
+**Key Functions:**
+- `BayesClassifier.__init__()`: Initialize the base classifier
+- `BayesClassifier.fit()`: Fit the classifier by estimating class priors and conditional densities
+- `BayesClassifier.predict_proba()`: Compute posterior probabilities using log-likelihoods
+- `BayesClassifier.predict()`: Predict class labels using maximum posterior probability
+- `BayesClassifier.score()`: Compute accuracy score
+- `create_gaussian_mixture_data()`: Create synthetic Gaussian mixture data for demonstrations
+- `demonstrate_bayes_classifier()`: Complete demonstration with data creation and splitting
 
-class BayesClassifier:
-    """Base class for Bayes classifiers"""
-    
-    def __init__(self):
-        self.classes_ = None
-        self.priors_ = None
-        self.conditional_densities_ = None
-    
-    def fit(self, X, y):
-        """Fit the Bayes classifier"""
-        self.classes_ = np.unique(y)
-        n_classes = len(self.classes_)
-        n_samples = len(y)
-        
-        # Estimate class priors
-        self.priors_ = np.zeros(n_classes)
-        for i, k in enumerate(self.classes_):
-            self.priors_[i] = np.sum(y == k) / n_samples
-        
-        # Estimate class-conditional densities
-        self._fit_conditional_densities(X, y)
-        
-        return self
-    
-    def _fit_conditional_densities(self, X, y):
-        """Estimate class-conditional densities (to be implemented by subclasses)"""
-        raise NotImplementedError
-    
-    def predict_proba(self, X):
-        """Compute posterior probabilities"""
-        if self.conditional_densities_ is None:
-            raise ValueError("Model must be fitted before prediction")
-        
-        n_samples = X.shape[0]
-        n_classes = len(self.classes_)
-        log_probs = np.zeros((n_samples, n_classes))
-        
-        # Compute log-likelihoods for each class
-        for i, k in enumerate(self.classes_):
-            log_probs[:, i] = (np.log(self.priors_[i]) + 
-                              self.conditional_densities_[i].logpdf(X))
-        
-        # Convert to probabilities (softmax)
-        # Subtract max for numerical stability
-        log_probs -= np.max(log_probs, axis=1, keepdims=True)
-        probs = np.exp(log_probs)
-        probs /= np.sum(probs, axis=1, keepdims=True)
-        
-        return probs
-    
-    def predict(self, X):
-        """Predict class labels"""
-        probs = self.predict_proba(X)
-        return self.classes_[np.argmax(probs, axis=1)]
-    
-    def score(self, X, y):
-        """Compute accuracy score"""
-        return accuracy_score(y, self.predict(X))
+The framework uses numerical stability techniques (log-likelihoods and softmax) to handle the computational challenges of Bayes' theorem in high-dimensional spaces.
 
-# Example usage
-def create_gaussian_mixture_data(n_samples=1000, random_state=42):
-    """Create synthetic data from Gaussian mixture"""
-    np.random.seed(random_state)
-    
-    # Three classes with different means and covariances
-    means = [
-        np.array([0, 0]),
-        np.array([3, 3]),
-        np.array([-2, 2])
-    ]
-    
-    covs = [
-        np.array([[1, 0.5], [0.5, 1]]),
-        np.array([[1, -0.5], [-0.5, 1]]),
-        np.array([[0.5, 0], [0, 0.5]])
-    ]
-    
-    X_list = []
-    y_list = []
-    
-    for k, (mean, cov) in enumerate(zip(means, covs)):
-        n_k = n_samples // 3
-        X_k = np.random.multivariate_normal(mean, cov, n_k)
-        X_list.append(X_k)
-        y_list.append(np.full(n_k, k))
-    
-    X = np.vstack(X_list)
-    y = np.concatenate(y_list)
-    
-    return X, y
-
-# Create dataset
-X, y = create_gaussian_mixture_data()
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=42, stratify=y
-)
-
-print("Dataset shape:", X.shape)
-print("Class distribution:")
-print(pd.Series(y).value_counts(normalize=True))
-```
+See the implementation in `code/discriminant_analysis_implementation.py` for the complete Bayes Classifier framework.
 
 ```r
 # R implementation
