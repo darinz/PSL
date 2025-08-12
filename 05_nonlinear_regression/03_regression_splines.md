@@ -218,70 +218,18 @@ Key features:
 
 ### Comprehensive Diagnostics
 
-```python
-def comprehensive_spline_diagnostics(model, X, y):
-    """
-    Comprehensive diagnostics for regression splines
-    """
-    y_pred = model.predict(X)
-    residuals = y - y_pred
-    
-    # Create diagnostic plots
-    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-    
-    # Residuals vs Fitted
-    axes[0, 0].scatter(y_pred, residuals, alpha=0.6)
-    axes[0, 0].axhline(y=0, color='r', linestyle='--')
-    axes[0, 0].set_xlabel('Fitted Values')
-    axes[0, 0].set_ylabel('Residuals')
-    axes[0, 0].set_title('Residuals vs Fitted')
-    axes[0, 0].grid(True, alpha=0.3)
-    
-    # Q-Q Plot
-    stats.probplot(residuals, dist="norm", plot=axes[0, 1])
-    axes[0, 1].set_title('Q-Q Plot of Residuals')
-    
-    # Residuals vs Predictor
-    axes[0, 2].scatter(X, residuals, alpha=0.6)
-    axes[0, 2].axhline(y=0, color='r', linestyle='--')
-    axes[0, 2].set_xlabel('X')
-    axes[0, 2].set_ylabel('Residuals')
-    axes[0, 2].set_title('Residuals vs X')
-    axes[0, 2].grid(True, alpha=0.3)
-    
-    # Histogram of residuals
-    axes[1, 0].hist(residuals, bins=20, alpha=0.7, edgecolor='black')
-    axes[1, 0].set_xlabel('Residuals')
-    axes[1, 0].set_ylabel('Frequency')
-    axes[1, 0].set_title('Histogram of Residuals')
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    # Scale-Location plot
-    axes[1, 1].scatter(y_pred, np.sqrt(np.abs(residuals)), alpha=0.6)
-    axes[1, 1].set_xlabel('Fitted Values')
-    axes[1, 1].set_ylabel('√|Residuals|')
-    axes[1, 1].set_title('Scale-Location Plot')
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    # Cook's Distance
-    basis_matrix = model.create_basis_matrix(X)
-    H = basis_matrix @ np.linalg.inv(basis_matrix.T @ basis_matrix) @ basis_matrix.T
-    leverage = np.diag(H)
-    cooks_d = residuals**2 * leverage / (model.df * np.var(residuals) * (1 - leverage)**2)
-    
-    axes[1, 2].scatter(range(len(cooks_d)), cooks_d, alpha=0.6)
-    axes[1, 2].axhline(y=4/len(X), color='r', linestyle='--', label='4/n threshold')
-    axes[1, 2].set_xlabel('Observation Index')
-    axes[1, 2].set_ylabel("Cook's Distance")
-    axes[1, 2].set_title("Cook's Distance")
-    axes[1, 2].legend()
-    axes[1, 2].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return residuals, cooks_d
-```
+**Implementation:** [advanced_regression_utilities.py](code/advanced_regression_utilities.py) - `comprehensive_spline_diagnostics()`
+
+The comprehensive diagnostics function provides:
+
+- **Residuals vs Fitted**: Assessment of model fit and homoscedasticity
+- **Q-Q Plot**: Normality assessment of residuals
+- **Residuals vs Predictor**: Detection of systematic patterns
+- **Histogram of Residuals**: Distribution analysis
+- **Scale-Location Plot**: Assessment of variance homogeneity
+- **Cook's Distance**: Identification of influential observations
+
+The diagnostics help assess model assumptions, identify influential observations, and understand the spline behavior across the data range.
 
 ## Summary
 
@@ -295,6 +243,26 @@ Regression splines provide a powerful and flexible approach to nonlinear regress
 6. **Comprehensive Diagnostics**: Multiple diagnostic plots and tests
 
 The mathematical framework ensures optimal estimation, while the computational implementation provides both efficiency and interpretability. Regression splines address the limitations of polynomial regression while maintaining local flexibility and global smoothness.
+
+## Code Files Summary
+
+The following code files contain the complete implementations for regression splines:
+
+### Python Files
+- **[regression_spline_implementation.py](code/regression_spline_implementation.py)**: Main implementation with RegressionSpline class, cross-validation, and comprehensive demonstrations
+- **[advanced_regression_utilities.py](code/advanced_regression_utilities.py)**: Advanced utilities including information criteria, regularization methods, and diagnostics
+
+### R Files
+- **[r_regression_splines.R](code/r_regression_splines.R)**: Complete R implementation with ggplot2 visualizations, cross-validation, and model comparison
+
+### Key Features Implemented
+- **RegressionSpline Class**: Complete regression spline implementation with cubic and natural splines
+- **Model Selection**: AIC, BIC, and cross-validation for optimal degrees of freedom selection
+- **Regularization**: Ridge and Lasso methods for coefficient shrinkage
+- **Confidence Intervals**: Prediction uncertainty quantification
+- **Comprehensive Diagnostics**: 6-panel diagnostic suite including residuals, leverage, and Cook's distance
+- **Real Data Analysis**: Birthrate data analysis with natural splines
+- **Visualization**: Publication-quality plots and demonstrations
 
 ## References
 
