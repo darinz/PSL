@@ -368,3 +368,26 @@ Key features:
 - **Hierarchical K-means**: Combine with hierarchical clustering
 - **Online K-means**: Process data in streaming fashion
 - **Spectral clustering**: Use eigenvectors for clustering
+
+## Code Files Summary
+
+The following code files contain the complete implementations for K-means and K-medoids clustering:
+
+### Python Files
+- **[kmeans_implementation.py](code/kmeans_implementation.py)**: Main implementation with KMeansClustering and KMedoidsClustering classes, comprehensive demonstrations, and utility functions
+
+### R Files
+- **[r_kmeans_implementation.R](code/r_kmeans_implementation.R)**: Complete R implementation with KMeansClustering and KMedoidsClustering classes using reference classes, ggplot2 visualizations, and built-in function comparison
+
+### Key Features Implemented
+- **KMeansClustering Class**: Comprehensive implementation with K-means++ initialization, multiple runs, and evaluation metrics
+- **KMedoidsClustering Class**: Complete PAM algorithm implementation for K-medoids clustering
+- **Initialization Strategies**: Random initialization and K-means++ initialization with probabilistic centroid selection
+- **Multiple Runs**: Automatic multiple initialization runs to find the best clustering solution
+- **Evaluation Metrics**: Inertia, silhouette score, iteration count, and cluster size analysis
+- **Visualization Tools**: Cluster plotting with centroids/medoids and color-coded assignments using matplotlib/seaborn and ggplot2
+- **Dimension Reduction**: Integration with PCA and random projection for high-dimensional data
+- **Alternative Distance Measures**: Support for Manhattan, cosine, and mixed distance measures
+- **Built-in Function Validation**: Comparison with sklearn and R's native kmeans functions
+- **Comprehensive Demonstrations**: Examples with synthetic data, initialization comparison, and dimension reduction analysis
+- **Utility Functions**: Helper functions for initialization, distance measures, and evaluation
