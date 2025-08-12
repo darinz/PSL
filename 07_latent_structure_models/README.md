@@ -92,3 +92,9 @@ $`f(x) = \sum_{k=1}^K \pi_k f_k(x \mid \theta_k)`$
 - **Initial Distribution**: $`w_{m_z \times 1}`$ for $`Z_1`$
 - **Transition Matrix**: $`A_{m_z \times m_z}`$ for $`Z_t \rightarrow Z_{t+1}`$
 - **Emission Matrix**: $`B_{m_z \times m_x}`$ for $`Z_t \rightarrow X_t`$
+
+---
+
+**Navigation:**
+- **Start Learning:** [Model-based Clustering](01_model-based_clustering.md) - Mixture model framework and Gaussian mixtures
+- **Previous Section:** [Logistic Regression](../10_logistic_regression.md/README.md) - Overview of logistic regression concepts and applications
