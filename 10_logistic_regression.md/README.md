@@ -100,3 +100,12 @@ $`\text{logit}(\eta(x)) = \log\frac{\eta(x)}{1 - \eta(x)} = x^T\beta`$
 For binary outcomes, the likelihood is:
 
 $`L(\beta) = \prod_{i=1}^n \sigma(x_i^T\beta)^{y_i}(1 - \sigma(x_i^T\beta))^{1-y_i}`
+```
+
+This material is part of a comprehensive statistical learning course. For questions or suggestions, please refer to the main course documentation.
+
+---
+
+**Navigation:**
+- **Start Learning:** [Setup and Introduction](01_setup.md) - Mathematical foundations and problem formulation
+- **Previous Section:** [Support Vector Machine](../11_support_vector_machine/README.md) - Overview of SVM concepts and mathematical framework
