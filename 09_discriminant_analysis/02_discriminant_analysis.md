@@ -319,3 +319,9 @@ The discriminant analysis concepts have been implemented in the following code f
 - **Demonstration Functions**: Complete workflows for each method
 
 Both implementations provide comprehensive coverage of discriminant analysis concepts with practical examples and demonstrate the relationship between theoretical foundations and practical applications in classification problems.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Quadratic Discriminant Analysis](03_quadratic_discriminant_analysis.md) - Multivariate normal distribution assumption and quadratic decision boundaries
+- **Previous Topic:** [Introduction to Classification](01_classification.md) - Definition of classification problems and optimal classifier derivation
