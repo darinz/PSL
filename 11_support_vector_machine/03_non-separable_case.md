@@ -298,3 +298,9 @@ Key insights:
 - **Cross-validation**: Essential for parameter selection
 
 This formulation provides a robust framework for classification when perfect separation is impossible, setting the stage for kernel methods that can handle non-linear decision boundaries.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Nonlinear SVMs](04_nonlinear_svms.md) - Feature space embedding, kernel functions, and kernel machines
+- **Previous Topic:** [The Separable Case](02_separable_case.md) - Max-margin problem, KKT conditions, duality, and prediction
