@@ -175,476 +175,76 @@ Key features:
 
 ### Python Implementation
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.metrics import mean_squared_error, r2_score
-from sklearn.model_selection import cross_val_score
-import pandas as pd
+**Complete Implementation:** [polynomial_regression.py](code/polynomial_regression.py)
 
-class PolynomialRegression:
-    def __init__(self, degree=2, use_orthogonal=False):
-        """
-        Polynomial Regression Model
-        
-        Parameters:
-        degree: polynomial degree
-        use_orthogonal: whether to use orthogonal polynomials
-        """
-        self.degree = degree
-        self.use_orthogonal = use_orthogonal
-        self.model = LinearRegression()
-        self.poly_features = None
-        self.X_poly = None
-        self.coefficients = None
-        self.intercept = None
-        
-    def fit(self, X, y):
-        """Fit polynomial regression model"""
-        if self.use_orthogonal:
-            self.X_poly = create_orthogonal_polynomials(X, self.degree)
-        else:
-            self.poly_features = PolynomialFeatures(degree=self.degree, include_bias=True)
-            self.X_poly = self.poly_features.fit_transform(X.reshape(-1, 1))
-        
-        # Fit linear regression
-        self.model.fit(self.X_poly, y)
-        self.coefficients = self.model.coef_
-        self.intercept = self.model.intercept_
-        
-        return self
-    
-    def predict(self, X):
-        """Make predictions"""
-        if self.use_orthogonal:
-            X_poly = create_orthogonal_polynomials(X, self.degree)
-        else:
-            X_poly = self.poly_features.transform(X.reshape(-1, 1))
-        
-        return self.model.predict(X_poly)
-    
-    def get_polynomial_equation(self):
-        """Get the polynomial equation as a string"""
-        if self.use_orthogonal:
-            return "Orthogonal polynomial coefficients: " + str(self.coefficients)
-        
-        equation = f"y = {self.intercept:.4f}"
-        for i, coef in enumerate(self.coefficients[1:], 1):
-            if coef >= 0:
-                equation += f" + {coef:.4f}x^{i}"
-            else:
-                equation += f" - {abs(coef):.4f}x^{i}"
-        
-        return equation
-    
-    def calculate_metrics(self, X, y):
-        """Calculate model performance metrics"""
-        y_pred = self.predict(X)
-        
-        mse = mean_squared_error(y, y_pred)
-        rmse = np.sqrt(mse)
-        r2 = r2_score(y, y_pred)
-        
-        # Adjusted R-squared
-        n = len(y)
-        p = self.degree + 1
-        adj_r2 = 1 - (1 - r2) * (n - 1) / (n - p - 1)
-        
-        # AIC and BIC
-        rss = np.sum((y - y_pred)**2)
-        aic = n * np.log(rss/n) + 2 * p
-        bic = n * np.log(rss/n) + p * np.log(n)
-        
-        return {
-            'MSE': mse,
-            'RMSE': rmse,
-            'R²': r2,
-            'Adjusted R²': adj_r2,
-            'AIC': aic,
-            'BIC': bic
-        }
+The Python implementation includes:
 
-def demonstrate_polynomial_regression():
-    """Demonstrate polynomial regression with synthetic data"""
-    # Generate synthetic data
-    np.random.seed(42)
-    X = np.linspace(-3, 3, 100)
-    y_true = 2 + 3*X - 0.5*X**2 + 0.1*X**3
-    y = y_true + np.random.normal(0, 0.5, 100)
-    
-    # Test different polynomial degrees
-    degrees = [1, 2, 3, 4, 5, 6]
-    models = {}
-    metrics = {}
-    
-    for degree in degrees:
-        # Fit model
-        model = PolynomialRegression(degree=degree)
-        model.fit(X, y)
-        models[degree] = model
-        
-        # Calculate metrics
-        metrics[degree] = model.calculate_metrics(X, y)
-        
-        print(f"Degree {degree}:")
-        print(f"  Equation: {model.get_polynomial_equation()}")
-        print(f"  R²: {metrics[degree]['R²']:.4f}")
-        print(f"  AIC: {metrics[degree]['AIC']:.4f}")
-        print(f"  BIC: {metrics[degree]['BIC']:.4f}")
-        print()
-    
-    # Visualize results
-    plt.figure(figsize=(15, 10))
-    
-    # Plot 1: Data and fitted curves
-    plt.subplot(2, 3, 1)
-    plt.scatter(X, y, alpha=0.6, label='Data')
-    X_plot = np.linspace(-3, 3, 200)
-    
-    for degree in [1, 2, 3]:
-        y_plot = models[degree].predict(X_plot)
-        plt.plot(X_plot, y_plot, label=f'Degree {degree}')
-    
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Polynomial Fits')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 2: R² vs Degree
-    plt.subplot(2, 3, 2)
-    r2_values = [metrics[d]['R²'] for d in degrees]
-    plt.plot(degrees, r2_values, 'bo-')
-    plt.xlabel('Polynomial Degree')
-    plt.ylabel('R²')
-    plt.title('R² vs Degree')
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 3: AIC vs Degree
-    plt.subplot(2, 3, 3)
-    aic_values = [metrics[d]['AIC'] for d in degrees]
-    plt.plot(degrees, aic_values, 'ro-')
-    plt.xlabel('Polynomial Degree')
-    plt.ylabel('AIC')
-    plt.title('AIC vs Degree')
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 4: BIC vs Degree
-    plt.subplot(2, 3, 4)
-    bic_values = [metrics[d]['BIC'] for d in degrees]
-    plt.plot(degrees, bic_values, 'go-')
-    plt.xlabel('Polynomial Degree')
-    plt.ylabel('BIC')
-    plt.title('BIC vs Degree')
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 5: Residuals for degree 3
-    plt.subplot(2, 3, 5)
-    y_pred_3 = models[3].predict(X)
-    residuals_3 = y - y_pred_3
-    plt.scatter(y_pred_3, residuals_3, alpha=0.6)
-    plt.axhline(y=0, color='r', linestyle='--')
-    plt.xlabel('Predicted Values')
-    plt.ylabel('Residuals')
-    plt.title('Residuals (Degree 3)')
-    plt.grid(True, alpha=0.3)
-    
-    # Plot 6: Overfitting demonstration
-    plt.subplot(2, 3, 6)
-    plt.scatter(X, y, alpha=0.6, label='Data')
-    
-    for degree in [3, 6]:
-        y_plot = models[degree].predict(X_plot)
-        plt.plot(X_plot, y_plot, label=f'Degree {degree}')
-    
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title('Overfitting Example')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return models, metrics
+- **PolynomialRegression Class**: Complete implementation with training, prediction, and evaluation
+- **Orthogonal Polynomials**: Support for both standard and orthogonal polynomial bases
+- **Comprehensive Metrics**: MSE, RMSE, R², Adjusted R², AIC, and BIC calculations
+- **Model Demonstration**: Complete example with synthetic data and visualization
+- **Equation Generation**: Automatic generation of polynomial equations
 
-# Run demonstration
-if __name__ == "__main__":
-    models, metrics = demonstrate_polynomial_regression()
-```
+Key features:
+- Configurable polynomial degree and basis type
+- Built-in performance metrics calculation
+- Comprehensive visualization tools
+- Integration with sklearn for robust implementation
 
 ### R Implementation
 
-```r
-# Polynomial Regression Implementation in R
-library(ggplot2)
-library(dplyr)
+**Complete R Implementation:** [r_polynomial_regression.R](code/r_polynomial_regression.R)
 
-# Function to create polynomial features
-create_polynomial_features <- function(X, degree) {
-  X_poly <- matrix(1, nrow = length(X), ncol = degree + 1)
-  for (d in 1:degree) {
-    X_poly[, d + 1] <- X^d
-  }
-  return(X_poly)
-}
+The R implementation provides:
 
-# Function to fit polynomial regression
-fit_polynomial_regression <- function(X, y, degree) {
-  X_poly <- create_polynomial_features(X, degree)
-  
-  # Fit linear regression
-  model <- lm(y ~ X_poly - 1)  # -1 removes intercept since we include it in X_poly
-  
-  return(list(
-    model = model,
-    coefficients = coef(model),
-    fitted_values = fitted(model),
-    residuals = residuals(model)
-  ))
-}
+- **Polynomial Feature Creation**: Efficient creation of polynomial basis functions
+- **Model Fitting**: Complete polynomial regression implementation using lm()
+- **Comprehensive Metrics**: MSE, RMSE, R², Adjusted R², AIC, and BIC calculations
+- **Visualization**: Advanced plotting using ggplot2 for model comparison
+- **Cross-Validation**: Built-in cross-validation for degree selection
+- **Residual Analysis**: Complete diagnostic tools for model validation
 
-# Function to calculate model metrics
-calculate_polynomial_metrics <- function(model, X, y, degree) {
-  y_pred <- fitted(model)
-  
-  # Basic metrics
-  mse <- mean((y - y_pred)^2)
-  rmse <- sqrt(mse)
-  r2 <- 1 - sum((y - y_pred)^2) / sum((y - mean(y))^2)
-  
-  # Adjusted R-squared
-  n <- length(y)
-  p <- degree + 1
-  adj_r2 <- 1 - (1 - r2) * (n - 1) / (n - p - 1)
-  
-  # AIC and BIC
-  rss <- sum((y - y_pred)^2)
-  aic <- n * log(rss/n) + 2 * p
-  bic <- n * log(rss/n) + p * log(n)
-  
-  return(list(
-    MSE = mse,
-    RMSE = rmse,
-    R2 = r2,
-    Adjusted_R2 = adj_r2,
-    AIC = aic,
-    BIC = bic
-  ))
-}
-
-# Function to demonstrate polynomial regression
-demonstrate_polynomial_regression_r <- function() {
-  # Generate synthetic data
-  set.seed(42)
-  X <- seq(-3, 3, length.out = 100)
-  y_true <- 2 + 3*X - 0.5*X^2 + 0.1*X^3
-  y <- y_true + rnorm(100, 0, 0.5)
-  
-  # Test different polynomial degrees
-  degrees <- 1:6
-  models <- list()
-  metrics <- list()
-  
-  for (degree in degrees) {
-    # Fit model
-    model_result <- fit_polynomial_regression(X, y, degree)
-    models[[degree]] <- model_result
-    
-    # Calculate metrics
-    metrics[[degree]] <- calculate_polynomial_metrics(
-      model_result$model, X, y, degree
-    )
-    
-    cat("Degree", degree, ":\n")
-    cat("  R²:", round(metrics[[degree]]$R2, 4), "\n")
-    cat("  AIC:", round(metrics[[degree]]$AIC, 4), "\n")
-    cat("  BIC:", round(metrics[[degree]]$BIC, 4), "\n\n")
-  }
-  
-  # Create visualization
-  X_plot <- seq(-3, 3, length.out = 200)
-  
-  # Data frame for plotting
-  plot_data <- data.frame(
-    X = rep(X_plot, length(degrees)),
-    Degree = rep(degrees, each = length(X_plot)),
-    Y = NA
-  )
-  
-  # Calculate predictions for each degree
-  for (degree in degrees) {
-    X_poly_plot <- create_polynomial_features(X_plot, degree)
-    y_plot <- X_poly_plot %*% models[[degree]]$coefficients
-    plot_data$Y[plot_data$Degree == degree] <- y_plot
-  }
-  
-  # Create plots
-  p1 <- ggplot() +
-    geom_point(data = data.frame(X = X, y = y), aes(X, y), alpha = 0.6) +
-    geom_line(data = plot_data[plot_data$Degree %in% c(1, 2, 3), ], 
-              aes(X, Y, color = factor(Degree))) +
-    labs(title = "Polynomial Fits", x = "X", y = "Y", color = "Degree") +
-    theme_minimal()
-  
-  # Metrics plots
-  metrics_df <- data.frame(
-    Degree = degrees,
-    R2 = sapply(metrics, function(m) m$R2),
-    AIC = sapply(metrics, function(m) m$AIC),
-    BIC = sapply(metrics, function(m) m$BIC)
-  )
-  
-  p2 <- ggplot(metrics_df, aes(Degree, R2)) +
-    geom_line() + geom_point() +
-    labs(title = "R² vs Degree") +
-    theme_minimal()
-  
-  p3 <- ggplot(metrics_df, aes(Degree, AIC)) +
-    geom_line() + geom_point() +
-    labs(title = "AIC vs Degree") +
-    theme_minimal()
-  
-  p4 <- ggplot(metrics_df, aes(Degree, BIC)) +
-    geom_line() + geom_point() +
-    labs(title = "BIC vs Degree") +
-    theme_minimal()
-  
-  # Residuals plot
-  residuals_df <- data.frame(
-    Predicted = models[[3]]$fitted_values,
-    Residuals = models[[3]]$residuals
-  )
-  
-  p5 <- ggplot(residuals_df, aes(Predicted, Residuals)) +
-    geom_point(alpha = 0.6) +
-    geom_hline(yintercept = 0, color = "red", linestyle = "dashed") +
-    labs(title = "Residuals (Degree 3)") +
-    theme_minimal()
-  
-  # Print plots
-  print(p1)
-  print(p2)
-  print(p3)
-  print(p4)
-  print(p5)
-  
-  return(list(models = models, metrics = metrics))
-}
-
-# Run demonstration
-results_r <- demonstrate_polynomial_regression_r()
-```
+Key features:
+- Uses base R lm() function for robust fitting
+- Integration with ggplot2 for publication-quality plots
+- Comprehensive model evaluation and comparison
+- Modular function design for easy customization
 
 ## 5.1.5. Model Diagnostics and Validation
 
 ### Residual Analysis
 
-```python
-def analyze_polynomial_residuals(model, X, y):
-    """
-    Analyze residuals for polynomial regression
-    """
-    y_pred = model.predict(X)
-    residuals = y - y_pred
-    
-    # Create diagnostic plots
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-    
-    # Residuals vs Fitted
-    axes[0, 0].scatter(y_pred, residuals, alpha=0.6)
-    axes[0, 0].axhline(y=0, color='r', linestyle='--')
-    axes[0, 0].set_xlabel('Fitted Values')
-    axes[0, 0].set_ylabel('Residuals')
-    axes[0, 0].set_title('Residuals vs Fitted')
-    axes[0, 0].grid(True, alpha=0.3)
-    
-    # Q-Q Plot
-    from scipy import stats
-    stats.probplot(residuals, dist="norm", plot=axes[0, 1])
-    axes[0, 1].set_title('Q-Q Plot of Residuals')
-    
-    # Residuals vs Predictor
-    axes[1, 0].scatter(X, residuals, alpha=0.6)
-    axes[1, 0].axhline(y=0, color='r', linestyle='--')
-    axes[1, 0].set_xlabel('X')
-    axes[1, 0].set_ylabel('Residuals')
-    axes[1, 0].set_title('Residuals vs X')
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    # Histogram of residuals
-    axes[1, 1].hist(residuals, bins=20, alpha=0.7, edgecolor='black')
-    axes[1, 1].set_xlabel('Residuals')
-    axes[1, 1].set_ylabel('Frequency')
-    axes[1, 1].set_title('Histogram of Residuals')
-    axes[1, 1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    # Statistical tests
-    from scipy.stats import shapiro, jarque_bera
-    
-    # Shapiro-Wilk test for normality
-    shapiro_stat, shapiro_p = shapiro(residuals)
-    print(f"Shapiro-Wilk test: statistic={shapiro_stat:.4f}, p-value={shapiro_p:.4f}")
-    
-    # Jarque-Bera test for normality
-    jb_stat, jb_p = jarque_bera(residuals)
-    print(f"Jarque-Bera test: statistic={jb_stat:.4f}, p-value={jb_p:.4f}")
-    
-    return residuals
-```
+**Python Implementation:** [polynomial_regression.py](code/polynomial_regression.py) - `analyze_polynomial_residuals()` function
+
+The residual analysis implementation includes:
+
+- **Diagnostic Plots**: Comprehensive 2x2 grid of residual plots
+- **Normality Tests**: Shapiro-Wilk and Jarque-Bera tests for residual normality
+- **Visualization**: Residuals vs fitted, Q-Q plots, residuals vs predictor, and histogram
+- **Statistical Validation**: Formal hypothesis tests for model assumptions
+
+Key features:
+- Complete diagnostic suite for polynomial regression
+- Integration with scipy for statistical testing
+- Publication-quality visualization
+- Comprehensive model validation tools
 
 ### Cross-Validation for Model Selection
 
-```python
-def cross_validate_polynomial_degree(X, y, max_degree=10, cv_folds=5):
-    """
-    Cross-validation for polynomial degree selection
-    """
-    from sklearn.model_selection import KFold
-    
-    kf = KFold(n_splits=cv_folds, shuffle=True, random_state=42)
-    cv_scores = []
-    
-    for degree in range(1, max_degree + 1):
-        fold_scores = []
-        
-        for train_idx, val_idx in kf.split(X):
-            X_train, X_val = X[train_idx], X[val_idx]
-            y_train, y_val = y[train_idx], y[val_idx]
-            
-            # Fit model
-            model = PolynomialRegression(degree=degree)
-            model.fit(X_train, y_train)
-            
-            # Predict and calculate MSE
-            y_pred = model.predict(X_val)
-            mse = mean_squared_error(y_val, y_pred)
-            fold_scores.append(mse)
-        
-        cv_scores.append(np.mean(fold_scores))
-    
-    # Find optimal degree
-    optimal_degree = np.argmin(cv_scores) + 1
-    
-    # Plot CV scores
-    plt.figure(figsize=(10, 6))
-    plt.plot(range(1, max_degree + 1), cv_scores, 'bo-')
-    plt.axvline(x=optimal_degree, color='r', linestyle='--', 
-                label=f'Optimal degree: {optimal_degree}')
-    plt.xlabel('Polynomial Degree')
-    plt.ylabel('Cross-Validation MSE')
-    plt.title('Cross-Validation for Polynomial Degree Selection')
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.show()
-    
-    return optimal_degree, cv_scores
-```
+**Python Implementation:** [polynomial_regression.py](code/polynomial_regression.py) - `cross_validate_polynomial_degree()` function
+
+The cross-validation implementation includes:
+
+- **K-Fold Cross-Validation**: Systematic evaluation of polynomial degrees
+- **Optimal Degree Selection**: Automatic identification of best polynomial degree
+- **Visualization**: Plot of CV scores vs polynomial degree
+- **Robust Evaluation**: Multiple fold evaluation for reliable model selection
+
+Key features:
+- Integration with sklearn's KFold for robust validation
+- Automatic optimal degree identification
+- Comprehensive visualization of selection process
+- Reliable model selection methodology
 
 ## 5.1.6. Limitations and Alternatives
 
@@ -695,6 +295,19 @@ Polynomial regression provides a flexible approach to modeling nonlinear relatio
 5. **Limitations**: Overfitting, extrapolation issues, and global assumptions
 
 The method serves as a foundation for more advanced nonlinear regression techniques like splines and local polynomial methods.
+
+## Code Files Summary
+
+The following code files provide complete implementations of the concepts discussed in this chapter:
+
+### Python Implementation
+- **[polynomial_utilities.py](code/polynomial_utilities.py)**: Utility functions for orthogonal polynomials, feature creation, and model selection algorithms (forward/backward selection)
+- **[polynomial_regression.py](code/polynomial_regression.py)**: Complete polynomial regression implementation including the PolynomialRegression class, demonstration functions, residual analysis, and cross-validation
+
+### R Implementation
+- **[r_polynomial_regression.R](code/r_polynomial_regression.R)**: Complete R implementation using base R functions with comprehensive model fitting, evaluation, visualization, and diagnostic tools
+
+Each file includes comprehensive examples, demonstrations, and analysis tools to help understand and apply polynomial regression concepts in practice.
 
 ## References
 
