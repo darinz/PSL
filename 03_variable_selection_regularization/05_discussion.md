@@ -233,3 +233,9 @@ The choice of variable selection and regularization method depends critically on
 5. **Interpretability requirements**: Some methods provide better interpretability
 
 The simulation study framework provides a systematic way to compare methods across different scenarios, helping practitioners make informed decisions based on their specific problem characteristics and constraints.
+
+---
+
+**Navigation:**
+- **Next Topic:** *This is the last topic in the variable selection and regularization section*
+- **Previous Topic:** [Lasso Regression](04_lasso_regression.md) - L1 regularization and automatic variable selection
