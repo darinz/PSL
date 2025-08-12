@@ -319,3 +319,11 @@ The separable data problem in logistic regression is a fundamental issue that oc
 5. **Solutions**: Bayesian methods, Firth's correction, or exact methods
 
 Understanding this problem is crucial for practitioners, as it affects both model interpretation and computational stability. While the model may still be useful for prediction, inference on the coefficients becomes problematic.
+
+Understanding separable data is crucial for practical applications of logistic regression, as it helps practitioners recognize and handle cases where the model may not converge or may produce unrealistic parameter estimates.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Retrospective Sampling Data](04_retrospective_sampling_data.md) - Case-control studies and sampling bias correction
+- **Previous Topic:** [Maximum Likelihood Estimation](02_mle.md) - Likelihood function, optimization, and parameter estimation
