@@ -227,390 +227,25 @@ Ward's linkage is not directly comparable as it uses a different distance measur
 
 ## 6.4.8. Python Implementation
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.cluster.hierarchy import linkage, dendrogram, fcluster, cophenet
-from scipy.spatial.distance import pdist, squareform
-from sklearn.cluster import AgglomerativeClustering
-from sklearn.metrics import silhouette_score
-import seaborn as sns
+**Implementation:** See `HierarchicalClustering` class and demonstration functions in [hierarchical_clustering_implementation.py](code/hierarchical_clustering_implementation.py)
 
-class HierarchicalClustering:
-    """Comprehensive hierarchical clustering implementation."""
-    
-    def __init__(self, method='complete', metric='euclidean'):
-        self.method = method
-        self.metric = metric
-        self.linkage_matrix = None
-        self.distance_matrix = None
-        
-    def fit(self, X):
-        """Fit hierarchical clustering to the data."""
-        # Compute distance matrix
-        self.distance_matrix = pdist(X, metric=self.metric)
-        
-        # Perform hierarchical clustering
-        self.linkage_matrix = linkage(self.distance_matrix, method=self.method)
-        
-        return self
-    
-    def get_clusters(self, n_clusters=None, height=None):
-        """Extract clusters from the dendrogram."""
-        if n_clusters is not None:
-            return fcluster(self.linkage_matrix, t=n_clusters, criterion='maxclust')
-        elif height is not None:
-            return fcluster(self.linkage_matrix, t=height, criterion='distance')
-        else:
-            raise ValueError("Must specify either n_clusters or height")
-    
-    def plot_dendrogram(self, max_d=None, title=None):
-        """Plot the dendrogram."""
-        plt.figure(figsize=(12, 8))
-        
-        # Create dendrogram
-        dendrogram(
-            self.linkage_matrix,
-            max_d=max_d,
-            leaf_rotation=90,
-            leaf_font_size=10,
-            show_leaf_counts=True
-        )
-        
-        plt.title(title or f'Hierarchical Clustering Dendrogram ({self.method} linkage)')
-        plt.xlabel('Sample Index')
-        plt.ylabel('Distance')
-        plt.tight_layout()
-        plt.show()
-    
-    def cophenetic_correlation(self):
-        """Compute cophenetic correlation coefficient."""
-        c, coph_dists = cophenet(self.linkage_matrix, self.distance_matrix)
-        return c
-    
-    def compare_linkage_methods(self, X, methods=['single', 'complete', 'average', 'ward']):
-        """Compare different linkage methods."""
-        results = {}
-        
-        for method in methods:
-            # Fit clustering
-            hc = HierarchicalClustering(method=method)
-            hc.fit(X)
-            
-            # Compute cophenetic correlation
-            cophenetic_corr = hc.cophenetic_correlation()
-            
-            # Compute silhouette scores for different K
-            silhouette_scores = []
-            for k in range(2, min(11, len(X))):
-                labels = hc.get_clusters(n_clusters=k)
-                if len(np.unique(labels)) > 1:
-                    score = silhouette_score(X, labels)
-                    silhouette_scores.append(score)
-                else:
-                    silhouette_scores.append(0)
-            
-            results[method] = {
-                'cophenetic_correlation': cophenetic_corr,
-                'silhouette_scores': silhouette_scores,
-                'linkage_matrix': hc.linkage_matrix
-            }
-        
-        return results
-    
-    def plot_comparison(self, X, methods=['single', 'complete', 'average', 'ward']):
-        """Plot comparison of different linkage methods."""
-        results = self.compare_linkage_methods(X, methods)
-        
-        fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-        axes = axes.ravel()
-        
-        for i, method in enumerate(methods):
-            # Plot dendrogram
-            hc = HierarchicalClustering(method=method)
-            hc.fit(X)
-            
-            dendrogram(hc.linkage_matrix, ax=axes[i], leaf_rotation=90, leaf_font_size=8)
-            axes[i].set_title(f'{method.capitalize()} Linkage')
-            axes[i].set_xlabel('Sample Index')
-            axes[i].set_ylabel('Distance')
-        
-        plt.tight_layout()
-        plt.show()
-        
-        # Plot silhouette scores
-        plt.figure(figsize=(10, 6))
-        for method in methods:
-            scores = results[method]['silhouette_scores']
-            plt.plot(range(2, len(scores) + 2), scores, marker='o', label=method.capitalize())
-        
-        plt.xlabel('Number of Clusters (K)')
-        plt.ylabel('Silhouette Score')
-        plt.title('Silhouette Scores for Different Linkage Methods')
-        plt.legend()
-        plt.grid(True, alpha=0.3)
-        plt.show()
-        
-        # Print cophenetic correlations
-        print("Cophenetic Correlation Coefficients:")
-        for method in methods:
-            print(f"{method.capitalize()}: {results[method]['cophenetic_correlation']:.4f}")
-
-def demonstrate_hierarchical_clustering():
-    """Demonstrate hierarchical clustering with various examples."""
-    
-    # Generate sample data
-    np.random.seed(42)
-    n_samples = 100
-    
-    # Create three well-separated clusters
-    cluster1 = np.random.normal([0, 0], [1, 1], (n_samples//3, 2))
-    cluster2 = np.random.normal([6, 6], [1, 1], (n_samples//3, 2))
-    cluster3 = np.random.normal([3, 9], [1, 1], (n_samples//3, 2))
-    
-    X = np.vstack([cluster1, cluster2, cluster3])
-    
-    print("=== Hierarchical Clustering Demonstration ===\n")
-    
-    # Initialize hierarchical clustering
-    hc = HierarchicalClustering(method='complete')
-    hc.fit(X)
-    
-    # Plot dendrogram
-    print("Plotting dendrogram...")
-    hc.plot_dendrogram(title="Complete Linkage Dendrogram")
-    
-    # Extract clusters
-    labels_3 = hc.get_clusters(n_clusters=3)
-    labels_5 = hc.get_clusters(n_clusters=5)
-    
-    # Visualize cluster assignments
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-    
-    scatter1 = axes[0].scatter(X[:, 0], X[:, 1], c=labels_3, cmap='viridis', alpha=0.7)
-    axes[0].set_title('3 Clusters')
-    axes[0].set_xlabel('Feature 1')
-    axes[0].set_ylabel('Feature 2')
-    plt.colorbar(scatter1, ax=axes[0])
-    
-    scatter2 = axes[1].scatter(X[:, 0], X[:, 1], c=labels_5, cmap='viridis', alpha=0.7)
-    axes[1].set_title('5 Clusters')
-    axes[1].set_xlabel('Feature 1')
-    axes[1].set_ylabel('Feature 2')
-    plt.colorbar(scatter2, ax=axes[1])
-    
-    plt.tight_layout()
-    plt.show()
-    
-    # Compare linkage methods
-    print("\nComparing different linkage methods...")
-    hc.plot_comparison(X)
-    
-    # Cophenetic correlation
-    print(f"\nCophenetic correlation: {hc.cophenetic_correlation():.4f}")
-    
-    # Evaluate clustering quality
-    silhouette_3 = silhouette_score(X, labels_3)
-    silhouette_5 = silhouette_score(X, labels_5)
-    print(f"Silhouette score (3 clusters): {silhouette_3:.4f}")
-    print(f"Silhouette score (5 clusters): {silhouette_5:.4f}")
-
-if __name__ == "__main__":
-    demonstrate_hierarchical_clustering()
-```
+The implementation includes:
+- **HierarchicalClustering class**: Complete hierarchical clustering implementation with various linkage methods
+- **Dendrogram visualization**: Publication-quality dendrogram plots with customizable parameters
+- **Cluster extraction**: Methods to extract clusters by number or height
+- **Linkage comparison**: Comprehensive comparison of different linkage methods with cophenetic correlation and silhouette analysis
+- **Demonstration functions**: Complete examples with synthetic data and real-world application scenarios
 
 ## 6.4.9. R Implementation
 
-```r
-# Hierarchical Clustering Implementation in R
-library(stats)
-library(cluster)
-library(dendextend)
-library(ggplot2)
-library(dplyr)
+**Implementation:** See `HierarchicalClustering` reference class and demonstration functions in [r_hierarchical_clustering_implementation.R](code/r_hierarchical_clustering_implementation.R)
 
-HierarchicalClustering <- setRefClass("HierarchicalClustering",
-  fields = list(
-    method = "character",
-    metric = "character",
-    linkage_matrix = "matrix",
-    distance_matrix = "dist"
-  ),
-  
-  methods = list(
-    
-    initialize = function(method = "complete", metric = "euclidean") {
-      method <<- method
-      metric <<- metric
-    },
-    
-    fit = function(X) {
-      # Compute distance matrix
-      distance_matrix <<- dist(X, method = metric)
-      
-      # Perform hierarchical clustering
-      hc <- hclust(distance_matrix, method = method)
-      linkage_matrix <<- hc$merge
-      
-      invisible(.self)
-    },
-    
-    get_clusters = function(n_clusters = NULL, height = NULL) {
-      if (!is.null(n_clusters)) {
-        cutree(hclust(distance_matrix, method = method), k = n_clusters)
-      } else if (!is.null(height)) {
-        cutree(hclust(distance_matrix, method = method), h = height)
-      } else {
-        stop("Must specify either n_clusters or height")
-      }
-    },
-    
-    plot_dendrogram = function(title = NULL) {
-      hc <- hclust(distance_matrix, method = method)
-      
-      plot(hc, 
-           main = title %||% paste("Hierarchical Clustering Dendrogram (", method, " linkage)"),
-           xlab = "Sample Index", 
-           ylab = "Distance",
-           sub = "")
-    },
-    
-    cophenetic_correlation = function() {
-      hc <- hclust(distance_matrix, method = method)
-      cor(distance_matrix, cophenetic(hc))
-    },
-    
-    compare_linkage_methods = function(X, methods = c("single", "complete", "average", "ward.D")) {
-      results <- list()
-      
-      for (method in methods) {
-        # Fit clustering
-        hc_temp <- HierarchicalClustering$new(method = method)
-        hc_temp$fit(X)
-        
-        # Compute cophenetic correlation
-        cophenetic_corr <- hc_temp$cophenetic_correlation()
-        
-        # Compute silhouette scores for different K
-        silhouette_scores <- numeric(9)  # K = 2 to 10
-        for (k in 2:10) {
-          labels <- hc_temp$get_clusters(n_clusters = k)
-          if (length(unique(labels)) > 1) {
-            silhouette_scores[k-1] <- mean(silhouette(labels, hc_temp$distance_matrix)[, 3])
-          }
-        }
-        
-        results[[method]] <- list(
-          cophenetic_correlation = cophenetic_corr,
-          silhouette_scores = silhouette_scores,
-          hclust_obj = hclust(hc_temp$distance_matrix, method = method)
-        )
-      }
-      
-      results
-    },
-    
-    plot_comparison = function(X, methods = c("single", "complete", "average", "ward.D")) {
-      results <- compare_linkage_methods(X, methods)
-      
-      # Plot dendrograms
-      par(mfrow = c(2, 2))
-      for (method in methods) {
-        plot(results[[method]]$hclust_obj, 
-             main = paste(toupper(method), "Linkage"),
-             xlab = "Sample Index", 
-             ylab = "Distance")
-      }
-      par(mfrow = c(1, 1))
-      
-      # Plot silhouette scores
-      silhouette_data <- data.frame()
-      for (method in methods) {
-        scores <- results[[method]]$silhouette_scores
-        silhouette_data <- rbind(silhouette_data, 
-                                data.frame(
-                                  K = 2:10,
-                                  Score = scores,
-                                  Method = method
-                                ))
-      }
-      
-      p <- ggplot(silhouette_data, aes(x = K, y = Score, color = Method)) +
-        geom_line() +
-        geom_point() +
-        labs(title = "Silhouette Scores for Different Linkage Methods",
-             x = "Number of Clusters (K)",
-             y = "Silhouette Score") +
-        theme_minimal() +
-        scale_color_viridis_d()
-      
-      print(p)
-      
-      # Print cophenetic correlations
-      cat("Cophenetic Correlation Coefficients:\n")
-      for (method in methods) {
-        cat(sprintf("%s: %.4f\n", toupper(method), results[[method]]$cophenetic_correlation))
-      }
-    }
-  )
-)
-
-# Example usage and demonstration
-demonstrate_hierarchical_clustering <- function() {
-  cat("=== Hierarchical Clustering Demonstration ===\n\n")
-  
-  # Generate sample data
-  set.seed(42)
-  n_samples <- 100
-  
-  # Create three well-separated clusters
-  cluster1 <- matrix(rnorm(n_samples/3 * 2, mean = c(0, 0), sd = 1), ncol = 2)
-  cluster2 <- matrix(rnorm(n_samples/3 * 2, mean = c(6, 6), sd = 1), ncol = 2)
-  cluster3 <- matrix(c(rnorm(n_samples/3, mean = 3, sd = 1), 
-                       rnorm(n_samples/3, mean = 9, sd = 1)), ncol = 2)
-  
-  X <- rbind(cluster1, cluster2, cluster3)
-  
-  # Initialize hierarchical clustering
-  hc <- HierarchicalClustering$new(method = "complete")
-  hc$fit(X)
-  
-  # Plot dendrogram
-  cat("Plotting dendrogram...\n")
-  hc$plot_dendrogram("Complete Linkage Dendrogram")
-  
-  # Extract clusters
-  labels_3 <- hc$get_clusters(n_clusters = 3)
-  labels_5 <- hc$get_clusters(n_clusters = 5)
-  
-  # Visualize cluster assignments
-  par(mfrow = c(1, 2))
-  
-  plot(X[, 1], X[, 2], col = labels_3, pch = 19, 
-       main = "3 Clusters", xlab = "Feature 1", ylab = "Feature 2")
-  
-  plot(X[, 1], X[, 2], col = labels_5, pch = 19, 
-       main = "5 Clusters", xlab = "Feature 1", ylab = "Feature 2")
-  
-  par(mfrow = c(1, 1))
-  
-  # Compare linkage methods
-  cat("\nComparing different linkage methods...\n")
-  hc$plot_comparison(X)
-  
-  # Cophenetic correlation
-  cat(sprintf("\nCophenetic correlation: %.4f\n", hc$cophenetic_correlation()))
-  
-  # Evaluate clustering quality
-  silhouette_3 <- mean(silhouette(labels_3, hc$distance_matrix)[, 3])
-  silhouette_5 <- mean(silhouette(labels_5, hc$distance_matrix)[, 3])
-  cat(sprintf("Silhouette score (3 clusters): %.4f\n", silhouette_3))
-  cat(sprintf("Silhouette score (5 clusters): %.4f\n", silhouette_5))
-}
-
-# Run demonstration
-demonstrate_hierarchical_clustering()
-```
+The implementation includes:
+- **HierarchicalClustering reference class**: Complete hierarchical clustering implementation with various linkage methods using R's object-oriented programming
+- **Dendrogram visualization**: Publication-quality dendrogram plots with customizable parameters
+- **Cluster extraction**: Methods to extract clusters by number or height using R's native functions
+- **Linkage comparison**: Comprehensive comparison of different linkage methods with cophenetic correlation and silhouette analysis
+- **Demonstration functions**: Complete examples with synthetic data and real-world application scenarios using ggplot2 for visualization
 
 ## 6.4.10. Summary and Best Practices
 
@@ -657,3 +292,26 @@ demonstrate_hierarchical_clustering()
 - **Fast hierarchical clustering**: Approximate methods for large datasets
 - **Consensus clustering**: Combining multiple hierarchical clusterings
 - **Bootstrap hierarchical clustering**: Assessing cluster stability
+
+## Code Files Summary
+
+The following code files contain the complete implementations for hierarchical clustering:
+
+### Python Files
+- **[hierarchical_clustering_implementation.py](code/hierarchical_clustering_implementation.py)**: Main implementation with HierarchicalClustering class, dendrogram visualization, and comprehensive analysis tools
+
+### R Files
+- **[r_hierarchical_clustering_implementation.R](code/r_hierarchical_clustering_implementation.R)**: Complete R implementation with HierarchicalClustering reference class and ggplot2 visualizations
+
+### Key Features Implemented
+- **HierarchicalClustering Class**: Complete implementation with various linkage methods (single, complete, average, ward)
+- **Dendrogram Visualization**: Publication-quality dendrogram plots with customizable parameters and cut lines
+- **Cluster Extraction**: Methods to extract clusters by number or height with comprehensive statistics
+- **Linkage Comparison**: Systematic comparison of different linkage methods with cophenetic correlation and silhouette analysis
+- **Cophenetic Correlation**: Assessment of clustering quality and dendrogram distortion
+- **Silhouette Analysis**: Evaluation of cluster cohesion and separation for different K values
+- **Visualization Tools**: Multi-panel plots for data, dendrograms, and cluster assignments using matplotlib/seaborn and ggplot2
+- **Method Analysis**: Comprehensive analysis of linkage methods on different data types (well-separated, overlapping, chain-like)
+- **Cluster Extraction Demonstration**: Multiple approaches to extracting clusters from hierarchical structures
+- **Robust Implementation**: Error handling, reproducibility controls, and comprehensive documentation
+- **Demonstration Functions**: Complete examples with synthetic data and real-world application scenarios
