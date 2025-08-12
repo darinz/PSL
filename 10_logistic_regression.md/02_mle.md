@@ -247,3 +247,9 @@ P(Y=k|X=x) = \frac{\exp(x^T \beta_k)}{\sum_{j=1}^K \exp(x^T \beta_j)}
 Use MCMC or variational inference to obtain posterior distributions of parameters.
 
 The MLE approach provides a solid foundation for understanding and implementing logistic regression, with clear connections to both linear regression and modern machine learning techniques.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Separable Data](03_seperable_data.md) - Handling perfectly separable data and convergence issues
+- **Previous Topic:** [Setup and Introduction](01_setup.md) - Mathematical foundations and problem formulation
