@@ -240,38 +240,48 @@ See the complete implementation in [`code/frisch_waugh_lovell.py`](code/frisch_w
 
 Hypothesis testing is essential for determining whether relationships in your data are statistically significant or merely due to chance. In linear regression, we use hypothesis tests to assess the significance of individual coefficients and the overall model fit.
 
+**Intuitive Understanding**: Hypothesis testing in linear regression is like conducting taste tests to see if your recipe really works. You're asking questions like "Is this ingredient really making a difference?" or "Is my recipe better than just guessing?" The tests help you distinguish between real effects and random chance.
+
 ### Mathematical Foundation of Hypothesis Testing
 
 #### The F-Test: Testing Model Significance
 
 The F-test is the most fundamental hypothesis test in linear regression. It compares two nested models to determine whether adding predictors significantly improves the model fit.
 
+**Intuition**: The F-test is like comparing two recipes - a simple one and a more complex one - to see if the extra ingredients are worth the effort. It asks "Does the more complicated recipe taste significantly better?"
+
 **F-Test Statistic:**
 
 $$ F = \frac{(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)}{\text{RSS}_a/(n-p_a)} = \frac{\text{MSR}}{\text{MSE}} $$
 
 where:
-- $`\text{RSS}_0`$ = Residual Sum of Squares for the null model
-- $`\text{RSS}_a`$ = Residual Sum of Squares for the alternative model
-- $`p_0`$ = Number of parameters in the null model
-- $`p_a`$ = Number of parameters in the alternative model
-- $`n`$ = Number of observations
-- $`\text{MSR}`$ = Mean Square Regression = $`(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)`$
-- $`\text{MSE}`$ = Mean Square Error = $`\text{RSS}_a/(n-p_a)`$
+- $`\text{RSS}_0`$ = Residual Sum of Squares for the null model - like how much the simple recipe misses the mark
+- $`\text{RSS}_a`$ = Residual Sum of Squares for the alternative model - like how much the complex recipe misses the mark
+- $`p_0`$ = Number of parameters in the null model - like the number of ingredients in the simple recipe
+- $`p_a`$ = Number of parameters in the alternative model - like the number of ingredients in the complex recipe
+- $`n`$ = Number of observations - like the number of taste testers
+- $`\text{MSR}`$ = Mean Square Regression = $`(\text{RSS}_0 - \text{RSS}_a)/(p_a - p_0)`$ - like the improvement per extra ingredient
+- $`\text{MSE}`$ = Mean Square Error = $`\text{RSS}_a/(n-p_a)`$ - like the average mistake the complex recipe makes
+
+**Intuition**: The F-statistic compares how much the model improves (numerator) to how much error remains (denominator). A large F means the improvement is big compared to the remaining error.
 
 **Distribution Properties:**
-- Under the null hypothesis, $`F \sim F(p_a - p_0, n - p_a)`$
-- The F-distribution has two degrees of freedom: numerator $`(p_a - p_0)`$ and denominator $`(n - p_a)`$
-- Larger F-values indicate stronger evidence against the null hypothesis
-- The p-value gives the probability of observing such an F-statistic under the null hypothesis
+- Under the null hypothesis, $`F \sim F(p_a - p_0, n - p_a)`$ - like the F-distribution telling us what values to expect by chance
+- The F-distribution has two degrees of freedom: numerator $`(p_a - p_0)`$ and denominator $`(n - p_a)`$ - like having two different ways to measure complexity
+- Larger F-values indicate stronger evidence against the null hypothesis - like bigger improvements being less likely to happen by chance
+- The p-value gives the probability of observing such an F-statistic under the null hypothesis - like the chance of getting such good results by luck
 
 #### Alternative Formulations of the F-Test
 
 **Using R²:**
 $$ F = \frac{R^2_a / (p_a - p_0)}{(1 - R^2_a) / (n - p_a)} $$
 
+**Intuition**: This version asks "How much of the story does the model tell (R²) compared to how much it doesn't tell (1-R²)?"
+
 **Using Explained and Unexplained Variance:**
 $$ F = \frac{\text{Explained Variance} / (p_a - p_0)}{\text{Unexplained Variance} / (n - p_a)} $$
+
+**Intuition**: This version asks "How much of the variation does the model explain compared to how much it doesn't explain?"
 
 ### Types of F-Tests in Linear Regression
 
@@ -280,56 +290,50 @@ $$ F = \frac{\text{Explained Variance} / (p_a - p_0)}{\text{Unexplained Variance
 Tests whether the model with all predictors is significantly better than a model with only an intercept.
 
 **Null Hypothesis:**
-```math
-H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0
-```
+$$ H_0: \beta_1 = \beta_2 = \cdots = \beta_p = 0 $$
 
 **Alternative Hypothesis:**
-```math
-H_a: \text{At least one } \beta_j \neq 0
-```
+$$ H_a: \text{At least one } \beta_j \neq 0 $$
+
+**Intuition**: This is like asking "Does my recipe work at all?" versus "Is it just as good as serving plain rice?"
 
 **Test Statistic:**
-```math
-F = \frac{\text{MSR}}{\text{MSE}} = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2 / p}{\sum_{i=1}^n (y_i - \hat{y}_i)^2 / (n-p-1)}
-```
+$$ F = \frac{\text{MSR}}{\text{MSE}} = \frac{\sum_{i=1}^n (\hat{y}_i - \bar{y})^2 / p}{\sum_{i=1}^n (y_i - \hat{y}_i)^2 / (n-p-1)} $$
+
+**Intuition**: This compares how much the model explains (compared to just predicting the average) to how much it doesn't explain.
 
 #### 2. Partial F-Test (Individual Predictor Significance)
 
 Tests whether adding a specific predictor significantly improves the model.
 
 **Null Hypothesis:**
-```math
-H_0: \beta_j = 0
-```
+$$ H_0: \beta_j = 0 $$
 
 **Alternative Hypothesis:**
-```math
-H_a: \beta_j \neq 0
-```
+$$ H_a: \beta_j \neq 0 $$
+
+**Intuition**: This is like asking "Does this specific ingredient really make a difference?"
 
 **Test Statistic:**
-```math
-F = \frac{(\text{RSS}_{\text{reduced}} - \text{RSS}_{\text{full}}) / 1}{\text{RSS}_{\text{full}} / (n-p-1)}
-```
+$$ F = \frac{(\text{RSS}_{\text{reduced}} - \text{RSS}_{\text{full}}) / 1}{\text{RSS}_{\text{full}} / (n-p-1)} $$
 
 where the reduced model excludes predictor $`X_j`$ and the full model includes all predictors.
+
+**Intuition**: This compares how much worse the model gets when you remove one ingredient to how much error remains in the full model.
 
 #### 3. General Linear Hypothesis Test
 
 Tests whether a set of linear constraints on the coefficients holds.
 
 **Null Hypothesis:**
-```math
-H_0: \mathbf{L}\boldsymbol{\beta} = \mathbf{c}
-```
+$$ H_0: \mathbf{L}\boldsymbol{\beta} = \mathbf{c} $$
 
 where $`\mathbf{L}`$ is a matrix of constraints and $`\mathbf{c}`$ is a vector of constants.
 
+**Intuition**: This is like testing more complex hypotheses, such as "Do two ingredients have the same effect?" or "Does the sum of three ingredients equal a specific amount?"
+
 **Test Statistic:**
-```math
-F = \frac{(\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c})^T [\mathbf{L}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{L}^T]^{-1} (\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c}) / q}{\text{MSE}}
-```
+$$ F = \frac{(\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c})^T [\mathbf{L}(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{L}^T]^{-1} (\mathbf{L}\hat{\boldsymbol{\beta}} - \mathbf{c}) / q}{\text{MSE}} $$
 
 where $`q`$ is the number of constraints.
 
@@ -338,70 +342,68 @@ where $`q`$ is the number of constraints.
 **1. Overall F-Test (Model Significance):**
 Tests whether the model with all predictors is significantly better than a model with only an intercept.
 
-```math
-\begin{aligned}
+$$ \begin{aligned}
 H_0 &: Y = \beta_0 + \epsilon \\
 H_a &: Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon
-\end{aligned}
-```
+\end{aligned} $$
+
+**Intuition**: This is like comparing a complex recipe to just serving the basic ingredient.
 
 **2. Partial F-Test (Individual Predictor Significance):**
 Tests whether adding a specific predictor significantly improves the model.
 
-```math
-\begin{aligned}
+$$ \begin{aligned}
 H_0 &: Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_{j-1} X_{j-1} + \beta_{j+1} X_{j+1} + \cdots + \beta_p X_p + \epsilon \\
 H_a &: Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon
-\end{aligned}
-```
+\end{aligned} $$
+
+**Intuition**: This is like testing whether adding one specific ingredient improves the recipe.
 
 ### t-Test: Testing Individual Coefficients
 
 The t-test for individual coefficients is a special case of the F-test when testing a single coefficient. For the $`j`$-th coefficient:
 
-```math
-t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)}
-```
+$$ t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)} $$
 
 where $`\text{SE}(\hat{\beta}_j)`$ is the standard error of the coefficient estimate.
+
+**Intuition**: The t-test is like asking "How big is the effect of this ingredient compared to how uncertain we are about that effect?"
 
 #### Mathematical Derivation of Standard Errors
 
 The standard error of $`\hat{\beta}_j`$ is derived from the variance-covariance matrix of the coefficient estimates:
 
-```math
-\text{Var}(\hat{\boldsymbol{\beta}}) = \sigma^2 (\mathbf{X}^T\mathbf{X})^{-1}
-```
+$$ \text{Var}(\hat{\boldsymbol{\beta}}) = \sigma^2 (\mathbf{X}^T\mathbf{X})^{-1} $$
 
 The standard error of $`\hat{\beta}_j`$ is:
-```math
-\text{SE}(\hat{\beta}_j) = \sqrt{\text{Var}(\hat{\beta}_j)} = \sqrt{\sigma^2 [(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}}
-```
+$$ \text{SE}(\hat{\beta}_j) = \sqrt{\text{Var}(\hat{\beta}_j)} = \sqrt{\sigma^2 [(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}} $$
 
 where $`[(\mathbf{X}^T\mathbf{X})^{-1}]_{jj}`$ is the $`j`$-th diagonal element of $`(\mathbf{X}^T\mathbf{X})^{-1}`$.
 
+**Intuition**: The standard error measures how uncertain we are about the coefficient estimate. It depends on how much noise there is in the data ($`\sigma^2`$) and how well we can estimate the coefficient given the data structure.
+
 Since $`\sigma^2`$ is unknown, we estimate it using the mean squared error:
-```math
-\hat{\sigma}^2 = \text{MSE} = \frac{\text{RSS}}{n-p-1}
-```
+$$ \hat{\sigma}^2 = \text{MSE} = \frac{\text{RSS}}{n-p-1} $$
+
+**Intuition**: We estimate the noise level by looking at how much the model misses the mark, on average.
 
 #### Distribution Properties
 
 Under the null hypothesis $`H_0: \beta_j = 0`$:
-```math
-t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)} \sim t(n-p-1)
-```
+$$ t_j = \frac{\hat{\beta}_j}{\text{SE}(\hat{\beta}_j)} \sim t(n-p-1) $$
 
 The t-statistic follows a t-distribution with $`n-p-1`$ degrees of freedom.
+
+**Intuition**: The t-distribution tells us what values of the t-statistic we would expect to see by chance if the ingredient really had no effect.
 
 #### Relationship Between t-Test and F-Test
 
 For testing a single coefficient, the t-test and F-test are equivalent:
-```math
-F = t^2
-```
+$$ F = t^2 $$
 
 This is because the F-distribution with 1 numerator degree of freedom is the square of the t-distribution.
+
+**Intuition**: When testing one ingredient, the t-test and F-test are asking the same question in slightly different ways.
 
 #### Comprehensive Python Example: Hypothesis Testing
 
@@ -411,36 +413,38 @@ See the complete implementation in [`code/hypothesis_testing.py`](code/hypothesi
 
 It's crucial to distinguish between **statistical significance** and **practical significance** when interpreting regression results. This distinction becomes particularly important with large sample sizes.
 
+**Intuitive Understanding**: Statistical significance is like having a very sensitive taste test that can detect tiny differences, while practical significance is about whether those differences matter in the real world. A recipe might be statistically better than plain rice, but if the improvement is tiny, it might not be worth the extra effort.
+
 #### Key Concepts
 
 **Statistical Significance (F-test):**
-- Tests whether the relationship exists in the population
-- Measures whether the observed relationship is unlikely to occur by chance
-- Depends on sample size, effect size, and variability
+- Tests whether the relationship exists in the population - like asking "Is there really a difference?"
+- Measures whether the observed relationship is unlikely to occur by chance - like asking "Could this happen by luck?"
+- Depends on sample size, effect size, and variability - like the sensitivity of your taste test
 
 **Practical Significance (R²):**
-- Measures the strength of the relationship
-- Indicates how much of the variance in the response is explained by the predictors
-- Independent of sample size (though precision increases with sample size)
+- Measures the strength of the relationship - like asking "How big is the difference?"
+- Indicates how much of the variance in the response is explained by the predictors - like asking "How much of the story does this tell?"
+- Independent of sample size (though precision increases with sample size) - like the actual size of the improvement
 
 #### Mathematical Relationship
 
 The F-statistic and R² are mathematically related:
 
-```math
-F = \frac{R^2 / p}{(1 - R^2) / (n - p - 1)}
-```
+$$ F = \frac{R^2 / p}{(1 - R^2) / (n - p - 1)} $$
 
 This shows that:
-- For a given R², F increases with sample size $`n`$
-- For a given sample size, F increases with R²
-- With large samples, even small R² values can lead to large F-statistics
+- For a given R², F increases with sample size $`n`$ - like having more taste testers making it easier to detect small differences
+- For a given sample size, F increases with R² - like bigger effects being easier to detect
+- With large samples, even small R² values can lead to large F-statistics - like very sensitive tests detecting tiny effects
+
+**Intuition**: This formula shows why large sample sizes can make tiny effects statistically significant even when they're not practically important.
 
 #### The Large Sample Size Effect
 
 With large sample sizes, even weak relationships can be statistically significant. A model might have:
-- Low R² (e.g., 0.05) indicating weak predictive power
-- Highly significant F-test (p < 0.001) indicating the relationship is not due to chance
+- Low R² (e.g., 0.05) indicating weak predictive power - like a recipe that's only slightly better than plain rice
+- Highly significant F-test (p < 0.001) indicating the relationship is not due to chance - like being very confident that there's a real difference
 
 **Example: Large Sample Size Effect**
 
@@ -449,24 +453,24 @@ The sample size effect demonstration is included in [`code/hypothesis_testing.py
 #### Guidelines for Interpretation
 
 **1. Consider Both Statistical and Practical Significance:**
-- A significant F-test doesn't guarantee a meaningful relationship
-- A high R² doesn't guarantee statistical significance (especially with small samples)
+- A significant F-test doesn't guarantee a meaningful relationship - like detecting a tiny improvement that's not worth the effort
+- A high R² doesn't guarantee statistical significance (especially with small samples) - like having a big effect but not enough data to be sure
 
 **2. Effect Size Guidelines:**
-- R² < 0.01: Negligible effect
-- 0.01 ≤ R² < 0.09: Small effect
-- 0.09 ≤ R² < 0.25: Medium effect
-- R² ≥ 0.25: Large effect
+- R² < 0.01: Negligible effect - like a difference so small you can't taste it
+- 0.01 ≤ R² < 0.09: Small effect - like a subtle improvement
+- 0.09 ≤ R² < 0.25: Medium effect - like a noticeable improvement
+- R² ≥ 0.25: Large effect - like a major improvement
 
 **3. Sample Size Considerations:**
-- With large samples (>1000), focus more on effect size than p-values
-- With small samples (<50), be cautious about interpreting non-significant results
-- Consider power analysis when designing studies
+- With large samples (>1000), focus more on effect size than p-values - like caring more about how big the improvement is than whether it's statistically detectable
+- With small samples (<50), be cautious about interpreting non-significant results - like not being sure about the effect when you have few taste testers
+- Consider power analysis when designing studies - like planning how many taste testers you need to detect a meaningful difference
 
 **4. Domain-Specific Interpretation:**
-- What constitutes a "meaningful" effect varies by field
-- Consider the cost and feasibility of interventions
-- Consult with subject matter experts
+- What constitutes a "meaningful" effect varies by field - like different standards for what counts as "good cooking"
+- Consider the cost and feasibility of interventions - like whether the extra ingredients are worth the cost
+- Consult with subject matter experts - like asking experienced chefs for advice
 
 ---
 
@@ -474,76 +478,72 @@ The sample size effect demonstration is included in [`code/hypothesis_testing.py
 
 Categorical variables require special treatment in linear regression because the model expects numerical inputs. The most common approach is one-hot encoding (dummy coding), but there are several encoding strategies available depending on the nature of the categorical variable and the research question.
 
+**Intuitive Understanding**: Categorical variables are like different types of ingredients that can't be measured on a continuous scale. You can't say "add 2.5 cups of salt" - you either add salt or you don't. Similarly, you can't say "this house is 2.5 bedrooms" - it's either 2 or 3 bedrooms. We need special ways to handle these discrete categories in our mathematical model.
+
 ### Mathematical Foundation
 
 #### One-Hot Encoding (Dummy Coding)
 
 One-hot encoding converts categorical variables into binary indicators. For a categorical variable with $`k`$ levels, we create $`k-1`$ dummy variables to avoid perfect multicollinearity.
 
+**Intuition**: One-hot encoding is like creating separate "yes/no" questions for each category. Instead of asking "What type of house is this?" we ask "Is this a 2-bedroom house?" "Is this a 3-bedroom house?" etc.
+
 **Mathematical Representation:**
 
 Consider a categorical variable $`C`$ with $`k`$ levels: $`\{c_1, c_2, \ldots, c_k\}`$
 
 We create $`k-1`$ dummy variables:
-```math
-D_j = \begin{cases}
+$$ D_j = \begin{cases}
 1 & \text{if } C = c_{j+1} \\
 0 & \text{otherwise}
-\end{cases}, \quad j = 1, 2, \ldots, k-1
-```
+\end{cases}, \quad j = 1, 2, \ldots, k-1 $$
 
 The regression model becomes:
-```math
-Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \cdots + \beta_{k-1} D_{k-1} + \epsilon
-```
+$$ Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \cdots + \beta_{k-1} D_{k-1} + \epsilon $$
 
 **Interpretation:**
-- $`\beta_0`$ = Expected response for the reference category $`c_1`$
-- $`\beta_j`$ = Expected difference in response between category $`c_{j+1}`$ and the reference category $`c_1`$
+- $`\beta_0`$ = Expected response for the reference category $`c_1`$ - like the baseline taste when using the default ingredient
+- $`\beta_j`$ = Expected difference in response between category $`c_{j+1}`$ and the reference category $`c_1`$ - like how much the taste changes when you use a different ingredient
 
 #### Example: Size Variable with Three Levels
 
 Consider a categorical variable `Size` with three levels: Small (S), Medium (M), Large (L).
 
 **Original Data:**
-```math
-\mathbf{C} = \begin{pmatrix}
+$$ \mathbf{C} = \begin{pmatrix}
 S \\
 S \\
 M \\
 M \\
 L \\
 L
-\end{pmatrix}
-```
+\end{pmatrix} $$
 
 **One-Hot Encoded Design Matrix:**
-```math
-\mathbf{D} = \begin{pmatrix}
+$$ \mathbf{D} = \begin{pmatrix}
 1 & 0 & 0 \\
 1 & 0 & 0 \\
 1 & 1 & 0 \\
 1 & 1 & 0 \\
 1 & 0 & 1 \\
 1 & 0 & 1
-\end{pmatrix}
-```
+\end{pmatrix} $$
 
 Here:
-- Column 1: Intercept (all ones)
-- Column 2: Medium dummy (1 if Medium, 0 otherwise)
-- Column 3: Large dummy (1 if Large, 0 otherwise)
-- Small is the reference category (all zeros in dummy columns)
+- Column 1: Intercept (all ones) - like the baseline for all dishes
+- Column 2: Medium dummy (1 if Medium, 0 otherwise) - like "Is this a medium-sized dish?"
+- Column 3: Large dummy (1 if Large, 0 otherwise) - like "Is this a large-sized dish?"
+- Small is the reference category (all zeros in dummy columns) - like the default size
 
 **Model Interpretation:**
-- $`\beta_0`$ = Expected response for Small
-- $`\beta_1`$ = Expected difference in response between Medium and Small
-- $`\beta_2`$ = Expected difference in response between Large and Small
+- $`\beta_0`$ = Expected response for Small - like the baseline taste for small dishes
+- $`\beta_1`$ = Expected difference in response between Medium and Small - like how much better medium dishes taste compared to small ones
+- $`\beta_2`$ = Expected difference in response between Large and Small - like how much better large dishes taste compared to small ones
 
 **Predicted Values:**
-- Small: $`\hat{Y} = \beta_0`$
-- Medium: $`\hat{Y} = \beta_0 + \beta_1`$
-- Large: $`\hat{Y} = \beta_0 + \beta_2`$
+- Small: $`\hat{Y} = \beta_0`$ - like the baseline prediction
+- Medium: $`\hat{Y} = \beta_0 + \beta_1`$ - like the baseline plus the medium effect
+- Large: $`\hat{Y} = \beta_0 + \beta_2`$ - like the baseline plus the large effect
 
 #### Comprehensive Python Example: Categorical Variables
 
@@ -553,31 +553,33 @@ See the complete implementation in [`code/categorical_variables.py`](code/catego
 
 When categorical variables interact with continuous variables, the effect of the continuous variable can differ by category.
 
+**Intuition**: Interactions are like having different cooking techniques for different types of ingredients. The effect of cooking time might be different for chicken versus fish, or the effect of temperature might be different for different types of dough.
+
 **Design Matrix with Interactions:**
 
 For a categorical variable `Size` and continuous variable `x`:
 
-```math
-\begin{pmatrix}
+$$ \begin{pmatrix}
 1 & 0 & 0 & x_1 & 0 & 0 \\
 1 & 0 & 0 & x_2 & 0 & 0 \\
 1 & 1 & 0 & x_3 & x_3 & 0 \\
 1 & 1 & 0 & x_4 & x_4 & 0 \\
 1 & 0 & 1 & x_5 & 0 & x_5 \\
 1 & 0 & 1 & x_6 & 0 & x_6
-\end{pmatrix}
-```
+\end{pmatrix} $$
 
 This matrix includes:
-- Intercept column (all ones)
-- Dummy variables for Medium and Large
-- Continuous variable `x`
-- Interaction terms: `x` × Medium and `x` × Large
+- Intercept column (all ones) - like the baseline for all dishes
+- Dummy variables for Medium and Large - like the size effects
+- Continuous variable `x` - like cooking time
+- Interaction terms: `x` × Medium and `x` × Large - like how cooking time affects different sizes differently
 
 **Model Interpretation:**
-- For Small: $`Y = \beta_0 + \beta_3 x`$
-- For Medium: $`Y = \beta_0 + \beta_1 + \beta_3 x + \beta_4 x = (\beta_0 + \beta_1) + (\beta_3 + \beta_4) x`$
-- For Large: $`Y = \beta_0 + \beta_2 + \beta_3 x + \beta_5 x = (\beta_0 + \beta_2) + (\beta_3 + \beta_5) x`$
+- For Small: $`Y = \beta_0 + \beta_3 x`$ - like the baseline plus the effect of cooking time for small dishes
+- For Medium: $`Y = \beta_0 + \beta_1 + \beta_3 x + \beta_4 x = (\beta_0 + \beta_1) + (\beta_3 + \beta_4) x`$ - like the medium baseline plus the medium-specific cooking time effect
+- For Large: $`Y = \beta_0 + \beta_2 + \beta_3 x + \beta_5 x = (\beta_0 + \beta_2) + (\beta_3 + \beta_5) x`$ - like the large baseline plus the large-specific cooking time effect
+
+**Intuition**: This allows the effect of cooking time to be different for different dish sizes, just like you might cook a small chicken breast differently than a large one.
 
 **Python Example: Categorical Variables**
 
@@ -592,14 +594,20 @@ For ordered categories, assign numerical values based on order.
 education_map = {'High School': 1, 'Bachelor': 2, 'Master': 3, 'PhD': 4}
 ```
 
+**Intuition**: This is like ranking ingredients by quality - you assume that higher numbers mean better quality.
+
 **2. Frequency Encoding:**
 Replace categories with their frequency in the dataset.
 ```python
 freq_encoding = df['category'].value_counts(normalize=True)
 ```
 
+**Intuition**: This is like using how common an ingredient is as a measure - rare ingredients might be more valuable.
+
 **3. Target Encoding:**
 Replace categories with the mean target value for that category (use with caution to avoid data leakage).
+
+**Intuition**: This is like using the average outcome for each category - but be careful not to use information from the future!
 
 ---
 
@@ -607,21 +615,25 @@ Replace categories with the mean target value for that category (use with cautio
 
 Collinearity occurs when predictors are highly correlated, making it difficult to determine the individual contribution of each predictor to the response.
 
+**Intuitive Understanding**: Collinearity is like having ingredients that are very similar to each other. If you have both "salt" and "sea salt" in your recipe, it's hard to tell which one is really contributing to the flavor. The model can't easily separate their individual effects.
+
 ### Detecting Collinearity
 
 **1. Correlation Matrix:**
 Examine pairwise correlations between predictors.
+
+**Intuition**: This is like checking how similar your ingredients are to each other. High correlations suggest ingredients that might be redundant.
 
 Correlation matrix analysis is included in [`code/collinearity_analysis.py`](code/collinearity_analysis.py) which demonstrates correlation heatmaps and VIF calculation.
 
 **2. Variance Inflation Factor (VIF):**
 VIF measures how much the variance of a coefficient is inflated due to collinearity.
 
-```math
-\text{VIF}_j = \frac{1}{1 - R_j^2}
-```
+$$ \text{VIF}_j = \frac{1}{1 - R_j^2} $$
 
 where $`R_j^2`$ is the R² from regressing predictor $`X_j`$ on all other predictors.
+
+**Intuition**: VIF measures how much one ingredient can be predicted from the other ingredients. A high VIF means the ingredient is redundant - you could almost guess how much of it to use based on the other ingredients.
 
 **Python Example: VIF Calculation**
 
@@ -630,15 +642,21 @@ VIF calculation and analysis is included in [`code/collinearity_analysis.py`](co
 ### Consequences of Collinearity
 
 **1. Unstable Coefficients:**
-- Small changes in data can lead to large changes in coefficient estimates
-- Coefficients may have opposite signs from what theory suggests
+- Small changes in data can lead to large changes in coefficient estimates - like the recipe being very sensitive to small changes
+- Coefficients may have opposite signs from what theory suggests - like getting negative effects when you expect positive ones
+
+**Intuition**: This is like having a recipe that's very finicky - small changes in ingredients cause big changes in the result, and sometimes the effects don't make sense.
 
 **2. Inflated Standard Errors:**
-- Standard errors become large, making it difficult to reject null hypotheses
-- Confidence intervals become wide
+- Standard errors become large, making it difficult to reject null hypotheses - like being very uncertain about the effects
+- Confidence intervals become wide - like having a wide range of possible effects
+
+**Intuition**: This is like being very uncertain about which ingredient is really important because they're so similar.
 
 **3. Reduced Statistical Power:**
-- Individual predictors may appear insignificant even when they are important
+- Individual predictors may appear insignificant even when they are important - like not being able to detect the effect of an important ingredient
+
+**Intuition**: This is like having a taste test that can't tell the difference between similar ingredients, even when one is clearly better.
 
 **Example: Collinearity Effects**
 
@@ -647,19 +665,28 @@ Collinearity effects demonstration is included in [`code/collinearity_analysis.p
 ### Addressing Collinearity
 
 **1. Remove Redundant Predictors:**
-- Use domain knowledge to identify and remove redundant variables
-- Use stepwise selection methods
+- Use domain knowledge to identify and remove redundant variables - like choosing the best version of similar ingredients
+- Use stepwise selection methods - like systematically testing which ingredients to keep
+
+**Intuition**: This is like cleaning up your recipe by removing duplicate or very similar ingredients.
 
 **2. Combine Predictors:**
-- Create composite variables (e.g., average of related measures)
-- Use principal components analysis (PCA)
+- Create composite variables (e.g., average of related measures) - like creating a "spice blend" from individual spices
+- Use principal components analysis (PCA) - like creating new "super ingredients" from combinations of old ones
+
+**Intuition**: This is like creating new ingredients that capture the important aspects of several similar ingredients.
 
 **3. Regularization:**
-- Ridge regression (L2 penalty)
-- Lasso regression (L1 penalty)
+- Ridge regression (L2 penalty) - like adding constraints that prevent any ingredient from being used in extreme amounts
+- Lasso regression (L1 penalty) - like forcing some ingredients to be used in zero amounts
+- Elastic net - like combining both approaches
+
+**Intuition**: This is like using cooking techniques that work even when you have similar ingredients.
 
 **4. Collect More Data:**
-- More observations can help reduce the impact of collinearity
+- More observations can help reduce the impact of collinearity - like having more taste tests to distinguish between similar ingredients
+
+**Intuition**: This is like having more opportunities to see the subtle differences between similar ingredients.
 
 ---
 
@@ -667,75 +694,83 @@ Collinearity effects demonstration is included in [`code/collinearity_analysis.p
 
 Linear regression relies on several assumptions. While violations don't necessarily invalidate the model, understanding them helps in proper interpretation and potential remedies.
 
+**Intuitive Understanding**: Model assumptions are like the rules that make a recipe work. If you follow the rules, the recipe turns out well. If you violate them, the result might still be edible, but it won't be what you expected. Understanding the assumptions helps you know when your model might not work as expected.
+
 ### The LINE Assumptions
 
 **L - Linearity:**
 The relationship between predictors and response is linear.
 
-```math
-Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon
-```
+$$ Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \epsilon $$
+
+**Intuition**: This means that adding more of an ingredient has a consistent effect. Adding 2 teaspoons of salt has twice the effect of adding 1 teaspoon.
 
 **I - Independence:**
 Observations are independent of each other.
 
+**Intuition**: This means that each dish you cook doesn't affect how the next dish turns out. Each observation is like cooking a separate dish.
+
 **N - Normality:**
 Errors are normally distributed: $`\epsilon \sim N(0, \sigma^2)`$
+
+**Intuition**: This means that the random variations in your cooking follow a bell curve - most dishes turn out close to what you expect, with fewer dishes being very different.
 
 **E - Equal Variance (Homoscedasticity):**
 Errors have constant variance across all values of predictors.
 
+**Intuition**: This means that the amount of random variation is the same whether you're cooking a small dish or a large dish.
+
 ### Checking Assumptions
 
 **1. Linearity:**
-- Plot residuals vs. fitted values
-- Plot residuals vs. individual predictors
-- Look for systematic patterns
+- Plot residuals vs. fitted values - like checking if the mistakes follow a pattern
+- Plot residuals vs. individual predictors - like checking if the mistakes depend on specific ingredients
+- Look for systematic patterns - like seeing if there's a method to the madness
 
 **Python Example: Linearity Check**
 
 Linearity assumption checking is included in [`code/model_assumptions_diagnostics.py`](code/model_assumptions_diagnostics.py) which provides comprehensive diagnostic plots and tests for all model assumptions.
 
 **2. Normality:**
-- Q-Q plot of residuals
-- Histogram of residuals
-- Shapiro-Wilk test
+- Q-Q plot of residuals - like checking if the mistakes follow the expected pattern
+- Histogram of residuals - like seeing the distribution of mistakes
+- Shapiro-Wilk test - like a formal test for normality
 
 **Python Example: Normality Check**
 
 Normality assumption checking is included in [`code/model_assumptions_diagnostics.py`](code/model_assumptions_diagnostics.py) which provides Q-Q plots, histograms, and statistical tests for normality.
 
 **3. Homoscedasticity:**
-- Plot residuals vs. fitted values
-- Look for funnel-shaped patterns
+- Plot residuals vs. fitted values - like checking if the size of mistakes varies
+- Look for funnel-shaped patterns - like seeing if mistakes get bigger or smaller with different predictions
 
 **4. Independence:**
-- Check for time series patterns if data is time-ordered
-- Look for clustering in residual plots
+- Check for time series patterns if data is time-ordered - like seeing if today's cooking affects tomorrow's
+- Look for clustering in residual plots - like seeing if mistakes happen in groups
 
 ### Outlier Detection and Handling
 
 **Types of Outliers:**
 
-1. **Leverage Points:** Unusual values in predictors
-2. **Influential Points:** Points that significantly affect coefficient estimates
-3. **Outliers:** Points with large residuals
+1. **Leverage Points:** Unusual values in predictors - like using an extremely unusual ingredient
+2. **Influential Points:** Points that significantly affect coefficient estimates - like one dish that changes your entire recipe
+3. **Outliers:** Points with large residuals - like dishes that turn out very differently than expected
 
 **Detection Methods:**
 
 **1. Leverage (Hat Values):**
-```math
-H = X(X^T X)^{-1} X^T
-```
+$$ H = X(X^T X)^{-1} X^T $$
 
 The diagonal elements $`h_{ii}`$ measure leverage. Points with $`h_{ii} > 2(p+1)/n`$ are considered high leverage.
+
+**Intuition**: Leverage measures how much influence each observation has on its own prediction. It's like measuring how much each dish affects your recipe.
 
 **2. Cook's Distance:**
 Measures the influence of each observation on the entire regression.
 
-```math
-D_i = \frac{(\hat{\beta} - \hat{\beta}_{(i)})^T (X^T X) (\hat{\beta} - \hat{\beta}_{(i)})}{(p+1) \hat{\sigma}^2}
-```
+$$ D_i = \frac{(\hat{\beta} - \hat{\beta}_{(i)})^T (X^T X) (\hat{\beta} - \hat{\beta}_{(i)})}{(p+1) \hat{\sigma}^2} $$
+
+**Intuition**: Cook's distance measures how much the entire recipe changes when you remove one dish. It's like seeing how much your cooking style changes when you ignore one experience.
 
 **Python Example: Outlier Detection**
 
@@ -744,38 +779,40 @@ Outlier detection and analysis is included in [`code/model_assumptions_diagnosti
 ### Practical Recommendations
 
 **1. Data Inspection:**
-- Always examine your data for missing values, extreme values, and data quality issues
-- Use summary statistics and visualizations
+- Always examine your data for missing values, extreme values, and data quality issues - like checking your ingredients before cooking
+- Use summary statistics and visualizations - like tasting and smelling your ingredients
 
 **2. Transformations:**
-- Log transformation for right-skewed variables
-- Square root transformation for count data
-- Box-Cox transformation for general skewness
+- Log transformation for right-skewed variables - like adjusting for ingredients that have very wide ranges
+- Square root transformation for count data - like adjusting for ingredients you count rather than measure
+- Box-Cox transformation for general skewness - like a general method for adjusting ingredient distributions
 
 **3. Robust Methods:**
-- Use robust regression methods when assumptions are violated
-- Consider weighted least squares for heteroscedasticity
+- Use robust regression methods when assumptions are violated - like using cooking techniques that work even when things go wrong
+- Consider weighted least squares for heteroscedasticity - like giving more weight to dishes that are more reliable
 
 **4. Model Validation:**
-- Use cross-validation to assess model performance
-- Check for overfitting, especially with many predictors
+- Use cross-validation to assess model performance - like testing your recipe on different occasions
+- Check for overfitting, especially with many predictors - like making sure your recipe isn't too complicated
 
 **5. Domain Knowledge:**
-- Always consider the context and meaning of your variables
-- Consult with subject matter experts when possible
+- Always consider the context and meaning of your variables - like understanding what your ingredients really are
+- Consult with subject matter experts when possible - like asking experienced chefs for advice
 
 ---
 
 **Key Takeaways:**
 
-1. **Coefficient interpretation** requires understanding the context and potential confounding effects
-2. **Hypothesis testing** helps distinguish between statistical and practical significance
-3. **Categorical variables** need proper encoding to be included in regression models
-4. **Collinearity** can mask important relationships and should be addressed
-5. **Model assumptions** should be checked, but minor violations may not be critical
-6. **Outliers** should be investigated but not automatically removed without justification
+1. **Coefficient interpretation** requires understanding the context and potential confounding effects - like understanding that the effect of salt might depend on what else is in the dish
+2. **Hypothesis testing** helps distinguish between statistical and practical significance - like knowing when a difference is real versus when it matters
+3. **Categorical variables** need proper encoding to be included in regression models - like converting "types of ingredients" into numbers the model can use
+4. **Collinearity** can mask important relationships and should be addressed - like dealing with ingredients that are too similar to each other
+5. **Model assumptions** should be checked, but minor violations may not be critical - like following recipe rules but knowing when you can bend them
+6. **Outliers** should be investigated but not automatically removed without justification - like understanding why a dish turned out differently before deciding to ignore it
 
 Understanding these practical issues is essential for building reliable and interpretable linear regression models. The key is to combine statistical rigor with practical judgment and domain knowledge.
+
+**Intuition**: Practical issues in linear regression are like the real-world challenges that come up when you try to apply a perfect recipe in different kitchens. You need to understand the theory (the recipe), but you also need to know how to handle the practical complications (different ingredients, equipment, conditions) that arise in real-world applications.
 
 ---
 
