@@ -225,3 +225,9 @@ The key differences between misclassification rate and entropy are:
 - **Jensen's inequality** explains why concave functions work well for splits
 
 This understanding helps in choosing the right impurity measure for different stages of decision tree construction and optimization.
+
+---
+
+**Navigation:**
+- **Next Topic:** [AdaBoosting](04_ada-boosting.md) - Sequential ensemble learning with exponential loss
+- **Previous Topic:** [Impurity Measures](02_impurity_measures.md) - Mathematical foundations and properties of impurity measures
