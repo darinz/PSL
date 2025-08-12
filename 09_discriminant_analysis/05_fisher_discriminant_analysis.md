@@ -330,3 +330,9 @@ This example shows FDA applied to high-dimensional gene expression data, demonst
 4. **Limited Dimensions**: Maximum $`K-1`$ components
 
 Fisher Discriminant Analysis remains a powerful and interpretable method for supervised dimensionality reduction, providing a solid foundation for understanding the relationship between classes in high-dimensional data.
+
+---
+
+**Navigation:**
+- **Next Topic:** [Naive Bayes Classifiers](06_naive_bayes_classifiers.md) - Conditional independence assumption and probabilistic classification
+- **Previous Topic:** [Linear Discriminant Analysis](04_linear_discriminant_analysis.md) - Shared covariance assumption and linear decision boundaries
