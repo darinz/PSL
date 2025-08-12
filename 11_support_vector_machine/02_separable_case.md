@@ -248,3 +248,9 @@ The key insights are:
 - KKT conditions provide the theoretical foundation
 
 This formulation sets the stage for handling non-separable data (soft margin SVM) and non-linear decision boundaries (kernel SVM), which we'll explore in subsequent sections.
+
+---
+
+**Navigation:**
+- **Next Topic:** [The Non-separable Case](03_non-separable_case.md) - Soft margin SVM, slack variables, and regularization
+- **Previous Topic:** [Introduction to Support Vector Machines](01_introduction.md) - SVM motivation, linear separable case, duality, and kernel trick
