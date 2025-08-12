@@ -100,84 +100,19 @@ Let's examine the behavior at key probability values:
 
 ### Visualization of the Logit Function
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+The logit function visualization and its properties are implemented in the code files:
 
-def visualize_logit_function():
-    """
-    Visualize the logit function and its properties
-    """
-    # Generate probability values
-    p = np.linspace(0.01, 0.99, 1000)
-    
-    # Compute logit values
-    logit_p = np.log(p / (1 - p))
-    
-    # Create visualization
-    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-    
-    # Logit function
-    axes[0, 0].plot(p, logit_p, 'b-', linewidth=2)
-    axes[0, 0].axhline(y=0, color='r', linestyle='--', alpha=0.7)
-    axes[0, 0].axvline(x=0.5, color='r', linestyle='--', alpha=0.7)
-    axes[0, 0].set_xlabel('Probability η(x)')
-    axes[0, 0].set_ylabel('Logit g(η(x))')
-    axes[0, 0].set_title('Logit Function')
-    axes[0, 0].grid(True, alpha=0.3)
-    axes[0, 0].set_xlim(0, 1)
-    
-    # Inverse logit (sigmoid) function
-    x = np.linspace(-6, 6, 1000)
-    sigmoid_x = 1 / (1 + np.exp(-x))
-    
-    axes[0, 1].plot(x, sigmoid_x, 'g-', linewidth=2)
-    axes[0, 1].axhline(y=0.5, color='r', linestyle='--', alpha=0.7)
-    axes[0, 1].axvline(x=0, color='r', linestyle='--', alpha=0.7)
-    axes[0, 1].set_xlabel('Linear Predictor x^T β')
-    axes[0, 1].set_ylabel('Probability η(x)')
-    axes[0, 1].set_title('Sigmoid Function (Inverse Logit)')
-    axes[0, 1].grid(True, alpha=0.3)
-    
-    # Symmetry property
-    p_sym = np.linspace(0.1, 0.9, 100)
-    logit_p_sym = np.log(p_sym / (1 - p_sym))
-    logit_1_minus_p = np.log((1 - p_sym) / p_sym)
-    
-    axes[1, 0].plot(p_sym, logit_p_sym, 'b-', label='logit(p)', linewidth=2)
-    axes[1, 0].plot(p_sym, logit_1_minus_p, 'r--', label='logit(1-p)', linewidth=2)
-    axes[1, 0].set_xlabel('Probability p')
-    axes[1, 0].set_ylabel('Logit Value')
-    axes[1, 0].set_title('Symmetry: logit(p) = -logit(1-p)')
-    axes[1, 0].legend()
-    axes[1, 0].grid(True, alpha=0.3)
-    
-    # Decision boundary visualization
-    x1 = np.linspace(-3, 3, 100)
-    x2 = np.linspace(-3, 3, 100)
-    X1, X2 = np.meshgrid(x1, x2)
-    
-    # Example: β = [1, 1, -0.5] (intercept, x1, x2)
-    beta = np.array([-0.5, 1, 1])
-    Z = 1 / (1 + np.exp(-(beta[0] + beta[1] * X1 + beta[2] * X2)))
-    
-    contour = axes[1, 1].contourf(X1, X2, Z, levels=20, cmap='RdYlBu_r')
-    axes[1, 1].contour(X1, X2, Z, levels=[0.5], colors='black', linewidths=2)
-    axes[1, 1].set_xlabel('Feature 1')
-    axes[1, 1].set_ylabel('Feature 2')
-    axes[1, 1].set_title('Logistic Regression Decision Boundary')
-    axes[1, 1].grid(True, alpha=0.3)
-    plt.colorbar(contour, ax=axes[1, 1])
-    
-    plt.tight_layout()
-    plt.show()
-    
-    return p, logit_p, x, sigmoid_x
+**Python Implementation:** See `visualize_logit_function()` in [`code/setup_implementation.py`](code/setup_implementation.py)
 
-# Run visualization
-p_vals, logit_vals, x_vals, sigmoid_vals = visualize_logit_function()
-```
+**R Implementation:** See `visualize_logit_function_r()` in [`code/r_setup_implementation.R`](code/r_setup_implementation.R)
+
+These functions create comprehensive visualizations showing:
+- The logit function mapping probabilities to unconstrained values
+- The sigmoid (inverse logit) function mapping linear predictors to probabilities
+- The symmetry property of the logit function
+- Decision boundary visualization for logistic regression
+
+The visualizations demonstrate how the logit function transforms constrained probabilities (0,1) to unconstrained values (-∞, +∞), enabling the use of linear models for probability estimation.
 
 ## 10.1.4. The Sigmoid Function
 
@@ -288,87 +223,20 @@ L(\beta) = -\sum_{i=1}^n \left[ y_i \cdot x_i^T \beta - \log(1 + e^{x_i^T \beta}
 
 ### Visual Comparison
 
-```python
-def compare_loss_functions():
-    """
-    Compare MSE and log-likelihood loss functions
-    """
-    # Generate sample data
-    np.random.seed(42)
-    n_samples = 1000
-    
-    # True parameters
-    beta_true = np.array([-1.5, 2.0, -0.8])
-    
-    # Generate features
-    X = np.random.randn(n_samples, 2)
-    X_with_intercept = np.column_stack([np.ones(n_samples), X])
-    
-    # Generate true probabilities
-    logits = X_with_intercept @ beta_true
-    true_probs = 1 / (1 + np.exp(-logits))
-    
-    # Generate binary outcomes
-    y = np.random.binomial(1, true_probs)
-    
-    # Define loss functions
-    def mse_loss(beta, X, y):
-        """Mean squared error loss"""
-        probs = 1 / (1 + np.exp(-X @ beta))
-        return np.mean((y - probs)**2)
-    
-    def log_likelihood_loss(beta, X, y):
-        """Negative log-likelihood loss"""
-        logits = X @ beta
-        return -np.mean(y * logits - np.log(1 + np.exp(logits)))
-    
-    # Test different beta values
-    beta_range = np.linspace(-3, 3, 100)
-    mse_losses = []
-    ll_losses = []
-    
-    for beta_val in beta_range:
-        beta_test = np.array([beta_val, 2.0, -0.8])
-        mse_losses.append(mse_loss(beta_test, X_with_intercept, y))
-        ll_losses.append(log_likelihood_loss(beta_test, X_with_intercept, y))
-    
-    # Visualization
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # MSE Loss
-    axes[0].plot(beta_range, mse_losses, 'b-', linewidth=2)
-    axes[0].axvline(x=beta_true[0], color='r', linestyle='--', label='True β₀')
-    axes[0].set_xlabel('β₀ (Intercept)')
-    axes[0].set_ylabel('MSE Loss')
-    axes[0].set_title('Mean Squared Error Loss')
-    axes[0].legend()
-    axes[0].grid(True, alpha=0.3)
-    
-    # Log-Likelihood Loss
-    axes[1].plot(beta_range, ll_losses, 'g-', linewidth=2)
-    axes[1].axvline(x=beta_true[0], color='r', linestyle='--', label='True β₀')
-    axes[1].set_xlabel('β₀ (Intercept)')
-    axes[1].set_ylabel('Negative Log-Likelihood')
-    axes[1].set_title('Negative Log-Likelihood Loss')
-    axes[1].legend()
-    axes[1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    # Print comparison
-    print("Loss Function Comparison:")
-    print("-" * 40)
-    print(f"MSE Loss at true β₀: {mse_losses[50]:.6f}")
-    print(f"Log-Likelihood Loss at true β₀: {ll_losses[50]:.6f}")
-    print(f"MSE Loss gradient (approximate): {abs(mse_losses[51] - mse_losses[49]):.6f}")
-    print(f"Log-Likelihood gradient (approximate): {abs(ll_losses[51] - ll_losses[49]):.6f}")
-    
-    return mse_losses, ll_losses
+The comparison of MSE and log-likelihood loss functions is implemented in the code files:
 
-# Run comparison
-mse_losses, ll_losses = compare_loss_functions()
-```
+**Python Implementation:** See `compare_loss_functions()` in [`code/setup_implementation.py`](code/setup_implementation.py)
+
+**R Implementation:** See `compare_loss_functions_r()` in [`code/r_setup_implementation.R`](code/r_setup_implementation.R)
+
+These functions demonstrate the key differences between MSE and log-likelihood loss functions for logistic regression:
+
+- **MSE Loss**: Shows flat gradients and poor optimization properties
+- **Log-Likelihood Loss**: Provides meaningful gradients and better optimization characteristics
+- **Gradient Comparison**: Quantifies the difference in gradient magnitudes
+- **Visual Analysis**: Side-by-side plots showing loss landscapes
+
+The comparison reveals why log-likelihood is preferred over MSE for logistic regression, as it provides better optimization properties and statistical foundations.
 
 ## 10.1.8. Advantages of Log-Likelihood
 
@@ -412,65 +280,19 @@ In the following sections, we will:
 
 ### Implementation Preview
 
-```python
-def logistic_regression_setup_demo():
-    """
-    Demonstrate the complete setup of logistic regression
-    """
-    # Generate synthetic data
-    np.random.seed(42)
-    n_samples = 500
-    n_features = 2
-    
-    # True parameters
-    beta_true = np.array([-1.0, 2.0, -1.5])
-    
-    # Generate features
-    X = np.random.randn(n_samples, n_features)
-    X_with_intercept = np.column_stack([np.ones(n_samples), X])
-    
-    # Generate probabilities
-    logits = X_with_intercept @ beta_true
-    probabilities = 1 / (1 + np.exp(-logits))
-    
-    # Generate outcomes
-    y = np.random.binomial(1, probabilities)
-    
-    # Visualize the data
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-    
-    # Scatter plot
-    for i in range(2):
-        mask = y == i
-        axes[0].scatter(X[mask, 0], X[mask, 1], alpha=0.7, label=f'Class {i}')
-    
-    axes[0].set_xlabel('Feature 1')
-    axes[0].set_ylabel('Feature 2')
-    axes[0].set_title('Binary Classification Data')
-    axes[0].legend()
-    axes[0].grid(True, alpha=0.3)
-    
-    # Probability distribution
-    axes[1].hist(probabilities, bins=30, alpha=0.7, edgecolor='black')
-    axes[1].set_xlabel('True Probability P(Y=1|X)')
-    axes[1].set_ylabel('Frequency')
-    axes[1].set_title('Distribution of True Probabilities')
-    axes[1].grid(True, alpha=0.3)
-    
-    plt.tight_layout()
-    plt.show()
-    
-    print("Logistic Regression Setup Summary:")
-    print("-" * 40)
-    print(f"Number of samples: {n_samples}")
-    print(f"Number of features: {n_features}")
-    print(f"True parameters: {beta_true}")
-    print(f"Class balance: {np.mean(y):.3f} (proportion of class 1)")
-    
-    return X, y, beta_true
+The complete logistic regression setup demonstration is implemented in the code files:
 
-# Run setup demonstration
-X_data, y_data, beta_true_data = logistic_regression_setup_demo()
-```
+**Python Implementation:** See `logistic_regression_setup_demo()` in [`code/setup_implementation.py`](code/setup_implementation.py)
+
+**R Implementation:** See `logistic_regression_setup_demo_r()` in [`code/r_setup_implementation.R`](code/r_setup_implementation.R)
+
+These functions provide a comprehensive demonstration of the logistic regression setup:
+
+- **Data Generation**: Synthetic binary classification data with known parameters
+- **Visualization**: Scatter plots showing class separation and probability distributions
+- **Parameter Analysis**: Examination of true parameters and class balance
+- **Setup Summary**: Complete overview of the problem setup
+
+The demonstration shows how logistic regression transforms linear predictors into probabilities through the sigmoid function, creating a complete framework for binary classification.
 
 This setup provides the foundation for understanding Logistic Regression as a discriminative classification method that directly models posterior probabilities through a carefully chosen link function and loss function.
