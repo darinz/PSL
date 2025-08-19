@@ -38,3 +38,34 @@ Split 3:
 
 <img src="./img/split_3.png" width="550px">
 
+## How 'good' is a split?
+
+- Need to define a loss function L on a region
+- Loss of the parent region L(R_p) must be higher than that of child regions R_1 and R_2
+- When deciding which attribute to split on, pick the one which maximizes the 'gain' in the loss
+  - **Greedy splitting**
+
+$$L(R_p) - \frac{|R_1|L(R_1) + |R_2|L(R_2)}{|R_1| + |R_2|}$$
+
+## Why greedy splitting?
+
+- Checking every possible way of splitting every single feature in every possible order is computationally intractable!
+- Greedy splitting is much easier: just compute the loss for each feature you want to consider splitting on
+
+## Entropy loss
+
+### Definition
+
+- Looks like the cross-entropy loss that you have seen before
+- $\hat{p}_c$ is the prevalence of class c in region R
+- $L_{\text{cross}}(R) = 0$ if all the data in region R belongs to a single class
+
+$$L_{\text{cross}}(R) = - \sum_c \hat{p}_c \log_2 \hat{p}_c$$
+
+### Properties
+
+- Note that the entropy loss is convex
+- Can be shown that, under reasonable conditions, weighted average of children's loss is always less than parent's loss
+
+$$L(R_p) - \frac{|R_1|L(R_1) + |R_2|L(R_2)}{|R_1| + |R_2|}$$
+
