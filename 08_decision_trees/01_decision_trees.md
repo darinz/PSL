@@ -69,3 +69,33 @@ $$L_{\text{cross}}(R) = - \sum_c \hat{p}_c \log_2 \hat{p}_c$$
 
 $$L(R_p) - \frac{|R_1|L(R_1) + |R_2|L(R_2)}{|R_1| + |R_2|}$$
 
+## Common alternative: Gini impurity
+
+- Closely related to entropy loss
+- Default splitting loss for many ML libraries like scikit-learn
+
+$$I_G(\hat{p}) = \sum_{i=1}^{c} \hat{p}_i \left( \sum_{k \neq c} \hat{p}_k \right) = \sum_{i=1}^{c} \hat{p}_i (1 - \hat{p}_i)$$
+
+## What about regression?
+
+- Same growth process, but final prediction is now the mean of all datapoints in region:
+
+$$\hat{y} = \frac{\sum_{i \in R} y_i}{|R|}$$
+
+- Use least-squares loss to split:
+
+$$L_{\text{squared}}(R) = \frac{\sum_{i \in R} (y_i - \hat{y})^2}{|R|}$$
+
+## Regularization
+
+- Decision trees are highly prone to overfitting! High variance, low bias
+
+### Minimum leaf size
+- Do not split R if its cardinality falls below a fixed threshold
+
+### Maximum depth
+- Do not split R if more than a fixed threshold of splits were already taken to reach R
+
+### Maximum number of nodes
+- Stop if a tree has more than a fixed threshold of leaf nodes
+
