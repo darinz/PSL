@@ -44,6 +44,8 @@ Each split is defined by:
 
 This binary splitting approach creates a hierarchical structure where each internal node represents a decision rule, and each leaf node represents a final prediction region.
 
+### Split Example
+
 Split 1:
 
 <img src="./img/split_1.png" width="550px">
