@@ -61,9 +61,10 @@ Split 3:
 ## How 'good' is a split?
 
 - Need to define a loss function L on a region
-- Loss of the parent region L(R_p) must be higher than that of child regions R_1 and R_2
+- Loss of the parent region $L(R_p)$ must be higher than that of child regions $R_1$ and $R_2$
 - When deciding which attribute to split on, pick the one which maximizes the 'gain' in the loss
-  - **Greedy splitting**
+
+### **Greedy splitting**
 
 $$L(R_p) - \frac{|R_1|L(R_1) + |R_2|L(R_2)}{|R_1| + |R_2|}$$
 
