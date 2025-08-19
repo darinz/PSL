@@ -34,3 +34,7 @@ Split 2:
 
 <img src="./img/split_2.png" width="550px">
 
+Split 3:
+
+<img src="./img/split_3.png" width="550px">
+
