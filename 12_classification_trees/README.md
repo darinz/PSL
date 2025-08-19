@@ -4,6 +4,8 @@
 [![R](https://img.shields.io/badge/R-4.0+-green.svg)](https://www.r-project.org/)
 [![Status](https://img.shields.io/badge/Status-Complete-brightgreen.svg)](https://github.com/darinz/Statistical-Learning)
 
+> **Good Resource**: Before diving into this section, it's recommended to review Chapter 1 on Decision Trees from [A Course in Machine Learning](https://github.com/darinz/ML/blob/a7d4a50c31fc0301ecc1e90c3638d4ad6e4fbbbb/reference/ciml-v0_99-all.pdf) for foundational concepts.
+
 This section covers classification trees and boosting algorithms, building upon the concepts introduced in regression trees while focusing on classification problems.
 
   ![Example of a classification tree split.](../_images/w12_example.png)
