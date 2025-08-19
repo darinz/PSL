@@ -214,7 +214,6 @@ The final prediction is typically the average (for regression) or majority vote 
 - **Weak classifier can be decision tree of depth 1 (decision stump)**
 - **Theoretically, can achieve zero training loss!**
 - **Python libraries: LightGBM, XGBoost**
-- **More in the boosting pdf notes!**
 
 Boosting takes a fundamentally different approach from random forests. Instead of training independent trees, it builds an ensemble sequentially, where each new tree focuses on the mistakes made by the previous trees.
 
