@@ -2,27 +2,15 @@
 
 What makes a loan risky?
 
-I want to buy a new house! Loan Application
-- Credit History
-- Income
-- Term
-- Personal Info
+When applying for a loan to buy a new house, several key factors determine the risk assessment. The loan application process evaluates multiple aspects of the borrower's financial situation and personal circumstances.
 
-Credit History Explained
-- Did I pay previous loans on time?
-- Example: excellent, good, or fair
+**Credit History** is one of the most critical factors. Lenders examine whether the borrower has paid previous loans on time, looking for patterns of responsible financial behavior. Credit history is typically categorized as excellent, good, or fair based on past payment records and credit utilization.
 
-Income
-- What's my income?
-- Example: $80K per year
+**Income** represents the borrower's earning capacity and ability to make regular loan payments. Lenders assess the stability and amount of income, such as an annual salary of $80,000, to determine if the borrower can comfortably afford the loan payments.
 
-Loan terms
-- How soon do I need to pay the loan?
-- Example: 3 years, 5 years, ...
+**Loan Terms** specify the repayment timeline and conditions. This includes how soon the loan needs to be paid back, with common terms being 3 years, 5 years, or longer periods depending on the loan type and amount.
 
-Personal information
-- Age, reason for the loan, marital status, ...
-- Example: Home loan for a married couple
+**Personal Information** encompasses various demographic and situational factors including age, the reason for the loan, marital status, and other relevant details. For example, a home loan application for a married couple would be evaluated differently than a loan for a single individual.
 
 ## Classifier Review
 
