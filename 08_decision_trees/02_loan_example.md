@@ -242,3 +242,5 @@ The decision stump creates a simple classification rule:
 
 This demonstrates how even a simple single-level decision tree can capture meaningful patterns in the data, with credit history serving as a strong predictor of loan risk. The decision stump provides a baseline model that can be extended to more complex tree structures by adding additional splits at the intermediate nodes.
 
+## Selecting Best Feature to Split on
+
