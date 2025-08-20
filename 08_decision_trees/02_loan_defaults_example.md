@@ -1,6 +1,6 @@
 # Decision Trees - Predicting potential loan defaults
 
-What makes a loan risky?
+## What Makes a Loan Risky?
 
 When applying for a loan to buy a new house, several key factors determine the risk assessment. The loan application process evaluates multiple aspects of the borrower's financial situation and personal circumstances.
 
@@ -30,6 +30,8 @@ The classifier produces two possible outcomes:
 
 A decision tree provides an intuitive way to classify loan applications based on multiple criteria. Here's an example decision tree structure:
 
+<img src="./img/02_loan_decision_tree.png" width="500px">
+
 ### Decision Tree Structure
 
 The decision tree evaluates loan applications through a series of questions:
@@ -53,6 +55,8 @@ The decision tree evaluates loan applications through a series of questions:
 
 ### Example: Scoring a Loan Application
 
+<img src="./img/02_scoring.png" width="600px">
+
 Consider a loan application with the following characteristics:
 - **Credit:** poor
 - **Income:** high  
@@ -66,4 +70,53 @@ Consider a loan application with the following characteristics:
 **Result:** $\hat{y}_i = \text{Safe}$ (Loan approved)
 
 This decision tree demonstrates how multiple factors are considered in sequence to arrive at a final classification decision, with the path through the tree determined by the specific values of the input features.
+
+## Decision Tree Learning Task
+
+### The Learning Problem
+
+The decision tree learning problem involves constructing an optimal decision tree from training data. Given a dataset of $N$ observations $(x_i, y_i)$, where each $x_i$ represents the features of a loan application and $y_i$ is the corresponding classification (safe or risky), the goal is to learn a decision tree function $T(X)$ that accurately predicts the loan risk.
+
+**Training Data Structure:**
+The training dataset contains examples with the following features:
+- **Credit:** excellent, fair, poor
+- **Term:** 3 yrs, 5 yrs  
+- **Income:** high, low
+- **Target (y):** safe, risky
+
+The learning process optimizes a quality metric on the training data to find the best decision tree structure.
+
+### Quality Metric: Classification Error
+
+To evaluate the performance of a decision tree, we use classification error as the primary quality metric.
+
+**Definition:** Error measures the fraction of mistakes made by the classifier.
+
+**Formula:**
+$$\text{Error} = \frac{\text{# incorrect predictions}}{\text{# examples}}$$
+
+**Value Range:**
+- **Best possible value:** 0.0 (perfect classification)
+- **Worst possible value:** 1.0 (all predictions incorrect)
+
+The classification error provides a straightforward measure of how well the decision tree performs on the training data, with lower values indicating better performance.
+
+### The Challenge of Finding the Best Tree
+
+Decision tree learning presents a significant computational challenge due to the exponentially large number of possible tree configurations.
+
+**Complexity Problem:**
+The space of possible decision trees grows exponentially with the number of features and their possible values. For any given dataset, there are numerous valid tree structures that could be constructed, each with different branching patterns and decision rules.
+
+**NP-Hard Problem:**
+Learning the smallest (most parsimonious) decision tree that achieves optimal performance is an NP-hard problem, as proven by Hyafil & Rivest in 1976. This means that finding the globally optimal decision tree is computationally intractable for realistic problem sizes.
+
+**Multiple Valid Solutions:**
+Given the same training data, multiple different tree structures (denoted as $T_1(X)$ through $T_6(X)$ in the illustration) can achieve similar or identical performance on the training set. Each tree may have different:
+- Root node choices
+- Branching patterns
+- Decision thresholds
+- Overall complexity
+
+This inherent complexity necessitates the use of heuristic algorithms and greedy approaches to construct decision trees efficiently, trading optimality for computational feasibility.
 
