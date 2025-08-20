@@ -270,6 +270,8 @@ To select the best feature for a split, we compare the effectiveness of differen
 
 Let's compare two potential splits for our loan application data:
 
+<img src="./img/02_select_feature.png" width="650px">
+
 **Choice 1: Split on Credit**
 
 This split results in the following distribution:
@@ -293,9 +295,11 @@ To determine which of these splits is "better," we need a quantitative measure o
 
 The effectiveness of a split, and thus a decision stump, is typically measured by its **classification error**. The classification error quantifies the proportion of mistakes made by the stump when classifying the training data.
 
+<img src="./img/02_effectiveness.png" width="600px">
+
 The formula for classification error is:
 
-$$\text{Error} = \frac{\text{# mistakes}}{\text{# data points}}$$
+$$\text{Error} = \frac{\text{num mistakes}}{\text{num data points}}$$
 
 Let's calculate the classification error for the "Split on Credit" decision stump:
 
