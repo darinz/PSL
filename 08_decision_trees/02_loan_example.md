@@ -246,6 +246,8 @@ This demonstrates how even a simple single-level decision tree can capture meani
 
 ### How do we learn a decision stump?
 
+<img src="./img/02_decision_stump.png" width="500px">
+
 Learning a decision stump involves identifying the single "best" feature to split the data on. This process aims to create the most effective initial separation of data points based on their features.
 
 Consider our root node, which contains all 40 loan applications: `[22 Safe, 18 Risky]`. We need to find a feature that, when used as a split, best separates the safe from the risky loans.
@@ -253,6 +255,8 @@ Consider our root node, which contains all 40 loan applications: `[22 Safe, 18 R
 **Example: Splitting on Credit**
 
 If we choose to split on the `Credit` feature, the data is partitioned into three branches based on credit history:
+
+
 
 - **Root Node:** `[22 Safe, 18 Risky]`
   - **Credit = excellent:** This branch contains `[9 Safe, 0 Risky]` loans. All loans with excellent credit are safe.
