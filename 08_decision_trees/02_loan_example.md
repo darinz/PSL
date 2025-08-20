@@ -158,7 +158,7 @@ The dataset contains a mix of loan applications with varying credit histories, l
 
 When beginning the decision tree construction process, we start with the complete dataset and examine the overall distribution of loan outcomes.
 
-<img src="./img/02_all_data.png" width="450px">
+<img src="./img/02_all_data.png" width="400px">
 
 **Initial Data Distribution:**
 - **Safe loans:** 22 examples
@@ -168,6 +168,8 @@ When beginning the decision tree construction process, we start with the complet
 This initial state represents the root node of our decision tree, where all training examples are grouped together without any feature-based splitting.
 
 ### Compact Visual Notation: Root Node
+
+<img src="./img/02_root_node.png" width="400px">
 
 The root node can be represented using a compact visual notation that summarizes the class distribution:
 
