@@ -96,7 +96,7 @@ To evaluate the performance of a decision tree, we use classification error as t
 
 **Formula:**
 
-$$\text{Error} = \frac{\text{\# incorrect predictions}}{\text{\# examples}}$$
+$$\text{Error} = \frac{\text{num incorrect predictions}}{\text{num examples}}$$
 
 **Value Range:**
 - **Best possible value:** 0.0 (perfect classification)
