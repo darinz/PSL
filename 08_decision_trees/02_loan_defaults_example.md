@@ -30,9 +30,9 @@ Personal information
 
 In the context of loan applications, a classifier model takes loan application data as input and produces a predicted class as output. The process can be summarized as:
 
-**Input:** $x_i$ (Loan Application data)
-**Model:** Classifier MODEL
-**Output:** $\hat{y}_i$ (Predicted class)
+- **Input:** $x_i$ (Loan Application data)
+- **Model:** Classifier MODEL
+- **Output:** $\hat{y}_i$ (Predicted class)
 
 The classifier produces two possible outcomes:
 - **Safe** ($\hat{y}_i = +1$): Loan is approved
