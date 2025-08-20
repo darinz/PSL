@@ -158,7 +158,7 @@ The dataset contains a mix of loan applications with varying credit histories, l
 
 When beginning the decision tree construction process, we start with the complete dataset and examine the overall distribution of loan outcomes.
 
-<img src="./img/02_all_data.png" width="350px">
+<img src="./img/02_all_data.png" width="450px">
 
 **Initial Data Distribution:**
 - **Safe loans:** 22 examples
