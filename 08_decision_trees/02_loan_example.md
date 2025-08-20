@@ -180,13 +180,15 @@ The root node can be represented using a compact visual notation that summarizes
 
 Where:
 - **22** (green) represents the number of safe loans
-- **18** (orange) represents the number of risky loans
+- **18** (red) represents the number of risky loans
 
 This notation provides a concise way to represent the current state of the data at any node in the decision tree, making it easy to track how the data distribution changes as we apply different splitting criteria.
 
 The root node serves as the starting point for the greedy decision tree learning algorithm, from which we will iteratively apply feature-based splits to create a hierarchical classification structure.
 
 ### Decision Stump: Single Level Tree
+
+<img src="./img/02_stump.png" width="400px">
 
 A decision stump represents the simplest form of a decision tree - a single-level tree with one split. Starting from the root node containing all data `[22, 18]`, we apply a single feature-based split to create a decision stump.
 
@@ -204,9 +206,12 @@ This single split partitions the original dataset into three distinct subsets ba
 
 ### Visual Notation: Intermediate Nodes
 
+<img src="./img/02_intermediate.png" width="400px">
+
 The nodes created by the split are called intermediate nodes, as they represent subsets of data that could potentially be split further in a more complex tree structure.
 
 **Intermediate Node Representation:**
+
 Each intermediate node shows the class distribution for its corresponding data subset:
 
 - **excellent credit node:** `[9, 0]` - All excellent credit applications are safe
@@ -216,6 +221,8 @@ Each intermediate node shows the class distribution for its corresponding data s
 These intermediate nodes serve as the foundation for building more complex decision trees, where each node could potentially be split further based on additional features.
 
 ### Making Predictions with a Decision Stump
+
+<img src="./img/02_predictions.png" width="550px">
 
 To make predictions using a decision stump, we apply a simple majority rule at each intermediate node.
 
