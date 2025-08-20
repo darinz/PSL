@@ -1,4 +1,4 @@
-# Decision Trees - Predicting potential loan defaults
+# Decision Trees - Predicting Potential Loan Defaults
 
 ## What Makes a Loan Risky?
 
