@@ -220,3 +220,7 @@ Boosting takes a fundamentally different approach from random forests. Instead o
 The key insight is that by reweighting training samples based on their difficulty (how often they've been misclassified), the algorithm can focus on the most challenging cases. This adaptive approach often leads to better generalization than random forests, especially on complex datasets.
 
 The theoretical result about achieving zero training loss demonstrates the power of boosting, though in practice we typically stop early to prevent overfitting. Modern implementations like XGBoost and LightGBM add sophisticated regularization techniques to prevent overfitting while maintaining the benefits of boosting.
+
+## Additional Resources
+
+For a more comprehensive treatment of decision trees, including detailed mathematical derivations and advanced concepts, we recommend reviewing the Decision Trees Notes available in the reference materials: `N-01-2_CS229_Decision-Trees-Notes.pdf`. These notes provide deeper insights into the theoretical foundations and practical implementation details of decision tree algorithms.
