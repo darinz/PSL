@@ -186,8 +186,6 @@ This notation provides a concise way to represent the current state of the data 
 
 The root node serves as the starting point for the greedy decision tree learning algorithm, from which we will iteratively apply feature-based splits to create a hierarchical classification structure.
 
-
-
 ### Decision Stump: Single Level Tree
 
 A decision stump represents the simplest form of a decision tree - a single-level tree with one split. Starting from the root node containing all data `[22, 18]`, we apply a single feature-based split to create a decision stump.
