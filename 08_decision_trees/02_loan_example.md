@@ -244,3 +244,82 @@ This demonstrates how even a simple single-level decision tree can capture meani
 
 ## Selecting Best Feature to Split on
 
+### How do we learn a decision stump?
+
+Learning a decision stump involves identifying the single "best" feature to split the data on. This process aims to create the most effective initial separation of data points based on their features.
+
+Consider our root node, which contains all 40 loan applications: `[22 Safe, 18 Risky]`. We need to find a feature that, when used as a split, best separates the safe from the risky loans.
+
+**Example: Splitting on Credit**
+
+If we choose to split on the `Credit` feature, the data is partitioned into three branches based on credit history:
+
+- **Root Node:** `[22 Safe, 18 Risky]`
+  - **Credit = excellent:** This branch contains `[9 Safe, 0 Risky]` loans. All loans with excellent credit are safe.
+  - **Credit = fair:** This branch contains `[9 Safe, 4 Risky]` loans.
+  - **Credit = poor:** This branch contains `[4 Safe, 14 Risky]` loans.
+
+This single split forms a decision stump, where each leaf node (excellent, fair, poor) represents a prediction based on the majority class within that group.
+
+### How do we select the best feature?
+
+To select the best feature for a split, we compare the effectiveness of different potential features. We evaluate each possible decision stump and choose the one that performs best according to a defined metric.
+
+Let's compare two potential splits for our loan application data:
+
+**Choice 1: Split on Credit**
+
+This split results in the following distribution:
+
+- **Root Node:** `[22 Safe, 18 Risky]`
+  - **Credit = excellent:** `[9 Safe, 0 Risky]`
+  - **Credit = fair:** `[9 Safe, 4 Risky]`
+  - **Credit = poor:** `[4 Safe, 14 Risky]`
+
+**Choice 2: Split on Term**
+
+Alternatively, if we split on the `Term` feature, the data is partitioned as follows:
+
+- **Root Node:** `[22 Safe, 18 Risky]`
+  - **Term = 3 years:** This branch contains `[16 Safe, 4 Risky]` loans.
+  - **Term = 5 years:** This branch contains `[6 Safe, 14 Risky]` loans.
+
+To determine which of these splits is "better," we need a quantitative measure of effectiveness.
+
+### How do we measure effectiveness of a split?
+
+The effectiveness of a split, and thus a decision stump, is typically measured by its **classification error**. The classification error quantifies the proportion of mistakes made by the stump when classifying the training data.
+
+The formula for classification error is:
+
+$$\text{Error} = \frac{\text{# mistakes}}{\text{# data points}}$$
+
+Let's calculate the classification error for the "Split on Credit" decision stump:
+
+1. **For `Credit = excellent` node `[9 Safe, 0 Risky]`:**
+   - Majority class: Safe.
+   - Mistakes: 0 (all are Safe).
+   - Error for this node: $0 / 9 = 0.0$
+
+2. **For `Credit = fair` node `[9 Safe, 4 Risky]`:**
+   - Majority class: Safe (9 Safe vs 4 Risky).
+   - Mistakes: 4 (the 4 Risky loans are misclassified as Safe).
+   - Error for this node: $4 / 13 \approx 0.308$
+
+3. **For `Credit = poor` node `[4 Safe, 14 Risky]`:**
+   - Majority class: Risky (14 Risky vs 4 Safe).
+   - Mistakes: 4 (the 4 Safe loans are misclassified as Risky).
+   - Error for this node: $4 / 18 \approx 0.222$
+
+To calculate the overall classification error for the entire decision stump, we sum the mistakes from each leaf node and divide by the total number of data points (40):
+
+- Total mistakes = Mistakes from `excellent` + Mistakes from `fair` + Mistakes from `poor`
+  - Total mistakes = $0 + 4 + 4 = 8$
+- Total data points = $9 + 13 + 18 = 40$
+
+Overall Classification Error for "Split on Credit":
+
+$$\text{Error}_{\text{Credit}} = \frac{8}{40} = 0.20$$
+
+This error value helps us compare the "Credit" split against other potential splits, such as the "Term" split, to determine which feature yields a lower classification error and is therefore considered "better."
+
