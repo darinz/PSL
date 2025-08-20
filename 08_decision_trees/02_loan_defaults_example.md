@@ -77,6 +77,8 @@ This decision tree demonstrates how multiple factors are considered in sequence 
 
 The decision tree learning problem involves constructing an optimal decision tree from training data. Given a dataset of $N$ observations $(x_i, y_i)$, where each $x_i$ represents the features of a loan application and $y_i$ is the corresponding classification (safe or risky), the goal is to learn a decision tree function $T(X)$ that accurately predicts the loan risk.
 
+<img src="./img/02_training_data.png" width="500px">
+
 **Training Data Structure:**
 The training dataset contains examples with the following features:
 - **Credit:** excellent, fair, poor
@@ -93,7 +95,8 @@ To evaluate the performance of a decision tree, we use classification error as t
 **Definition:** Error measures the fraction of mistakes made by the classifier.
 
 **Formula:**
-$$\text{Error} = \frac{\text{# incorrect predictions}}{\text{# examples}}$$
+
+$$\text{Error} = \frac{\text{\# incorrect predictions}}{\text{\# examples}}$$
 
 **Value Range:**
 - **Best possible value:** 0.0 (perfect classification)
@@ -104,6 +107,8 @@ The classification error provides a straightforward measure of how well the deci
 ### The Challenge of Finding the Best Tree
 
 Decision tree learning presents a significant computational challenge due to the exponentially large number of possible tree configurations.
+
+<img src="./img/02_trees.png" width="500px">
 
 **Complexity Problem:**
 The space of possible decision trees grows exponentially with the number of features and their possible values. For any given dataset, there are numerous valid tree structures that could be constructed, each with different branching patterns and decision rules.
