@@ -127,5 +127,109 @@ Given the same training data, multiple different tree structures (denoted as $T_
 
 This inherent complexity necessitates the use of heuristic algorithms and greedy approaches to construct decision trees efficiently, trading optimality for computational feasibility.
 
-## Greedy Decision Tree Learning
+## Greedy Decision Tree Learning - Training Data and Initial Representation
+
+### Our Training Data Table
+
+To illustrate the decision tree learning process, we use a training dataset with $N = 40$ examples and 3 features. The dataset contains loan application information with the following structure:
+
+**Dataset Specifications:**
+- **Size:** $N = 40$ observations
+- **Features:** 3 (Credit, Term, Income)
+- **Target:** Binary classification (safe/risky)
+
+**Example Training Data:**
+| Credit    | Term   | Income | y      |
+|-----------|--------|--------|--------|
+| excellent | 3 yrs  | high   | safe   |
+| fair      | 5 yrs  | low    | risky  |
+| fair      | 3 yrs  | high   | safe   |
+| poor      | 5 yrs  | high   | risky  |
+| excellent | 3 yrs  | low    | risky  |
+| fair      | 5 yrs  | low    | safe   |
+| poor      | 3 yrs  | high   | risky  |
+| poor      | 5 yrs  | low    | safe   |
+| fair      | 3 yrs  | high   | safe   |
+| ...       | ...    | ...    | ...    |
+
+The dataset contains a mix of loan applications with varying credit histories, loan terms, and income levels, each labeled as either safe or risky based on historical outcomes.
+
+### Start with All the Data
+
+When beginning the decision tree construction process, we start with the complete dataset and examine the overall distribution of loan outcomes.
+
+**Initial Data Distribution:**
+- **Safe loans:** 22 examples
+- **Risky loans:** 18 examples
+- **Total examples:** $N = 40$
+
+This initial state represents the root node of our decision tree, where all training examples are grouped together without any feature-based splitting.
+
+### Compact Visual Notation: Root Node
+
+The root node can be represented using a compact visual notation that summarizes the class distribution:
+
+**Root Node Representation:**
+```
+[22, 18]
+```
+
+Where:
+- **22** (green) represents the number of safe loans
+- **18** (orange) represents the number of risky loans
+
+This notation provides a concise way to represent the current state of the data at any node in the decision tree, making it easy to track how the data distribution changes as we apply different splitting criteria.
+
+The root node serves as the starting point for the greedy decision tree learning algorithm, from which we will iteratively apply feature-based splits to create a hierarchical classification structure.
+
+
+
+### Decision Stump: Single Level Tree
+
+A decision stump represents the simplest form of a decision tree - a single-level tree with one split. Starting from the root node containing all data `[22, 18]`, we apply a single feature-based split to create a decision stump.
+
+**Decision Stump Structure:**
+The decision stump begins with the root node and applies a single split based on the Credit feature:
+
+- **Root Node:** `[22, 18]` (all data)
+- **Split Feature:** Credit
+- **Split Outcomes:**
+  - **excellent:** `[9, 0]` - Subset of data with Credit = excellent
+  - **fair:** `[9, 4]` - Subset of data with Credit = fair  
+  - **poor:** `[4, 14]` - Subset of data with Credit = poor
+
+This single split partitions the original dataset into three distinct subsets based on credit history, with each subset containing a different distribution of safe and risky loans.
+
+### Visual Notation: Intermediate Nodes
+
+The nodes created by the split are called intermediate nodes, as they represent subsets of data that could potentially be split further in a more complex tree structure.
+
+**Intermediate Node Representation:**
+Each intermediate node shows the class distribution for its corresponding data subset:
+
+- **excellent credit node:** `[9, 0]` - All excellent credit applications are safe
+- **fair credit node:** `[9, 4]` - Fair credit applications are mostly safe
+- **poor credit node:** `[4, 14]` - Poor credit applications are mostly risky
+
+These intermediate nodes serve as the foundation for building more complex decision trees, where each node could potentially be split further based on additional features.
+
+### Making Predictions with a Decision Stump
+
+To make predictions using a decision stump, we apply a simple majority rule at each intermediate node.
+
+**Prediction Rule:**
+For each intermediate node, set $\hat{y}$ = majority value
+
+**Predictions by Credit Category:**
+- **excellent credit:** `[9, 0]` → **Safe** (majority: 9 safe vs 0 risky)
+- **fair credit:** `[9, 4]` → **Safe** (majority: 9 safe vs 4 risky)
+- **poor credit:** `[4, 14]` → **Risky** (majority: 4 safe vs 14 risky)
+
+**Decision Stump Classification:**
+The decision stump creates a simple classification rule:
+- If Credit = excellent → Predict Safe
+- If Credit = fair → Predict Safe  
+- If Credit = poor → Predict Risky
+
+This demonstrates how even a simple single-level decision tree can capture meaningful patterns in the data, with credit history serving as a strong predictor of loan risk. The decision stump provides a baseline model that can be extended to more complex tree structures by adding additional splits at the intermediate nodes.
 
