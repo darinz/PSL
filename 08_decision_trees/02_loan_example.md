@@ -108,8 +108,6 @@ The classification error provides a straightforward measure of how well the deci
 
 Decision tree learning presents a significant computational challenge due to the exponentially large number of possible tree configurations.
 
-<img src="./img/02_trees.png" width="500px">
-
 **Complexity Problem:**
 The space of possible decision trees grows exponentially with the number of features and their possible values. For any given dataset, there are numerous valid tree structures that could be constructed, each with different branching patterns and decision rules.
 
@@ -117,11 +115,17 @@ The space of possible decision trees grows exponentially with the number of feat
 Learning the smallest (most parsimonious) decision tree that achieves optimal performance is an NP-hard problem, as proven by Hyafil & Rivest in 1976. This means that finding the globally optimal decision tree is computationally intractable for realistic problem sizes.
 
 **Multiple Valid Solutions:**
+
+<img src="./img/02_trees.png" width="500px">
+
 Given the same training data, multiple different tree structures (denoted as $T_1(X)$ through $T_6(X)$ in the illustration) can achieve similar or identical performance on the training set. Each tree may have different:
+
 - Root node choices
 - Branching patterns
 - Decision thresholds
 - Overall complexity
 
 This inherent complexity necessitates the use of heuristic algorithms and greedy approaches to construct decision trees efficiently, trading optimality for computational feasibility.
+
+## Greedy Decision Tree Learning
 
