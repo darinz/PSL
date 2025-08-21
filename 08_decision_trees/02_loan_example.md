@@ -458,6 +458,8 @@ When we apply recursive stump learning to the impure nodes, we create a second l
 
 The high income branch under poor credit is still impure (`[4 Safe, 5 Risky]`), so we can build another stump for these data points.
 
+
+
 ## Stopping Conditions
 
 To prevent infinite recursion and control tree complexity, we need stopping conditions that determine when to stop splitting a node.
@@ -505,6 +507,8 @@ Consider the XOR function example where individual feature splits don't reduce c
 ## Final Decision Tree
 
 After applying recursive stump learning with appropriate stopping conditions, we arrive at the complete decision tree for loan classification.
+
+<img src="./img/02_final_tree.png" width="500px">
 
 **Tree Structure:**
 
