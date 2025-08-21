@@ -330,3 +330,107 @@ $$\text{Error}_{\text{Credit}} = \frac{8}{40} = 0.20$$
 
 This error value helps us compare the "Credit" split against other potential splits, such as the "Term" split, to determine which feature yields a lower classification error and is therefore considered "better."
 
+## Calculating Classification Error: Root Node vs Splits
+
+### Calculating Classification Error for Root Node
+
+Before evaluating any splits, we first calculate the classification error for the root node containing all data. This serves as our baseline for comparison.
+
+**Step 1: Determine majority class**
+For the root node `[22 Safe, 18 Risky]`, the majority class is **Safe** (22 > 18).
+
+**Step 2: Calculate classification error**
+If we predict "Safe" for all instances:
+- **Correct predictions:** 22 (the actual Safe loans)
+- **Mistakes:** 18 (the Risky loans incorrectly predicted as Safe)
+- **Total instances:** 40
+
+**Root Node Classification Error:**
+$$\text{Error}_{\text{root}} = \frac{18}{40} = 0.45$$
+
+This means that without any splitting, our model would have a 45% error rate by predicting "Safe" for all loan applications.
+
+### Choice 1: Split on Credit - Classification Error
+
+When we split on the Credit feature, we create three branches with their own predictions:
+
+**Credit = excellent:** `[9 Safe, 0 Risky]`
+- Majority class: Safe
+- Mistakes: 0 (all are correctly classified)
+- Error: $0/9 = 0.0$
+
+**Credit = fair:** `[9 Safe, 4 Risky]`
+- Majority class: Safe
+- Mistakes: 4 (Risky loans misclassified as Safe)
+- Error: $4/13 \approx 0.308$
+
+**Credit = poor:** `[4 Safe, 14 Risky]`
+- Majority class: Risky
+- Mistakes: 4 (Safe loans misclassified as Risky)
+- Error: $4/18 \approx 0.222$
+
+**Overall Credit Split Error:**
+$$\text{Error}_{\text{Credit}} = \frac{0 + 4 + 4}{40} = \frac{8}{40} = 0.20$$
+
+### Choice 2: Split on Term - Classification Error
+
+When we split on the Term feature, we create two branches:
+
+**Term = 3 years:** `[16 Safe, 4 Risky]`
+- Majority class: Safe
+- Mistakes: 4 (Risky loans misclassified as Safe)
+- Error: $4/20 = 0.20$
+
+**Term = 5 years:** `[6 Safe, 14 Risky]`
+- Majority class: Risky
+- Mistakes: 6 (Safe loans misclassified as Risky)
+- Error: $6/20 = 0.30$
+
+**Overall Term Split Error:**
+$$\text{Error}_{\text{Term}} = \frac{4 + 6}{40} = \frac{10}{40} = 0.25$$
+
+### Comparing Split Effectiveness
+
+**Classification Error Comparison:**
+| Split Type | Classification Error | Improvement |
+|------------|---------------------|-------------|
+| Root (no split) | 0.45 | Baseline |
+| Split on Credit | 0.20 | **Best** |
+| Split on Term | 0.25 | Good |
+
+The **Credit split** achieves the lowest classification error (0.20), making it the optimal choice for our decision stump. This represents a significant improvement over the baseline error of 0.45.
+
+## Feature Split Selection Algorithm
+
+The process of selecting the best feature to split on follows a systematic algorithm that evaluates all possible features and chooses the one that minimizes classification error.
+
+### Algorithm Steps
+
+**Given a subset of data $M$ (a node in a tree):**
+
+1. **For each feature $h_i(x)$:**
+   - **Step 1:** Split data of $M$ according to feature $h_i(x)$
+   - **Step 2:** Compute classification error of split
+
+2. **Choose feature $h^*(x)$ with lowest classification error**
+
+### Algorithm Application to Our Example
+
+In our loan application dataset, we applied this algorithm to the root node containing all 40 examples:
+
+**Feature 1: Credit**
+- Split data into 3 groups: excellent, fair, poor
+- Classification error: 0.20
+
+**Feature 2: Term**
+- Split data into 2 groups: 3 years, 5 years
+- Classification error: 0.25
+
+**Feature 3: Income**
+- Split data into 2 groups: high, low
+- Classification error: [calculated similarly]
+
+**Result:** Credit feature ($h^*(x) = \text{Credit}$) is selected as it achieves the lowest classification error of 0.20.
+
+This greedy approach ensures that at each step, we make the locally optimal choice that maximizes the immediate improvement in classification performance.
+
