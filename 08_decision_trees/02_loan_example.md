@@ -301,42 +301,13 @@ The formula for classification error is:
 
 $$\text{Error} = \frac{\text{num mistakes}}{\text{num data points}}$$
 
-Let's calculate the classification error for the "Split on Credit" decision stump:
-
-1. **For `Credit = excellent` node `[9 Safe, 0 Risky]`:**
-   - Majority class: Safe.
-   - Mistakes: 0 (all are Safe).
-   - Error for this node: $0 / 9 = 0.0$
-
-2. **For `Credit = fair` node `[9 Safe, 4 Risky]`:**
-   - Majority class: Safe (9 Safe vs 4 Risky).
-   - Mistakes: 4 (the 4 Risky loans are misclassified as Safe).
-   - Error for this node: $4 / 13 \approx 0.308$
-
-3. **For `Credit = poor` node `[4 Safe, 14 Risky]`:**
-   - Majority class: Risky (14 Risky vs 4 Safe).
-   - Mistakes: 4 (the 4 Safe loans are misclassified as Risky).
-   - Error for this node: $4 / 18 \approx 0.222$
-
-To calculate the overall classification error for the entire decision stump, we sum the mistakes from each leaf node and divide by the total number of data points (40):
-
-- Total mistakes = Mistakes from `excellent` + Mistakes from `fair` + Mistakes from `poor`
-  - Total mistakes = $0 + 4 + 4 = 8$
-- Total data points = $9 + 13 + 18 = 40$
-
-Overall Classification Error for "Split on Credit":
-
-$$\text{Error}_{\text{Credit}} = \frac{8}{40} = 0.20$$
-
-This error value helps us compare the "Credit" split against other potential splits, such as the "Term" split, to determine which feature yields a lower classification error and is therefore considered "better."
-
 ## Calculating Classification Error: Root Node vs Splits
 
 ### Calculating Classification Error for Root Node
 
 Before evaluating any splits, we first calculate the classification error for the root node containing all data. This serves as our baseline for comparison.
 
-
+<img src="./img/02_classification_error.png" width="600px">
 
 **Step 1: Determine majority class**
 For the root node `[22 Safe, 18 Risky]`, the majority class is **Safe** (22 > 18).
@@ -353,6 +324,8 @@ $$\text{Error}_{\text{root}} = \frac{18}{40} = 0.45$$
 This means that without any splitting, our model would have a 45% error rate by predicting "Safe" for all loan applications.
 
 ### Choice 1: Split on Credit - Classification Error
+
+<img src="./img/02_split_on_credit.png" width="500px">
 
 When we split on the Credit feature, we create three branches with their own predictions:
 
@@ -372,9 +345,14 @@ When we split on the Credit feature, we create three branches with their own pre
 - Error: $4/18 \approx 0.222$
 
 **Overall Credit Split Error:**
+
+<img src="./img/02_credit_classification_error.png" width="500px">
+
 $$\text{Error}_{\text{Credit}} = \frac{0 + 4 + 4}{40} = \frac{8}{40} = 0.20$$
 
 ### Choice 2: Split on Term - Classification Error
+
+<img src="./img/02_split_on_term.png" width="350px">
 
 When we split on the Term feature, we create two branches:
 
