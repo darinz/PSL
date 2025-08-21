@@ -336,6 +336,8 @@ This error value helps us compare the "Credit" split against other potential spl
 
 Before evaluating any splits, we first calculate the classification error for the root node containing all data. This serves as our baseline for comparison.
 
+
+
 **Step 1: Determine majority class**
 For the root node `[22 Safe, 18 Risky]`, the majority class is **Safe** (22 > 18).
 
