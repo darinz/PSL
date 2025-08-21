@@ -442,7 +442,7 @@ This recursive approach allows us to build deeper trees by treating each impure 
 
 ### Second Level: Recursive Splitting
 
-<img src="./img/02_what_next.png" width="500px">
+<img src="./img/02_second_level.png" width="500px">
 
 When we apply recursive stump learning to the impure nodes, we create a second level of the decision tree:
 
