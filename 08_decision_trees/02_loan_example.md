@@ -432,6 +432,8 @@ The excellent credit branch is already a **leaf node** because all data points i
 
 Decision tree construction is fundamentally a recursive process. After creating the initial decision stump, we apply the same stump learning algorithm to the impure subsets of data.
 
+<img src="./img/02_tree_learning.png" width="500px">
+
 **Recursive Process:**
 - **For fair credit subset:** Build decision stump with subset of data where Credit = fair
 - **For poor credit subset:** Build decision stump with subset of data where Credit = poor
@@ -439,6 +441,8 @@ Decision tree construction is fundamentally a recursive process. After creating 
 This recursive approach allows us to build deeper trees by treating each impure node as a new root for a sub-tree.
 
 ### Second Level: Recursive Splitting
+
+<img src="./img/02_what_next.png" width="500px">
 
 When we apply recursive stump learning to the impure nodes, we create a second level of the decision tree:
 
