@@ -416,3 +416,112 @@ This greedy approach ensures that at each step, we make the locally optimal choi
 
 ## Recursion & Stopping conditions
 
+### We've Learned a Decision Stump, What Next?
+
+After creating our initial decision stump based on the Credit feature, we have a tree with three branches:
+
+- **excellent credit:** `[9 Safe, 0 Risky]` → **Safe** (Leaf node)
+- **fair credit:** `[9 Safe, 4 Risky]` → **Safe** 
+- **poor credit:** `[4 Safe, 14 Risky]` → **Risky**
+
+The excellent credit branch is already a **leaf node** because all data points in this subset are Safe - there's nothing else to do with this subset of data. However, the fair and poor credit branches still contain mixed classes and could potentially be split further.
+
+### Tree Learning = Recursive Stump Learning
+
+Decision tree construction is fundamentally a recursive process. After creating the initial decision stump, we apply the same stump learning algorithm to the impure subsets of data.
+
+**Recursive Process:**
+- **For fair credit subset:** Build decision stump with subset of data where Credit = fair
+- **For poor credit subset:** Build decision stump with subset of data where Credit = poor
+
+This recursive approach allows us to build deeper trees by treating each impure node as a new root for a sub-tree.
+
+### Second Level: Recursive Splitting
+
+When we apply recursive stump learning to the impure nodes, we create a second level of the decision tree:
+
+**Fair Credit Branch (`[9 Safe, 4 Risky]`):**
+- **Split on Term:**
+  - **3 years:** `[0 Safe, 4 Risky]` → **Risky** (Leaf node)
+  - **5 years:** `[9 Safe, 0 Risky]` → **Safe** (Leaf node)
+
+**Poor Credit Branch (`[4 Safe, 14 Risky]`):**
+- **Split on Income:**
+  - **high:** `[4 Safe, 5 Risky]` → Continue splitting (still impure)
+  - **low:** `[0 Safe, 9 Risky]` → **Risky** (Leaf node)
+
+The high income branch under poor credit is still impure (`[4 Safe, 5 Risky]`), so we can build another stump for these data points.
+
+## Stopping Conditions
+
+To prevent infinite recursion and control tree complexity, we need stopping conditions that determine when to stop splitting a node.
+
+### Stopping Condition 1: All Data Agrees on Y
+
+When all data points in a node have the same target value, the node is considered "pure" and becomes a leaf node.
+
+**Examples from our tree:**
+- **excellent credit:** `[9 Safe, 0 Risky]` → All data agrees on Safe
+- **fair credit, 3 years:** `[0 Safe, 4 Risky]` → All data agrees on Risky
+- **fair credit, 5 years:** `[9 Safe, 0 Risky]` → All data agrees on Safe
+- **poor credit, low income:** `[0 Safe, 9 Risky]` → All data agrees on Risky
+
+### Stopping Condition 2: Already Split on All Features
+
+When all available features have been used in the path from root to current node, no further splitting is possible.
+
+**Example:** If we've already used Credit, Term, and Income features in the path to reach a node, and these are all the features available, then we cannot split further.
+
+### Stopping Condition 3: No Split Reduces Classification Error
+
+**Warning:** This stopping condition is generally not recommended!
+
+Consider the XOR function example where individual feature splits don't reduce classification error, but the combination of features is necessary for correct classification.
+
+**XOR Function:** $y = x_1 \text{ xor } x_2$
+
+| $x_1$ | $x_2$ | $y$ |
+|-------|-------|-----|
+| False | False | False |
+| False | True  | True  |
+| True  | False | True  |
+| True  | True  | False |
+
+**With Stopping Condition 3:**
+- Root node: `[2 True, 2 False]` → Predict majority (True)
+- Classification error: 0.5 (misclassifies 2 out of 4 samples)
+
+**Without Stopping Condition 3:**
+- Full tree with both features achieves perfect classification
+- Classification error: 0.0
+- **But:** This leads to overfitting and poor generalization
+
+## Final Decision Tree
+
+After applying recursive stump learning with appropriate stopping conditions, we arrive at the complete decision tree for loan classification.
+
+**Tree Structure:**
+
+```
+Root [22 Safe, 18 Risky]
+├── Credit = excellent → Safe [9, 0]
+├── Credit = fair
+│   ├── Term = 3 years → Risky [0, 4]
+│   └── Term = 5 years → Safe [9, 0]
+└── Credit = poor
+    ├── Income = high
+    │   ├── Term = 3 years → Risky [0, 2]
+    │   └── Term = 5 years → Safe [4, 3]
+    └── Income = low → Risky [0, 9]
+```
+
+**Classification Rules:**
+1. **Credit = excellent:** → **Safe**
+2. **Credit = fair, Term = 3 years:** → **Risky**
+3. **Credit = fair, Term = 5 years:** → **Safe**
+4. **Credit = poor, Income = high, Term = 3 years:** → **Risky**
+5. **Credit = poor, Income = high, Term = 5 years:** → **Safe**
+6. **Credit = poor, Income = low:** → **Risky**
+
+This final tree provides a clear, interpretable set of rules for classifying loan applications based on their credit history, income level, and loan terms.
+
