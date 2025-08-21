@@ -466,6 +466,8 @@ To prevent infinite recursion and control tree complexity, we need stopping cond
 
 ### Stopping Condition 1: All Data Agrees on Y
 
+<img src="./img/02_pure_nodes.png" width="500px">
+
 When all data points in a node have the same target value, the node is considered "pure" and becomes a leaf node.
 
 **Examples from our tree:**
@@ -475,6 +477,8 @@ When all data points in a node have the same target value, the node is considere
 - **poor credit, low income:** `[0 Safe, 9 Risky]` → All data agrees on Risky
 
 ### Stopping Condition 2: Already Split on All Features
+
+<img src="./img/02_all_features.png" width="500px">
 
 When all available features have been used in the path from root to current node, no further splitting is possible.
 
@@ -534,4 +538,6 @@ Root [22 Safe, 18 Risky]
 6. **Credit = poor, Income = low:** → **Risky**
 
 This final tree provides a clear, interpretable set of rules for classifying loan applications based on their credit history, income level, and loan terms.
+
+## Decision Tree Learning: Real Valued Features
 
