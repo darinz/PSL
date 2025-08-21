@@ -414,3 +414,5 @@ In our loan application dataset, we applied this algorithm to the root node cont
 
 This greedy approach ensures that at each step, we make the locally optimal choice that maximizes the immediate improvement in classification performance.
 
+## Recursion & Stopping conditions
+
