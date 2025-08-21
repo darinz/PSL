@@ -418,6 +418,8 @@ This greedy approach ensures that at each step, we make the locally optimal choi
 
 ### We've Learned a Decision Stump, What Next?
 
+<img src="./img/02_what_next.png" width="500px">
+
 After creating our initial decision stump based on the Credit feature, we have a tree with three branches:
 
 - **excellent credit:** `[9 Safe, 0 Risky]` → **Safe** (Leaf node)
