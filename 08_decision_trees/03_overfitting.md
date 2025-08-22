@@ -55,7 +55,7 @@ Additional criteria to prevent the tree from growing too complex:
 
 ### Challenge with early stopping condition 1
 
-<img src="./img/02_early_stopping.png" width="500px">
+<img src="./img/03_early_stopping.png" width="500px">
 
 Setting the optimal `max_depth` is challenging because it's difficult to know exactly when to stop.
 
