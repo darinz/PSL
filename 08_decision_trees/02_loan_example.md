@@ -541,3 +541,364 @@ This final tree provides a clear, interpretable set of rules for classifying loa
 
 ## Decision Tree Learning: Real Valued Features
 
+### How do we use real values inputs?
+
+When working with real-valued features like `Income`, we need to handle numerical data differently from categorical features. Consider a dataset where `Income` contains actual dollar amounts rather than discrete categories.
+
+**Example Dataset with Real-Valued Income:**
+| Income | Credit | Term | y |
+|--------|--------|------|---|
+| $105K | excellent | 3 yrs | Safe |
+| $112K | good | 5 yrs | Safe |
+| $73K | fair | 3 yrs | Risky |
+| $69K | poor | 5 yrs | Safe |
+| $217K | excellent | 3 yrs | Safe |
+| $120K | good | 5 yrs | Safe |
+| $64K | fair | 3 yrs | Risky |
+| $340K | excellent | 3 yrs | Safe |
+| $60K | poor | 5 yrs | Risky |
+
+The `Income` feature now contains continuous numerical values ranging from $60K to $340K, requiring a different approach for splitting than categorical features.
+
+### Threshold Split
+
+For real-valued features, we use **threshold splits** instead of categorical splits. A threshold split divides the data into two groups based on whether the feature value is above or below a specific threshold.
+
+**Example: Split on Income with threshold $60K**
+
+<img src="./img/02_threshold.png" width="500px">
+
+Starting from the root node `[22 Safe, 18 Risky]`, we can split on the `Income` feature using a threshold of $60K:
+
+- **Root Node:** `[22 Safe, 18 Risky]`
+- **Split Feature:** Income
+- **Split Condition:** Income < $60K vs Income ≥ $60K
+- **Split Outcomes:**
+  - **Income < $60K:** `[8 Safe, 13 Risky]` - Lower income loans
+  - **Income ≥ $60K:** `[14 Safe, 5 Risky]` - Higher income loans
+
+This threshold split creates a binary decision based on income level, with the threshold $60K serving as the dividing point between the two groups.
+
+### Finding the best threshold split
+
+The challenge with real-valued features is determining the optimal threshold value. Unlike categorical features with a finite number of possible values, real-valued features have infinitely many possible threshold values.
+
+
+
+**The Problem:**
+For a feature like `Income` ranging from $10K to $120K, there are infinitely many possible threshold values `t*` that could be used for splitting.
+
+**The Solution:**
+We only need to consider a finite number of potential thresholds. Specifically, we consider the mid-points between adjacent sorted unique values of the feature.
+
+**Algorithm for Finding the Best Threshold:**
+
+1. **Sort the unique values** of the real-valued feature in ascending order
+2. **Consider mid-points** between adjacent values as potential thresholds
+3. **Evaluate each threshold** by computing the classification error
+4. **Select the threshold** that minimizes classification error
+
+**Example with Income values:**
+If we have sorted unique income values: [$60K, $64K, $69K, $73K, $105K, $112K, $120K, $217K, $340K]
+
+We consider these potential thresholds:
+- $62K (mid-point between $60K and $64K)
+- $66.5K (mid-point between $64K and $69K)
+- $71K (mid-point between $69K and $73K)
+- $89K (mid-point between $73K and $105K)
+- $108.5K (mid-point between $105K and $112K)
+- $116K (mid-point between $112K and $120K)
+- $168.5K (mid-point between $120K and $217K)
+- $278.5K (mid-point between $217K and $340K)
+
+For each threshold, we compute the classification error and select the one that performs best.
+
+## Visualizing Threshold Splits
+
+### Visualizing the threshold split
+
+To better understand how threshold splits work, we can visualize the data in a 2D space where one axis represents the real-valued feature (e.g., Age) and another represents a different feature (e.g., Income).
+
+**Initial Data Distribution:**
+Consider a dataset with 20 data points:
+- **10 Safe loans** (blue plus signs)
+- **10 Risky loans** (orange minus signs)
+
+The data points are scattered across a 2D space with Age on the x-axis (0-60 years) and Income on the y-axis ($0K-$80K+).
+
+**Applying a Threshold Split:**
+When we apply a threshold split at `Age = 38`, a vertical line divides the space into two regions:
+
+- **Left region (Age < 38):** Contains 7 Risky and 3 Safe points
+- **Right region (Age ≥ 38):** Contains 7 Safe and 3 Risky points
+
+This visual representation shows how a single threshold can effectively separate the classes in the feature space.
+
+### Split on Age >= 38
+
+The first split creates a decision stump based on age:
+
+**Region 1: Age < 38**
+- **Data points:** 7 Risky, 3 Safe
+- **Majority class:** Risky
+- **Prediction:** Risky
+
+**Region 2: Age ≥ 38**
+- **Data points:** 7 Safe, 3 Risky
+- **Majority class:** Safe
+- **Prediction:** Safe
+
+This single split achieves a reasonable separation of the classes, with most younger applicants being classified as risky and most older applicants being classified as safe.
+
+### Depth 2: Split on Income >= $60K
+
+To create a deeper tree, we can apply a second split within one of the regions created by the first split.
+
+**Second Split within Age ≥ 38 region:**
+We apply a horizontal threshold split at `Income = $60K` within the Age ≥ 38 region:
+
+**Region A: Age < 38**
+- **Data points:** 7 Risky, 3 Safe
+- **Prediction:** Risky
+
+**Region B: Age ≥ 38 AND Income < $60K**
+- **Data points:** 3 Risky, 1 Safe
+- **Prediction:** Risky
+
+**Region C: Age ≥ 38 AND Income ≥ $60K**
+- **Data points:** 0 Risky, 6 Safe
+- **Prediction:** Safe
+
+This second split further refines the classification, creating a more accurate decision boundary that considers both age and income simultaneously.
+
+The resulting decision tree now has depth 2 and provides more nuanced classification rules that can better capture the complex relationships between multiple features.
+
+## Decision Tree Partitions in 2D Space
+
+### Each split partitions the 2-D space
+
+Decision trees create rectangular partitions in the feature space by making sequential splits on different features. Each split divides the space into distinct regions, and subsequent splits further subdivide these regions.
+
+**Visual Representation:**
+In a 2D space with Age on the x-axis (0-40+ years) and Income on the y-axis ($0K-$80K+), our decision tree creates three distinct rectangular regions through two sequential splits.
+
+### First Split: Age >= 38
+
+The initial split creates a vertical boundary at Age = 38, dividing the 2D space into two main regions:
+
+**Left Region (Age < 38):**
+- **Boundary:** Vertical line at Age = 38
+- **Color:** Light pink region
+- **Data Distribution:** 
+  - 3 Safe loans (blue plus signs): one near (10, $10K), two clustered around (20-25, $40K)
+  - 6 Risky loans (orange minus signs): distributed across the region
+- **Classification:** Predicts Risky (majority class)
+
+**Right Region (Age >= 38):**
+- **Boundary:** Vertical line at Age = 38
+- **Color:** Initially undivided, later split further
+- **Data Distribution:** Mixed classes requiring further splitting
+
+### Second Split: Income >= $60K within Age >= 38
+
+The second split applies a horizontal boundary at Income = $60K within the Age >= 38 region, creating two sub-regions:
+
+**Top-Right Region (Age >= 38 AND Income >= $60K):**
+- **Boundaries:** Age >= 38 (vertical) AND Income >= $60K (horizontal)
+- **Color:** Light green region
+- **Data Distribution:** 
+  - 4 Safe loans (blue plus signs): clustered in upper right quadrant around (45, $70K), (50, $80K), (55, $70K), (60, $80K)
+  - 0 Risky loans
+- **Classification:** Predicts Safe (pure region)
+
+**Bottom-Right Region (Age >= 38 AND Income < $60K):**
+- **Boundaries:** Age >= 38 (vertical) AND Income < $60K (horizontal)
+- **Color:** Light pink region
+- **Data Distribution:** 
+  - 0 Safe loans
+  - 4 Risky loans (orange minus signs): clustered in lower right quadrant around (45, $40K), (50, $30K), (55, $40K), (60, $30K)
+- **Classification:** Predicts Risky (pure region)
+
+### Final Partition Structure
+
+The complete decision tree creates three rectangular regions in the 2D feature space:
+
+1. **Region 1:** Age < 38 (entire left side)
+   - **Prediction:** Risky
+   - **Shape:** Rectangular region extending from Age = 0 to Age = 38, covering all income levels
+
+2. **Region 2:** Age >= 38 AND Income >= $60K (upper right)
+   - **Prediction:** Safe
+   - **Shape:** Rectangular region in upper right quadrant
+
+3. **Region 3:** Age >= 38 AND Income < $60K (lower right)
+   - **Prediction:** Risky
+   - **Shape:** Rectangular region in lower right quadrant
+
+### Key Characteristics of Decision Tree Partitions
+
+**Rectangular Boundaries:**
+- Each split creates axis-aligned boundaries (vertical or horizontal lines)
+- The resulting regions are always rectangular in shape
+- This is a fundamental limitation of decision trees compared to more flexible models
+
+**Sequential Refinement:**
+- Each split further refines the classification by creating smaller, more specific regions
+- The tree can create increasingly complex decision boundaries through multiple splits
+
+**Interpretability:**
+- The rectangular regions make the decision boundaries easy to understand and visualize
+- Each region corresponds to a specific path through the decision tree
+- The boundaries can be expressed as simple if-then rules
+
+This partitioning approach demonstrates how decision trees create interpretable, rectangular decision boundaries that can effectively separate classes in the feature space, even when the underlying data has complex relationships between features.
+
+## Decision trees vs logistic regression: Example
+
+### Logistic Regression
+
+Logistic regression creates a linear decision boundary by learning a set of weights that define a hyperplane in the feature space.
+
+**Learned Weights:**
+- $h_0(x)$ (intercept): 0.22
+- $h_1(x)$ (feature $x[1]$): 1.12
+- $h_2(x)$ (feature $x[2]$): -1.07
+
+**Decision Boundary:**
+The logistic regression model creates a diagonal linear boundary that separates the two classes. The boundary is defined by the equation:
+$$0.22 + 1.12 \cdot x[1] - 1.07 \cdot x[2] = 0$$
+
+**Visualization:**
+- **Raw Data:** Shows intermingled data points from both classes (magenta horizontal lines and black plus signs)
+- **Classified Data:** Background is colored with purple and green regions separated by a straight diagonal line
+- Most magenta points fall in the purple region, and most black plus signs fall in the green region
+
+### Depth 1: Split on x[1]
+
+A decision tree with depth 1 creates a single split on the $x[1]$ feature.
+
+**Decision Tree Structure:**
+- **Root Node:** `[18, 13]` (18 magenta, 13 black points)
+- **Split Feature:** $x[1]$
+- **Split Threshold:** $x[1] = -0.07$
+- **Left Branch:** $x[1] < -0.07$ → `[13, 3]` (mostly magenta)
+- **Right Branch:** $x[1] \geq -0.07$ → `[4, 11]` (mostly black)
+
+**Visualization:**
+- **Raw Data:** Same intermingled data points
+- **First Split:** Background divided into two vertical regions by a vertical line at $x[1] = -0.07$
+- **Left Region (Purple):** Contains mostly magenta points
+- **Right Region (Green):** Contains mostly black plus signs
+
+### Depth 2
+
+A decision tree with depth 2 applies additional splits to create more complex rectangular regions.
+
+**Decision Tree Structure:**
+- **Root:** `[18, 13]`
+- **First Split:** $x[1] < -0.07$ vs $x[1] \geq -0.07$
+- **Second Level Splits:**
+  - **Left branch ($x[1] < -0.07$):** Further split on $x[1] < -1.66$ vs $x[1] \geq -1.66$
+    - $x[1] < -1.66$: `[7, 0]` (pure magenta node)
+    - $x[1] \geq -1.66$: `[6, 3]`
+  - **Right branch ($x[1] \geq -0.07$):** Split on $x[2] < 1.55$ vs $x[2] \geq 1.55$
+    - $x[2] < 1.55$: `[1, 11]`
+    - $x[2] \geq 1.55$: `[3, 0]` (pure black node)
+
+**Visualization:**
+- **Multiple Splits:** Background shows rectangular regions created by vertical and horizontal boundaries
+- **Three Regions:** Purple (leftmost), green (middle), and purple (rightmost)
+- **Axis-aligned Boundaries:** All decision boundaries are parallel to the coordinate axes
+
+## Threshold Split Caveat
+
+### Same Feature Can Be Used Multiple Times
+
+An important characteristic of decision trees is that the same feature can be used multiple times in different parts of the tree.
+
+**Example from Depth 2 Tree:**
+- **First Split:** $x[1] < -0.07$ (at root level)
+- **Second Split:** $x[1] < -1.66$ (within the left branch)
+
+This demonstrates that a feature can be reused with different threshold values to create more refined partitions of the feature space.
+
+**Why This Matters:**
+- Allows the tree to capture non-linear relationships within a single feature
+- Enables more complex decision boundaries while maintaining interpretability
+- Provides flexibility in modeling feature interactions
+
+## Decision Boundaries
+
+### Evolution with Tree Depth
+
+The complexity of decision boundaries increases significantly with the depth of the decision tree.
+
+**Depth 1:**
+- Single vertical split on $x[1]$
+- Creates two rectangular regions
+- Simple, interpretable boundary
+
+**Depth 2:**
+- Multiple splits on both $x[1]$ and $x[2]$
+- Creates three rectangular regions
+- More complex but still axis-aligned boundaries
+
+**Depth 10:**
+- Many splits creating highly fragmented regions
+- Closely follows the training data distribution
+- Risk of overfitting to training data
+- Complex, axis-aligned rectangular boundaries
+
+### Comparing Decision Boundaries
+
+**Decision Trees vs Logistic Regression:**
+
+**Decision Trees:**
+- **Depth 1:** Single vertical split, axis-aligned boundary
+- **Depth 3:** Multiple rectangular regions, still axis-aligned
+- **Depth 10:** Highly fragmented, complex rectangular regions
+
+**Logistic Regression:**
+- **Degree 1 features:** Linear decision boundary (straight diagonal line)
+- **Degree 2 features:** Curved decision boundary, smooth but non-linear
+- **Degree 6 features:** Highly curved, irregular boundary, smooth but complex
+
+**Key Differences:**
+- **Decision Trees:** Always create axis-aligned, rectangular boundaries
+- **Logistic Regression:** Can create smooth, curved boundaries of any orientation
+- **Flexibility:** Logistic regression with polynomial features can approximate complex curves
+- **Interpretability:** Decision trees provide more interpretable, rule-based boundaries
+
+## Summary of Decision Trees
+
+### What You Can Do Now
+
+After studying decision trees, you should be able to:
+
+**Core Concepts:**
+- **Define a decision tree classifier** and understand its structure
+- **Interpret the output of decision trees** and explain their predictions
+
+**Learning Process:**
+- **Learn a decision tree classifier using greedy algorithm** with recursive stump learning
+- **Apply feature selection algorithms** for both categorical and continuous features
+- **Handle stopping conditions** to prevent overfitting
+
+**Prediction and Traversal:**
+- **Traverse a decision tree to make predictions** by following decision paths
+- **Use majority class predictions** at leaf nodes
+- **Understand the decision-making process** from root to leaf
+
+**Feature Handling:**
+- **Tackle continuous and discrete features** using appropriate splitting strategies
+- **Apply threshold splits** for real-valued features
+- **Handle categorical splits** for discrete features
+- **Reuse features** at different levels of the tree
+
+**Advanced Concepts:**
+- **Compare decision boundaries** with other classification methods
+- **Understand the trade-offs** between model complexity and interpretability
+- **Recognize overfitting risks** and apply appropriate stopping conditions
+
+This comprehensive understanding of decision trees provides a solid foundation for applying them to real-world classification problems and comparing their performance with other machine learning algorithms.
+
