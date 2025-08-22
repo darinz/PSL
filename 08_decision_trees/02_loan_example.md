@@ -629,6 +629,9 @@ Consider a dataset with 20 data points:
 The data points are scattered across a 2D space with Age on the x-axis (0-60 years) and Income on the y-axis ($0K-$80K+).
 
 **Applying a Threshold Split:**
+
+<img src="./img/02_age_threshold.png" width="500px">
+
 When we apply a threshold split at `Age = 38`, a vertical line divides the space into two regions:
 
 - **Left region (Age < 38):** Contains 7 Risky and 3 Safe points
