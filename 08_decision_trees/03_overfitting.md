@@ -180,3 +180,118 @@ The regularization parameter $\lambda$ allows us to control the bias-variance tr
 
 ## Tree pruning algorithm
 
+### Prune if total cost is lower: C(T_smaller) ≤ C(T)
+
+The pruning algorithm uses a cost-complexity approach to determine whether a sub-tree should be pruned. The decision to prune is based on comparing the total cost of the original tree with the total cost of a smaller, pruned version.
+
+**Pruning Condition:**
+We prune a sub-tree if the total cost of the smaller tree is less than or equal to the total cost of the original tree:
+$$C(T_{\text{smaller}}) \leq C(T)$$
+
+### Step-by-Step Pruning Process
+
+**Step 1: Identify a Candidate Split for Pruning**
+
+Start with a fully grown decision tree $T$ and identify a sub-tree that is a candidate for removal. In our loan application example, we consider the `Term?` split under the `poor` credit and `high` income path.
+
+**Original Decision Tree ($T$) Structure:**
+- **Start Node**
+  - Splits on **Credit?**
+    - If `excellent`: Predict **Safe** (leaf node)
+    - If `fair`: Splits on **Term?**
+      - If `3 years`: Predict **Risky** (leaf node)
+      - If `5 years`: Predict **Safe** (leaf node)
+    - If `poor`: Splits on **Income?**
+      - If `high`: Splits on **Term?** (Candidate for pruning)
+        - If `3 years`: Predict **Risky** (leaf node)
+        - If `5 years`: Predict **Safe** (leaf node)
+      - If `low`: Predict **Risky** (leaf node)
+
+**Step 2: Compute Total Cost of the Original Tree ($T$)**
+
+Calculate the total cost using the cost-complexity formula:
+$$C(T) = \text{Error}(T) + \lambda L(T)$$
+
+With $\lambda = 0.3$:
+
+| Tree | Error | #Leaves | Total Cost $C(T)$ |
+|------|-------|---------|-------------------|
+| $T$  | 0.25  | 6       | 0.43              |
+
+**Step 3: "Undo" the Splits (Prune) and Compute Cost of the Smaller Tree ($T_{\text{smaller}}$)**
+
+Replace the candidate sub-tree with a single leaf node. The class of this new leaf node is determined by the majority class of the data points that would have passed through the pruned sub-tree.
+
+**Pruned Decision Tree ($T_{\text{smaller}}$) Structure:**
+- **Start Node**
+  - Splits on **Credit?**
+    - If `excellent`: Predict **Safe** (leaf node)
+    - If `fair`: Splits on **Term?**
+      - If `3 years`: Predict **Risky** (leaf node)
+      - If `5 years`: Predict **Safe** (leaf node)
+    - If `poor`: Splits on **Income?**
+      - If `high`: Predict **Safe** (new leaf node, replacing the `Term?` split)
+      - If `low`: Predict **Risky** (leaf node)
+
+**Cost Comparison:**
+
+| Tree         | Error | #Leaves | Total Cost $C(T)$ |
+|--------------|-------|---------|-------------------|
+| $T$          | 0.25  | 6       | 0.43              |
+| $T_{\text{smaller}}$ | 0.26  | 5       | 0.41              |
+
+**Decision:**
+Since $C(T_{\text{smaller}}) = 0.41 < C(T) = 0.43$, we choose to prune this split. The pruned tree has:
+- **Worse training error** (0.26 vs 0.25) but **lower overall cost** (0.41 vs 0.43)
+- **Reduced complexity** (5 leaves vs 6 leaves)
+- **Better generalization** potential
+
+### Step 4: Repeat Steps 1-4 for Every Split
+
+The pruning process is iterative and systematic:
+
+**Iterative Evaluation:**
+- Evaluate **every split** in the tree for potential pruning
+- Consider each internal node (Credit?, Term?, Income?) as a candidate
+- Apply the cost-complexity comparison to each candidate
+- Prune splits that satisfy the condition $C(T_{\text{smaller}}) \leq C(T)$
+
+**Systematic Approach:**
+- Start from the bottom of the tree (leaf nodes) and work upwards
+- Consider each sub-tree rooted at an internal node
+- Replace each candidate sub-tree with a leaf node
+- Compare costs and decide whether to prune
+
+This iterative process continues until no further pruning improves the total cost, resulting in an optimally pruned tree that balances accuracy and complexity.
+
+## Summary of Overfitting in Decision Trees
+
+### What You Can Do Now
+
+After studying overfitting in decision trees, you should be able to:
+
+**Identify Overfitting:**
+- **Recognize when decision trees are overfitting** by observing perfect training accuracy with complex, irregular decision boundaries
+- **Understand the relationship between tree depth and training error** (monotonic decrease) vs. true error (U-shaped curve)
+- **Identify signs of overfitting** such as highly fragmented decision boundaries and poor generalization
+
+**Prevent Overfitting with Early Stopping:**
+- **Limit tree depth** using validation sets to find optimal `max_depth`
+- **Avoid splits that don't reduce classification error** significantly
+- **Prevent splitting of intermediate nodes** with too few data points
+- **Apply minimum error reduction thresholds** to avoid useless splits
+
+**Prevent Overfitting by Pruning Complex Trees:**
+- **Use cost-complexity pruning** with the total cost formula: $C(T) = \text{Error}(T) + \lambda L(T)$
+- **Balance classification error and tree complexity** using the regularization parameter $\lambda$
+- **Iteratively evaluate and prune sub-trees** based on cost comparisons
+- **Merge complex trees into simpler ones** while maintaining good generalization
+
+**Advanced Techniques:**
+- **Choose appropriate $\lambda$ values** to control the bias-variance trade-off
+- **Compare early stopping vs. pruning approaches** and understand their complementary nature
+- **Apply cross-validation** to find optimal pruning parameters
+- **Monitor validation performance** to ensure pruning improves generalization
+
+This comprehensive understanding of overfitting prevention techniques enables you to build decision trees that generalize well to unseen data while maintaining interpretability and avoiding the pitfalls of overfitting.
+
