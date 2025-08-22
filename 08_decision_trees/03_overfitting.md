@@ -178,3 +178,5 @@ Where:
 
 The regularization parameter $\lambda$ allows us to control the bias-variance trade-off and find the optimal tree complexity for our specific problem.
 
+## Tree pruning algorithm
+
