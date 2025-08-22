@@ -222,6 +222,8 @@ The fundamental workflow of supervised learning involves training a classifier f
 2. **Learn Classifier:** Apply a learning algorithm to the training data to find a function $f(x)$
 3. **Predict:** Use the learned classifier to make predictions: $\hat{y} = \text{sign}(f(x))$
 
+<img src="./img/04_ensemble_methods.png" width="600px">
+
 **Flow:**
 Training Data → Learn Classifier → $f(x)$ → Predict $\hat{y} = \text{sign}(f(x))$
 
