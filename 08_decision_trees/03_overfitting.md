@@ -246,7 +246,7 @@ Replace the candidate sub-tree with a single leaf node. The class of this new le
 | $T$          | 0.25  | 6       | 0.43              |
 | $T_{\text{smaller}}$ | 0.26  | 5       | 0.41              |
 
-<img src="./img/02_pruning_step-4.png" width="700px">
+<img src="./img/03_pruning_step-4.png" width="700px">
 
 **Decision:**
 Since $C(T_{\text{smaller}}) = 0.41 < C(T) = 0.43$, we choose to prune this split. The pruned tree has:
