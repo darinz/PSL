@@ -821,6 +821,8 @@ A decision tree with depth 2 applies additional splits to create more complex re
     - $x[2] < 1.55$: `[1, 11]`
     - $x[2] \geq 1.55$: `[3, 0]` (pure black node)
 
+<img src="./img/02_dt_depth-2.png" width="500px">
+
 **Visualization:**
 - **Multiple Splits:** Background shows rectangular regions created by vertical and horizontal boundaries
 - **Three Regions:** Purple (leftmost), green (middle), and purple (rightmost)
