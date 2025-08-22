@@ -798,6 +798,8 @@ A decision tree with depth 1 creates a single split on the $x[1]$ feature.
 - **Left Branch:** $x[1] < -0.07$ → `[13, 3]` (mostly magenta)
 - **Right Branch:** $x[1] \geq -0.07$ → `[4, 11]` (mostly black)
 
+<img src="./img/02_dt_depth-1.png" width="500px">
+
 **Visualization:**
 - **Raw Data:** Same intermingled data points
 - **First Split:** Background divided into two vertical regions by a vertical line at $x[1] = -0.07$
