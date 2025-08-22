@@ -256,7 +256,7 @@ Since $C(T_{\text{smaller}}) = 0.41 < C(T) = 0.43$, we choose to prune this spli
 
 ### Step 4: Repeat Steps 1-4 for Every Split
 
-<img src="./img/02_pruning_step-5.png" width="600px">
+<img src="./img/03_pruning_step-5.png" width="600px">
 
 The pruning process is iterative and systematic:
 
