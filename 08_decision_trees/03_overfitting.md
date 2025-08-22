@@ -98,7 +98,7 @@ The pruning approach involves:
 
 Pruning addresses the bias-variance trade-off by finding the optimal tree complexity.
 
-<img src="./img/02_pruning_motivation.png" width="500px">
+<img src="./img/03_pruning_motivation.png" width="500px">
 
 **The Trade-off:**
 - **Training Error (purple line):** Monotonically decreases as tree depth increases
