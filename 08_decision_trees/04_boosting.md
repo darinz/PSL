@@ -337,7 +337,7 @@ The key insight is to increase the weights of points that are harder to classify
 
 **Decision Stump based on Income:**
 
-
+<img src="./img/04_weighted_data.png" width="500px">
 
 Consider a split at Income = $100K:
 
