@@ -6,6 +6,8 @@ Weak classifiers, despite their simplicity, offer several advantages that make t
 
 ### Examples of Weak Classifiers
 
+<img src="./img/04_simple_classifers.png" width="500px">
+
 **Logistic Regression with Simple Features:**
 A linear classifier that creates a diagonal decision boundary to separate classes. In a 2D scatter plot with purple and black data points, logistic regression with simple features creates a diagonal green line that provides a basic but effective separation.
 
