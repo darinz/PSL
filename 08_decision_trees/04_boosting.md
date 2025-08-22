@@ -79,8 +79,8 @@ When faced with the challenge of improving classifier performance, we have two m
 - **Risk:** May lead to overfitting and increased variance
 
 **Option 2: ?????**
-- This option is left as a question mark, hinting at an alternative approach
-- Suggests there might be a different strategy beyond simply increasing complexity
+- What are other options and alternative approach available?
+- There might be a different strategy beyond simply increasing complexity
 
 ## Boosting question
 
