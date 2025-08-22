@@ -583,10 +583,10 @@ This threshold split creates a binary decision based on income level, with the t
 
 The challenge with real-valued features is determining the optimal threshold value. Unlike categorical features with a finite number of possible values, real-valued features have infinitely many possible threshold values.
 
-<img src="./img/02_threshold.png" width="500px">
+<img src="./img/02_finding_splits.png" width="500px">
 
 **The Problem:**
-For a feature like `Income` ranging from $10K to $120K, there are infinitely many possible threshold values `t*` that could be used for splitting.
+For a feature like `Income` ranging from $10K to $120K, there are infinitely many possible threshold values $t^{\ast}$ that could be used for splitting.
 
 **The Solution:**
 We only need to consider a finite number of potential thresholds. Specifically, we consider the mid-points between adjacent sorted unique values of the feature.
