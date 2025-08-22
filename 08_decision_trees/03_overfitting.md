@@ -16,7 +16,7 @@ As decision tree depth increases, the training error consistently decreases, but
 | depth = 5  | 0.03           | Complex fitting               |
 | depth = 10 | 0.00           | Perfect training fit          |
 
-<img src="./img/02_training_error.png" width="700px">
+<img src="./img/03_training_error.png" width="700px">
 
 **Visual Progression:**
 - **Depth 1:** Simple decision boundary with a single split (e.g., vertical line)
