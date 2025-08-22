@@ -277,6 +277,8 @@ Boosting focuses the next classifier on places where the current classifier perf
 
 **Boosting Workflow:**
 
+<img src="./img/04_boosting.png" width="400px">
+
 1. **Start with Training Data:** Begin with the original dataset
 
 2. **Learn Classifier:** Train a weak classifier (e.g., decision stump) on the current data
