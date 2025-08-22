@@ -145,6 +145,8 @@ The process of a single classifier can be visualized as a simple decision flow:
 **Example: Loan Application Classifier**
 Consider a simple classifier for loan applications:
 
+<img src="./img/04_single_classifier.png" width="400px">
+
 - **Input:** A loan application $x$
 - **Decision:** Is the applicant's `Income > $100K`?
   - If `Yes`, the loan is classified as **Safe**
