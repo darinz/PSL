@@ -641,6 +641,8 @@ This visual representation shows how a single threshold can effectively separate
 
 ### Split on Age >= 38
 
+<img src="./img/02_split_on_age.png" width="500px">
+
 The first split creates a decision stump based on age:
 
 **Region 1: Age < 38**
