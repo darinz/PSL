@@ -776,6 +776,8 @@ Logistic regression creates a linear decision boundary by learning a set of weig
 - $h_1(x)$ (feature $x[1]$): 1.12
 - $h_2(x)$ (feature $x[2]$): -1.07
 
+<img src="./img/02_logistic_regression.png" width="500px">
+
 **Decision Boundary:**
 The logistic regression model creates a diagonal linear boundary that separates the two classes. The boundary is defined by the equation:
 $$0.22 + 1.12 \cdot x[1] - 1.07 \cdot x[2] = 0$$
