@@ -1,2 +1,169 @@
 # Decision Trees: Overfitting
 
+## Overfitting in decision trees
+
+### What happens when we increase depth?
+
+As decision tree depth increases, the training error consistently decreases, but this improvement comes at a cost of increased model complexity and potential overfitting.
+
+**Training Error Reduction with Depth:**
+
+| Tree Depth | Training Error | Decision Boundary Complexity |
+|------------|----------------|------------------------------|
+| depth = 1  | 0.22           | Simple single split           |
+| depth = 2  | 0.13           | Two splits, three regions     |
+| depth = 3  | 0.10           | Multiple splits, more regions |
+| depth = 5  | 0.03           | Complex fitting               |
+| depth = 10 | 0.00           | Perfect training fit          |
+
+<img src="./img/02_training_error.png" width="700px">
+
+**Visual Progression:**
+- **Depth 1:** Simple decision boundary with a single split (e.g., vertical line)
+- **Depth 2:** Slightly more complex boundary with two splits creating three rectangular regions
+- **Depth 3:** Even more complex boundary with multiple splits and more regions
+- **Depth 5:** Highly complex boundary that fits the data points very closely
+- **Depth 10:** Extremely complex boundary that perfectly separates all training data points, resulting in zero training error
+
+The progression from depth 1 to depth 10 shows how decision boundaries become increasingly irregular and tailored to individual training points, indicating severe overfitting at higher depths.
+
+## Two approaches to picking simpler trees
+
+To control decision tree complexity and prevent overfitting, we can use two main approaches:
+
+1. **Early Stopping:** Stop the learning algorithm **before** the tree becomes too complex
+2. **Pruning:** Simplify the tree **after** the learning algorithm terminates
+
+These approaches complement each other and can be used together to achieve optimal tree complexity.
+
+## Technique 1: Early stopping
+
+### General Stopping Conditions (Recap)
+
+The basic stopping conditions we discussed earlier:
+
+1. **All examples have the same target value** (i.e., a pure node)
+2. **No more features to split on**
+
+### Early Stopping Conditions
+
+Additional criteria to prevent the tree from growing too complex:
+
+1. **Limit tree depth:** Choose `max_depth` using a validation set
+2. **Minimum error reduction:** Do not consider splits that do not cause a sufficient decrease in classification error
+3. **Minimum node size:** Do not split an intermediate node which contains too few data points
+
+### Challenge with early stopping condition 1
+
+Setting the optimal `max_depth` is challenging because it's difficult to know exactly when to stop.
+
+**The Problem:**
+- **Training error** decreases monotonically as tree depth increases
+- **True error** follows a U-shaped curve: initially decreases, reaches a minimum, then increases due to overfitting
+- The optimal depth lies at the minimum of the true error curve, but this is unknown during training
+
+**Additional Challenge:**
+We might want some branches of the tree to go deeper while others remain shallow, but a global `max_depth` constraint applies uniformly to all branches.
+
+### Early stopping condition 2: Pros and Cons
+
+**Pros:**
+- A reasonable heuristic for early stopping to avoid useless splits
+- Prevents the tree from making splits that don't significantly improve performance
+
+**Cons:**
+- **Too short-sighted:** We may miss out on 'good' splits that occur right after 'useless' splits
+- **XOR example:** As we saw earlier, individual splits might not reduce classification error, but combinations of splits are necessary for correct classification
+
+## Technique 2: Pruning
+
+### Pruning: Intuition
+
+**Train a complex tree, simplify later**
+
+The pruning approach involves:
+1. **Build a complex tree** first (allowing it to grow fully)
+2. **Simplify the tree** by removing unnecessary branches
+
+**Visual Process:**
+- **Complex Tree:** Deep, multi-level decision tree with many internal nodes and leaf nodes
+- **Simplification:** Large arrow pointing from complex tree to simpler tree
+- **Simpler Tree:** Much shallower version with fewer levels, internal nodes, and leaf nodes
+
+### Pruning motivation
+
+Pruning addresses the bias-variance trade-off by finding the optimal tree complexity.
+
+**The Trade-off:**
+- **Training Error (purple line):** Monotonically decreases as tree depth increases
+- **True Error (green line):** U-shaped curve with a minimum at optimal depth
+
+**Pruning Strategy:**
+- **"Simplify after tree is built":** Build complex tree first, then simplify to optimal complexity
+- **"Don't stop too early":** Avoid stopping tree growth prematurely, which might result in suboptimal models
+
+The goal is to find the tree depth that minimizes true error, which lies between very simple and very complex trees.
+
+### Scoring trees: Desired total quality format
+
+To evaluate tree quality, we want to balance two competing objectives:
+
+**Want to balance:**
+1. **How well tree fits data** (measure of fit)
+2. **Complexity of tree** (measure of complexity)
+
+**Total Cost Formula:**
+$$\text{Total cost} = \text{measure of fit} + \text{measure of complexity}$$
+
+This formulation allows us to explicitly trade off between model accuracy and simplicity.
+
+## Simple measure of complexity of tree
+
+### Tree Complexity Metric
+
+A simple and effective measure of tree complexity is the number of leaf nodes:
+
+$$L(T) = \text{# of leaf nodes}$$
+
+**Example Decision Tree:**
+Consider a loan application tree with:
+- Root node: "Credit?"
+- Four branches: excellent, good, fair, poor
+- Leaf nodes: Safe (excellent), Safe (good), Safe (fair), Risky (poor)
+
+This tree has $L(T) = 4$ leaf nodes, representing its complexity.
+
+### Balance simplicity & predictive power
+
+The challenge is finding the right balance between model complexity and predictive accuracy.
+
+**Too Complex (Risk of Overfitting):**
+- Deep tree with many splits and leaf nodes
+- Example: Tree with multiple levels including Credit → Term → Income → additional splits
+- Fits training data very well but may generalize poorly
+
+**Too Simple (High Classification Error):**
+- Very basic tree making single prediction for all cases
+- Example: Tree that simply predicts "Risky" for all loan applications
+- Low complexity but high error rate
+
+### Balancing fit and complexity
+
+We can formalize this balance using a cost function that combines both objectives:
+
+**Cost Function:**
+$$C(T) = \text{Error}(T) + \lambda L(T)$$
+
+Where:
+- $C(T)$ is the total cost of tree $T$
+- $\text{Error}(T)$ is the classification error of the tree
+- $L(T)$ is the number of leaf nodes (complexity measure)
+- $\lambda$ is a tuning parameter that controls the trade-off
+
+**Implications of $\lambda$:**
+- **If $\lambda = 0$:** No penalty for complexity, leading to more complex trees
+- **If $\lambda = \infty$:** Very high penalty for complexity, leading to very simple trees
+- **If $\lambda$ in between:** Balance between error and complexity
+
+The regularization parameter $\lambda$ allows us to control the bias-variance trade-off and find the optimal tree complexity for our specific problem.
+
