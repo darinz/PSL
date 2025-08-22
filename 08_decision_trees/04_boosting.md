@@ -298,5 +298,89 @@ This iterative process allows the algorithm to build a strong ensemble by sequen
 
 The beauty of boosting is that it transforms a collection of weak learners into a powerful ensemble by intelligently focusing on the most challenging aspects of the data.
 
-## AdaBoost Algorithm
+### Learning on Weighted Data
 
+In boosting algorithms, we work with weighted data where each data point has an associated weight that reflects its importance in the learning process.
+
+**More Weight on "Hard" or More Important Points:**
+- Each data point $(x_i, y_i)$ is assigned a weight $\alpha_i$
+- Points that are harder to classify or were misclassified get higher weights
+- This forces the learning algorithm to pay more attention to challenging examples
+
+**Weighted Learning Process:**
+- A data point with weight $\alpha_i = 2$ effectively counts as 2 data points
+- The learning algorithm treats weighted data as if certain examples appeared multiple times
+- This mechanism is crucial for boosting's iterative improvement strategy
+
+### Learning a Decision Stump on Weighted Data
+
+When learning decision stumps on weighted data, we need to consider the weights when computing majority votes and making predictions.
+
+**Increase Weight $\alpha$ of Harder/Misclassified Points:**
+The key insight is to increase the weights of points that are harder to classify or were misclassified by previous learners.
+
+**Example Weighted Dataset:**
+
+| Credit | Income | y (Target) | Weight $\alpha$ |
+|--------|--------|------------|-----------------|
+| A      | $130K  | Safe       | 0.5             |
+| B      | $80K   | Risky      | 1.5             |
+| C      | $110K  | Risky      | 1.2             |
+| A      | $110K  | Safe       | 0.8             |
+| A      | $90K   | Safe       | 0.6             |
+| B      | $120K  | Safe       | 0.7             |
+| C      | $30K   | Risky      | 3               |
+| C      | $60K   | Risky      | 2               |
+| B      | $95K   | Safe       | 0.8             |
+| A      | $60K   | Safe       | 0.7             |
+| A      | $98K   | Safe       | 0.9             |
+
+**Decision Stump based on Income:**
+
+Consider a split at Income = $100K:
+
+**If Income > $100K:**
+- Safe points: (0.5 from $130K) + (0.8 from $110K) + (0.7 from $120K) = 2.0
+- Risky points: (1.2 from $110K) = 1.2
+- **Prediction:** $\hat{y} = \text{Safe}$ (since 2.0 > 1.2)
+
+**If Income ≤ $100K:**
+- Safe points: (0.6 from $90K) + (0.8 from $95K) + (0.7 from $60K) + (0.9 from $98K) = 3.0
+- Risky points: (1.5 from $80K) + (3 from $30K) + (2 from $60K) = 6.5
+- **Prediction:** $\hat{y} = \text{Risky}$ (since 6.5 > 3.0)
+
+This demonstrates how weights influence the majority class decision in each branch of the decision stump.
+
+### Boosting: Greedy Learning Ensembles from Data
+
+AdaBoost is a specific implementation of boosting that uses a greedy approach to build an ensemble of weak learners.
+
+**Boosting Algorithm Flowchart:**
+
+The AdaBoost algorithm follows this iterative process:
+
+1. **Initial Training Data:** Start with the original training dataset with uniform weights
+
+2. **Learn Classifier $f_1(x)$:** Train a weak classifier (e.g., decision stump) on the current weighted data
+
+3. **Predict $\hat{y} = \text{sign}(f_1(x))$:** Use the learned classifier to make predictions
+
+4. **Adjust Weights:** Identify misclassified points and increase their weights, decrease weights of correctly classified points
+
+5. **Weighted Data:** Create new dataset with adjusted weights
+
+6. **Learn Classifier $f_2(x)$ & Coefficient $\hat{w}_2$:** Train a second weak classifier on the weighted data and learn its coefficient
+
+7. **Combine Predictions:** Form ensemble prediction: $\hat{y} = \text{sign}(\hat{w}_1 f_1(x) + \hat{w}_2 f_2(x))$
+
+8. **Iterate:** Continue this process, adding new classifiers to the ensemble
+
+**Key Features:**
+- **Greedy Approach:** Each iteration focuses on correcting the mistakes of the current ensemble
+- **Weight Updates:** Misclassified points get higher weights in subsequent iterations
+- **Coefficient Learning:** Each weak learner gets a weight coefficient based on its performance
+- **Ensemble Combination:** Final prediction is a weighted vote of all weak learners
+
+This iterative process allows AdaBoost to build a strong classifier by combining multiple weak learners, each focusing on the most challenging aspects of the data identified by previous learners.
+
+## AdaBoost Algorithm
