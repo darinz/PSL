@@ -146,7 +146,7 @@ This tree has $L(T) = 5$ leaf nodes, representing its complexity.
 
 The challenge is finding the right balance between model complexity and predictive accuracy.
 
-<img src="./img/02_balance.png" width="600px">
+<img src="./img/03_balance.png" width="600px">
 
 **Too Complex (Risk of Overfitting):**
 - Deep tree with many splits and leaf nodes
