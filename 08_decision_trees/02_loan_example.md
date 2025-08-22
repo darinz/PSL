@@ -659,7 +659,7 @@ This single split achieves a reasonable separation of the classes, with most you
 
 ### Depth 2: Split on Income >= $60K
 
-<img src="./img/02_finding_splits.png" width="500px">
+<img src="./img/02_depth-2.png" width="500px">
 
 To create a deeper tree, we can apply a second split within one of the regions created by the first split.
 
