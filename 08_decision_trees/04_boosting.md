@@ -213,3 +213,84 @@ This formula represents the core mechanism of many boosting algorithms, where we
 
 ## Boosting
 
+### Training a classifier
+
+The fundamental workflow of supervised learning involves training a classifier from data and using it to make predictions.
+
+**Basic Training Process:**
+1. **Training Data:** Start with a dataset containing input-output pairs
+2. **Learn Classifier:** Apply a learning algorithm to the training data to find a function $f(x)$
+3. **Predict:** Use the learned classifier to make predictions: $\hat{y} = \text{sign}(f(x))$
+
+**Flow:**
+Training Data → Learn Classifier → $f(x)$ → Predict $\hat{y} = \text{sign}(f(x))$
+
+This represents the standard supervised learning paradigm where we learn a mapping from inputs to outputs.
+
+### Learning decision stump
+
+A decision stump is the simplest form of a decision tree - a single-level tree with one split. Let's see how to learn a decision stump from data.
+
+**Example Dataset:**
+Consider a loan application dataset with the following structure:
+
+| Credit | Income | y     |
+|--------|--------|-------|
+| A      | $130K  | Safe  |
+| B      | $80K   | Risky |
+| C      | $110K  | Risky |
+| A      | $110K  | Safe  |
+| A      | $90K   | Safe  |
+| B      | $120K  | Safe  |
+| C      | $30K   | Risky |
+| C      | $60K   | Risky |
+| B      | $95K   | Safe  |
+| A      | $60K   | Safe  |
+| A      | $98K   | Safe  |
+
+**Learning a Decision Stump on Income:**
+
+**Split Question:** Is `Income` > $100K?
+
+**Branch 1: Income > $100K**
+- **Safe Count:** 3 instances (A-$130K, A-$110K, B-$120K)
+- **Risky Count:** 1 instance (C-$110K)
+- **Prediction:** $\hat{y} = \text{Safe}$ (majority: 3 Safe vs 1 Risky)
+
+**Branch 2: Income ≤ $100K**
+- **Safe Count:** 4 instances (A-$90K, B-$95K, A-$60K, A-$98K)
+- **Risky Count:** 3 instances (B-$80K, C-$30K, C-$60K)
+- **Prediction:** $\hat{y} = \text{Safe}$ (majority: 4 Safe vs 3 Risky)
+
+The decision stump creates a simple rule: if income is above $100K, predict Safe; if income is $100K or below, also predict Safe (based on majority voting).
+
+### Boosting = Focus learning on "hard" points
+
+Boosting is an iterative ensemble learning technique that focuses on the most challenging data points by giving them more attention in subsequent learning rounds.
+
+**Core Concept:**
+Boosting focuses the next classifier on places where the current classifier performs poorly, effectively learning from mistakes.
+
+**Boosting Workflow:**
+
+1. **Start with Training Data:** Begin with the original dataset
+
+2. **Learn Classifier:** Train a weak classifier (e.g., decision stump) on the current data
+
+3. **Predict:** Use the classifier to make predictions: $\hat{y} = \text{sign}(f(x))$
+
+4. **Evaluate:** Assess the performance of the current classifier
+
+5. **Learn where f(x) makes mistakes:** Identify data points that were misclassified
+
+6. **Focus Next Classifier:** Adjust the learning process to pay more attention to the "hard" points (misclassified examples)
+
+**Key Insight:**
+"Boosting: focus next classifier on places where f(x) does less well"
+
+This iterative process allows the algorithm to build a strong ensemble by sequentially addressing the weaknesses of previous classifiers. Each new classifier is trained to correct the mistakes of its predecessors, leading to progressively better overall performance.
+
+The beauty of boosting is that it transforms a collection of weak learners into a powerful ensemble by intelligently focusing on the most challenging aspects of the data.
+
+## AdaBoost Algorithm
+
