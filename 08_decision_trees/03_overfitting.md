@@ -129,7 +129,7 @@ This formulation allows us to explicitly trade off between model accuracy and si
 
 A simple and effective measure of tree complexity is the number of leaf nodes:
 
-$$L(T) = \text{# of leaf nodes}$$
+$$L(T) = \text{num of leaf nodes}$$
 
 **Example Decision Tree:**
 Consider a loan application tree with:
