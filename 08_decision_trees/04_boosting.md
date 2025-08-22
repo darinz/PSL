@@ -9,8 +9,7 @@ Weak classifiers, despite their simplicity, offer several advantages that make t
 <img src="./img/04_simple_classifers.png" width="500px">
 
 **Logistic Regression with Simple Features:**
-A linear classifier that creates a diagonal decision boundary to separate classes. In a 2D scatter plot with purple and black data points, logistic regression with simple features creates a diagonal green line that provides a basic but effective separation.
-
+A linear classifier that creates a diagonal decision boundary to separate classes. In a 2D scatter plot with purple and black data points, logistic regression with simple features creates a diagonal green line that provides a basic but effective separation.\
 **Shallow Decision Trees:**
 Small tree structures with limited depth, typically containing:
 - A root node
@@ -44,6 +43,8 @@ Decision stumps represent the most basic form of decision-making in tree-based m
 ## Finding a classifier that's just right
 
 The challenge in machine learning is finding the optimal balance between model complexity and performance, navigating the bias-variance trade-off.
+
+<img src="./img/04_classifer_just_right.png" width="400px">
 
 ### The Bias-Variance Trade-off
 
