@@ -192,6 +192,8 @@ $$C(T_{\text{smaller}}) \leq C(T)$$
 
 **Step 1: Identify a Candidate Split for Pruning**
 
+
+
 Start with a fully grown decision tree $T$ and identify a sub-tree that is a candidate for removal. In our loan application example, we consider the `Term?` split under the `poor` credit and `high` income path.
 
 **Original Decision Tree ($T$) Structure:**
