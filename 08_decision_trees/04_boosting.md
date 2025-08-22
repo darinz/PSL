@@ -212,3 +212,4 @@ $$\hat{y} = \text{sign} \left( \sum_{t=1}^{T} \hat{w}_t f_t(x) \right)$$
 This formula represents the core mechanism of many boosting algorithms, where weak classifiers are iteratively trained and combined with learned weights to form a strong ensemble model.
 
 ## Boosting
+
