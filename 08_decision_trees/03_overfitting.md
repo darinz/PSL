@@ -304,4 +304,3 @@ After studying overfitting in decision trees, you should be able to:
 - **Monitor validation performance** to ensure pruning improves generalization
 
 This comprehensive understanding of overfitting prevention techniques enables you to build decision trees that generalize well to unseen data while maintaining interpretability and avoiding the pitfalls of overfitting.
-
