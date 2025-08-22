@@ -140,7 +140,7 @@ Consider a loan application tree with:
 - Five branches: excellent, good, fair, bad, poor
 - Leaf nodes: Safe (excellent), Safe (good), Safe (fair), Risky (bad), Risky (poor)
 
-This tree has $L(T) = 4$ leaf nodes, representing its complexity.
+This tree has $L(T) = 5$ leaf nodes, representing its complexity.
 
 ### Balance simplicity & predictive power
 
