@@ -128,3 +128,4 @@ Boosting has had a transformative impact on machine learning and data science:
 The success of boosting demonstrates that sometimes the best approach isn't to make individual models more complex, but rather to intelligently combine multiple simple models. This insight has fundamentally changed how we think about machine learning and has led to some of the most powerful and widely-used algorithms in the field.
 
 ## Ensemble Classifier
+
