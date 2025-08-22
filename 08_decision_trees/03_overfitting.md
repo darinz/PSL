@@ -211,7 +211,7 @@ Start with a fully grown decision tree $T$ and identify a sub-tree that is a can
 
 **Step 2: Compute Total Cost of the Original Tree ($T$)**
 
-<img src="./img/02_pruning_step-2.png" width="700px">
+<img src="./img/03_pruning_step-2.png" width="700px">
 
 Calculate the total cost using the cost-complexity formula:
 $$C(T) = \text{Error}(T) + \lambda L(T)$$
