@@ -389,3 +389,112 @@ The AdaBoost algorithm follows this iterative process:
 
 This iterative process allows AdaBoost to build a strong classifier by combining multiple weak learners, each focusing on the most challenging aspects of the data identified by previous learners.
 
+## AdaBoost Algorithm Details
+
+### AdaBoost: Learning Ensemble
+
+The AdaBoost algorithm, introduced by Freund & Schapire (1999), is a specific implementation of boosting that iteratively builds an ensemble of weak classifiers.
+
+**Initialization:**
+Start with the same weight for all data points: $\alpha_i = 1/N$ for all $i = 1, \dots, N$.
+
+**Iterative Learning Loop (for $t = 1, \dots, T$):**
+
+1. **Learn $f_t(x)$ with data weights $\alpha_i$:** Train a weak classifier using the current weighted data
+2. **Compute coefficient $\hat{W}_t$:** Calculate the importance weight for the current classifier
+3. **Recompute weights $\alpha_i$:** Update data point weights based on classification performance
+
+**Final Model Prediction:**
+$$\hat{y} = \text{sign} \left( \sum_{t=1}^{T} \hat{W}_t f_t(x) \right)$$
+
+### Computing Coefficient $\hat{W}_t$
+
+The coefficient $\hat{W}_t$ determines how much influence the weak classifier $f_t(x)$ has in the final ensemble.
+
+**Conceptual Decision:**
+- **Is $f_t(x)$ good?**
+  - **Yes:** $\hat{W}_t$ large (high positive value)
+  - **No:** $\hat{W}_t$ small (low or negative value)
+
+**Definition of "Good" Classifier:**
+$f_t(x)$ is good $\rightarrow f_t$ has low training error
+
+**Measuring Error in Weighted Data:**
+- Just weighted # of misclassified points
+- Sum the weights of all data points that $f_t(x)$ misclassifies
+
+### AdaBoost: Formula for Computing Coefficient $\hat{W}_t$
+
+The coefficient $\hat{W}_t$ is calculated using the following formula:
+
+$$\hat{W}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted\_error}(f_t)}{\text{weighted\_error}(f_t)} \right)$$
+
+**Interpretation:**
+- **Low weighted error:** Results in large positive $\hat{W}_t$ (strong classifier)
+- **High weighted error:** Results in small or negative $\hat{W}_t$ (weak classifier)
+- **Error = 0.5:** Results in $\hat{W}_t = 0$ (random classifier)
+
+### AdaBoost: Updating Weights $\alpha_i$
+
+After each weak classifier is trained, the weights of data points are updated based on whether they were correctly classified.
+
+**Conceptual Weight Update:**
+- **Question:** Did $f_t$ get $x_i$ right?
+  - **Yes (Correct):** Decrease weight $\alpha_i$
+  - **No (Wrong):** Increase weight $\alpha_i$
+
+**Mathematical Weight Update Formula:**
+
+If $f_t(x_i) = y_i$ (correct classification):
+$$\alpha_i \leftarrow \alpha_i e^{-\hat{W}_t}$$
+
+If $f_t(x_i) \neq y_i$ (misclassification):
+$$\alpha_i \leftarrow \alpha_i e^{\hat{W}_t}$$
+
+### AdaBoost: Normalizing Weights $\alpha_i$
+
+**Problem:** Without normalization, weights can become numerically unstable after many iterations.
+
+**Solution:** Normalize weights to add up to 1 after every iteration:
+
+$$\alpha_i \leftarrow \frac{\alpha_i}{\sum_{j=1}^N \alpha_j}$$
+
+This ensures that:
+- Weights always sum to 1
+- Prevents numerical overflow/underflow
+- Maintains valid probability distribution
+
+### Complete AdaBoost Learning Ensemble Algorithm
+
+**Step-by-Step Process:**
+
+1. **Initialize:** $\alpha_i = 1/N$ for all $i = 1, \dots, N$
+
+2. **For $t = 1, \dots, T$:**
+   
+   a. **Learn $f_t(x)$ with data weights $\alpha_i$:**
+      - Train weak classifier on weighted data
+      - Focus on minimizing weighted classification error
+   
+   b. **Compute coefficient $\hat{w}_t$:**
+      - Calculate weighted error of $f_t(x)$
+      - Apply formula: $\hat{w}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted\_error}(f_t)}{\text{weighted\_error}(f_t)} \right)$
+   
+   c. **Recompute weights $\alpha_i$:**
+      - For correct classifications: $\alpha_i \leftarrow \alpha_i e^{-\hat{w}_t}$
+      - For misclassifications: $\alpha_i \leftarrow \alpha_i e^{\hat{w}_t}$
+   
+   d. **Normalize weights $\alpha_i$:**
+      - $\alpha_i \leftarrow \frac{\alpha_i}{\sum_{j=1}^N \alpha_j}$
+
+3. **Final Model Prediction:**
+   $$\hat{y} = \text{sign} \left( \sum_{t=1}^T \hat{w}_t f_t(x) \right)$$
+
+**Key Features:**
+- **Iterative Focus:** Each new classifier focuses on previously misclassified points
+- **Weighted Voting:** Final prediction is a weighted combination of all weak classifiers
+- **Automatic Coefficient Learning:** Each classifier's importance is automatically determined
+- **Numerical Stability:** Weight normalization prevents computational issues
+
+This complete algorithm demonstrates how AdaBoost transforms a collection of simple weak learners into a powerful ensemble classifier through intelligent weight management and iterative learning.
+
