@@ -689,6 +689,9 @@ The resulting decision tree now has depth 2 and provides more nuanced classifica
 Decision trees create rectangular partitions in the feature space by making sequential splits on different features. Each split divides the space into distinct regions, and subsequent splits further subdivide these regions.
 
 **Visual Representation:**
+
+<img src="./img/02_2-D_space.png" width="500px">
+
 In a 2D space with Age on the x-axis (0-40+ years) and Income on the y-axis ($0K-$80K+), our decision tree creates three distinct rectangular regions through two sequential splits.
 
 ### First Split: Age >= 38
