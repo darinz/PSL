@@ -55,7 +55,7 @@ Additional criteria to prevent the tree from growing too complex:
 
 ### Challenge with early stopping condition 1
 
-
+<img src="./img/02_early_stopping.png" width="500px">
 
 Setting the optimal `max_depth` is challenging because it's difficult to know exactly when to stop.
 
@@ -86,6 +86,8 @@ We might want some branches of the tree to go deeper while others remain shallow
 The pruning approach involves:
 1. **Build a complex tree** first (allowing it to grow fully)
 2. **Simplify the tree** by removing unnecessary branches
+
+<img src="./img/02_early_stopping.png" width="500px">
 
 **Visual Process:**
 - **Complex Tree:** Deep, multi-level decision tree with many internal nodes and leaf nodes
