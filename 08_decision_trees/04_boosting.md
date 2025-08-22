@@ -252,7 +252,7 @@ Consider a loan application dataset with the following structure:
 
 **Learning a Decision Stump on Income:**
 
-<img src="./img/04_training_classifier.png" width="400px">
+<img src="./img/04_decision_stump.png" width="500px">
 
 **Split Question:** Is `Income` > $100K?
 
