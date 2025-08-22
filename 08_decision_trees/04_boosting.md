@@ -353,11 +353,15 @@ Consider a split at Income = $100K:
 
 This demonstrates how weights influence the majority class decision in each branch of the decision stump.
 
+## AdaBoost Algorithm
+
 ### Boosting: Greedy Learning Ensembles from Data
 
 AdaBoost is a specific implementation of boosting that uses a greedy approach to build an ensemble of weak learners.
 
 **Boosting Algorithm Flowchart:**
+
+<img src="./img/04_greedy_learning.png" width="400px">
 
 The AdaBoost algorithm follows this iterative process:
 
@@ -385,4 +389,3 @@ The AdaBoost algorithm follows this iterative process:
 
 This iterative process allows AdaBoost to build a strong classifier by combining multiple weak learners, each focusing on the most challenging aspects of the data identified by previous learners.
 
-## AdaBoost Algorithm
