@@ -132,10 +132,13 @@ A simple and effective measure of tree complexity is the number of leaf nodes:
 $$L(T) = \text{num of leaf nodes}$$
 
 **Example Decision Tree:**
+
+<img src="./img/02_simple_measure.png" width="500px">
+
 Consider a loan application tree with:
 - Root node: "Credit?"
-- Four branches: excellent, good, fair, poor
-- Leaf nodes: Safe (excellent), Safe (good), Safe (fair), Risky (poor)
+- Five branches: excellent, good, fair, bad, poor
+- Leaf nodes: Safe (excellent), Safe (good), Safe (fair), Risky (bad), Risky (poor)
 
 This tree has $L(T) = 4$ leaf nodes, representing its complexity.
 
