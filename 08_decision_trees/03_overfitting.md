@@ -224,7 +224,7 @@ With $\lambda = 0.3$:
 
 **Step 3: "Undo" the Splits (Prune) and Compute Cost of the Smaller Tree ($T_{\text{smaller}}$)**
 
-
+<img src="./img/02_pruning_step-3.png" width="700px">
 
 Replace the candidate sub-tree with a single leaf node. The class of this new leaf node is determined by the majority class of the data points that would have passed through the pruned sub-tree.
 
