@@ -161,6 +161,8 @@ Ensemble methods combine the predictions of multiple individual classifiers (oft
 **Example: Multiple Classifiers Voting on a Loan Application**
 Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Credit}=\text{Bad}, \text{Savings}=\$50K, \text{Market}=\text{Good})$. We use four different weak classifiers, each focusing on a different feature:
 
+<img src="./img/04_ensemble_methods.png" width="600px">
+
 1. **Classifier 1 ($f_1(x)$): Income > $100K?**
    - Input: $x$ (Income=$120K$)
    - Decision: Yes
