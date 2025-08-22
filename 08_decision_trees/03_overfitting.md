@@ -133,7 +133,7 @@ $$L(T) = \text{num of leaf nodes}$$
 
 **Example Decision Tree:**
 
-<img src="./img/02_simple_measure.png" width="500px">
+<img src="./img/03_simple_measure.png" width="500px">
 
 Consider a loan application tree with:
 - Root node: "Credit?"
