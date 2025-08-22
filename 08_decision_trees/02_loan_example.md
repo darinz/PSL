@@ -588,7 +588,7 @@ The challenge with real-valued features is determining the optimal threshold val
 **The Problem:**
 For a feature like `Income` ranging from $10K to $120K, there are infinitely many possible threshold values $t^{\ast}$ that could be used for splitting.
 
-<img src="./img/02_finding_splits.png" width="500px">
+<img src="./img/02_midpoint.png" width="500px">
 
 **The Solution:**
 We only need to consider a finite number of potential thresholds. Specifically, we consider the mid-points between adjacent sorted unique values of the feature.
