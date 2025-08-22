@@ -211,6 +211,8 @@ Start with a fully grown decision tree $T$ and identify a sub-tree that is a can
 
 **Step 2: Compute Total Cost of the Original Tree ($T$)**
 
+
+
 Calculate the total cost using the cost-complexity formula:
 $$C(T) = \text{Error}(T) + \lambda L(T)$$
 
