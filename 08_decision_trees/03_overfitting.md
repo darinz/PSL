@@ -87,7 +87,7 @@ The pruning approach involves:
 1. **Build a complex tree** first (allowing it to grow fully)
 2. **Simplify the tree** by removing unnecessary branches
 
-<img src="./img/02_early_stopping.png" width="500px">
+<img src="./img/02_pruning_intuition.png" width="500px">
 
 **Visual Process:**
 - **Complex Tree:** Deep, multi-level decision tree with many internal nodes and leaf nodes
@@ -97,6 +97,8 @@ The pruning approach involves:
 ### Pruning motivation
 
 Pruning addresses the bias-variance trade-off by finding the optimal tree complexity.
+
+
 
 **The Trade-off:**
 - **Training Error (purple line):** Monotonically decreases as tree depth increases
