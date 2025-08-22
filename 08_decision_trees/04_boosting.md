@@ -129,3 +129,82 @@ The success of boosting demonstrates that sometimes the best approach isn't to m
 
 ## Ensemble Classifier
 
+### Single Classifier: The Building Block
+
+A single classifier, often referred to as a "weak learner" in the context of ensemble methods, takes an input and produces a prediction. It serves as the fundamental unit that ensemble methods combine to form a more robust model.
+
+**Input and Output Flow:**
+The process of a single classifier can be visualized as a simple decision flow:
+
+1. **Input:** An input vector $x$ (e.g., loan application data)
+2. **Decision Node:** A single decision rule is applied (e.g., `Income > $100K?`)
+3. **Output:** Based on the decision, a classification $\hat{y} = f(x)$ is produced. This output is typically binary, such as:
+   - `+1` (e.g., "Safe" loan)
+   - `-1` (e.g., "Risky" loan)
+
+**Example: Loan Application Classifier**
+Consider a simple classifier for loan applications:
+
+- **Input:** A loan application $x$
+- **Decision:** Is the applicant's `Income > $100K`?
+  - If `Yes`, the loan is classified as **Safe**
+  - If `No`, the loan is classified as **Risky**
+
+This simple classifier, represented by a single decision node, provides a basic prediction for the input $x$.
+
+### Ensemble Methods: Combining Weak Classifiers
+
+Ensemble methods combine the predictions of multiple individual classifiers (often weak learners) to produce a more accurate and robust final prediction. Each individual classifier "votes" on the prediction, and these votes are aggregated.
+
+**Example: Multiple Classifiers Voting on a Loan Application**
+Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Credit}=\text{Bad}, \text{Savings}=\$50K, \text{Market}=\text{Good})$. We use four different weak classifiers, each focusing on a different feature:
+
+1. **Classifier 1 ($f_1(x)$): Income > $100K?**
+   - Input: $x$ (Income=$120K$)
+   - Decision: Yes
+   - Output: Safe ($f_1(x) = +1$)
+
+2. **Classifier 2 ($f_2(x)$): Credit history?**
+   - Input: $x$ (Credit=Bad)
+   - Decision: Bad
+   - Output: Risky ($f_2(x) = -1$)
+
+3. **Classifier 3 ($f_3(x)$): Savings > $100K?**
+   - Input: $x$ (Savings=$50K$)
+   - Decision: No
+   - Output: Risky ($f_3(x) = -1$)
+
+4. **Classifier 4 ($f_4(x)$): Market conditions?**
+   - Input: $x$ (Market=Good)
+   - Decision: Good
+   - Output: Safe ($f_4(x) = +1$)
+
+**Combining Predictions: The Ensemble Model**
+To combine these individual predictions, an ensemble model learns coefficients (weights) for each classifier. The final prediction is a weighted sum of the individual classifier outputs, passed through a sign function for binary classification:
+
+$$F(x_i) = \text{sign}(w_1 f_1(x_i) + w_2 f_2(x_i) + w_3 f_3(x_i) + w_4 f_4(x_i))$$
+
+Here, $w_j$ represents the learned coefficient (weight) for classifier $f_j(x_i)$. The `sign` function converts the weighted sum into a binary output (+1 or -1).
+
+### Ensemble Classifier in General
+
+An ensemble classifier aims to leverage the collective intelligence of multiple individual classifiers to achieve superior performance compared to any single classifier.
+
+**Goal:**
+- **Predict output $y$:** The target variable, typically binary (`+1` or `-1`)
+- **From input $x$:** The feature vector representing the data point
+
+**Learn Ensemble Model:**
+The learning process for an ensemble model involves two key components:
+
+1. **Classifiers:** A set of $T$ individual classifiers, denoted as $f_1(x), f_2(x), \dots, f_T(x)$. These are often weak learners.
+2. **Coefficients:** A set of learned weights (or coefficients) for each classifier, denoted as $\hat{w}_1, \hat{w}_2, \dots, \hat{w}_T$. These coefficients determine the influence of each classifier on the final prediction.
+
+**Prediction:**
+The final prediction $\hat{y}$ from an ensemble classifier is given by the weighted sum of the individual classifier predictions, passed through a sign function:
+
+$$\hat{y} = \text{sign} \left( \sum_{t=1}^{T} \hat{w}_t f_t(x) \right)$$
+
+This formula represents the core mechanism of many boosting algorithms, where weak classifiers are iteratively trained and combined with learned weights to form a strong ensemble model.
+
+## Boosting
