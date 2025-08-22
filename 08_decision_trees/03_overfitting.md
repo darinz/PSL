@@ -194,7 +194,7 @@ $$C(T_{\text{smaller}}) \leq C(T)$$
 
 Start with a fully grown decision tree $T$ and identify a sub-tree that is a candidate for removal. In our loan application example, we consider the `Term?` split under the `poor` credit and `high` income path.
 
-<img src="./img/02_pruning_step-1.png" width="500px">
+<img src="./img/02_pruning_step-1.png" width="600px">
 
 **Original Decision Tree ($T$) Structure:**
 - **Start Node**
@@ -211,7 +211,7 @@ Start with a fully grown decision tree $T$ and identify a sub-tree that is a can
 
 **Step 2: Compute Total Cost of the Original Tree ($T$)**
 
-
+<img src="./img/02_pruning_step-2.png" width="700px">
 
 Calculate the total cost using the cost-complexity formula:
 $$C(T) = \text{Error}(T) + \lambda L(T)$$
@@ -223,6 +223,8 @@ With $\lambda = 0.3$:
 | $T$  | 0.25  | 6       | 0.43              |
 
 **Step 3: "Undo" the Splits (Prune) and Compute Cost of the Smaller Tree ($T_{\text{smaller}}$)**
+
+
 
 Replace the candidate sub-tree with a single leaf node. The class of this new leaf node is determined by the majority class of the data points that would have passed through the pruned sub-tree.
 
