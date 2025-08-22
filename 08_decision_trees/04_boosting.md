@@ -44,11 +44,11 @@ Decision stumps represent the most basic form of decision-making in tree-based m
 
 The challenge in machine learning is finding the optimal balance between model complexity and performance, navigating the bias-variance trade-off.
 
-<img src="./img/04_classifer_just_right.png" width="400px">
-
 ### The Bias-Variance Trade-off
 
 **Model Complexity vs. Classification Error:**
+
+<img src="./img/04_classifer_just_right.png" width="400px">
 
 As model complexity increases, we observe different behaviors in training and true error:
 
