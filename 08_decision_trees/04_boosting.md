@@ -575,11 +575,15 @@ $$\text{Ensemble}(x) = \hat{W}_1 f_1(x) + \hat{W}_2 f_2(x)$$
 
 As AdaBoost iteratively trains weak classifiers and combines them, the ensemble's decision boundary becomes increasingly complex and refined. After a sufficient number of iterations (e.g., 30 iterations), the ensemble can achieve a highly accurate separation of classes, even for non-linearly separable data.
 
+<img src="./img/04_after-30_iterations.png" width="350px">
+
 **Final Decision Boundary:**
 - The plot displays a 2D feature space with $x[1]$ on the x-axis and $x[2]$ on the y-axis
 - The decision boundary is highly non-linear, forming intricate regions of dark purple (negative class) and dark green (positive class)
 - All magenta dashes (negative examples) are perfectly enclosed within the purple regions, and all black crosses (positive examples) are perfectly enclosed within the green regions
-- This perfect separation indicates that the ensemble classifier has achieved a **training_error = 0**, meaning it correctly classifies all training data points
+- This perfect separation indicates that the ensemble classifier has achieved a 
+
+**training_error = 0**, meaning it correctly classifies all training data points
 
 This demonstrates the power of boosting: by combining many simple, weak classifiers, AdaBoost can construct a highly complex and accurate strong classifier capable of learning intricate decision boundaries that would be impossible for any single weak learner to achieve.
 
