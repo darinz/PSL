@@ -652,12 +652,16 @@ Comparing the performance of standard decision trees with boosted decision stump
 **Decision Trees on Loan Data:**
 A line graph plots classification error (y-axis, 0.05 to 0.40) against tree depth (x-axis, 0 to 18).
 
+<img src="./img/04_dt_on_loan_data.png" width="550px">
+
 - **Training Error (blue line):** Starts high (~0.35) and steadily decreases to very low values (~0.08) as tree depth increases
 - **Test Error (green line):** Starts high (~0.35), decreases slightly initially, then steadily increases to high values (~0.39) as tree depth increases
 - **Overfitting:** The gap between 39% test error and 8% training error clearly demonstrates overfitting
 
 **Boosted Decision Stumps on Loan Data:**
 A line graph plots classification error (y-axis, 0.28 to 0.36) against number of iterations (x-axis, 0 to 18).
+
+<img src="./img/04_adaboost_theorem.png" width="550px">
 
 - **Training Error (blue line):** Starts high (~0.35) and steadily decreases to moderate values (~0.285) as iterations increase
 - **Test Error (green line):** Starts high (~0.35) and steadily decreases to moderate values (~0.32) as iterations increase
