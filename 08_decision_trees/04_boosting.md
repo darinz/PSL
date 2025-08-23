@@ -498,3 +498,5 @@ This ensures that:
 
 This complete algorithm demonstrates how AdaBoost transforms a collection of simple weak learners into a powerful ensemble classifier through intelligent weight management and iterative learning.
 
+## AdaBoost Example: A Visualization
+
