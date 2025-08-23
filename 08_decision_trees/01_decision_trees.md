@@ -223,4 +223,4 @@ The theoretical result about achieving zero training loss demonstrates the power
 
 ## Additional Resources
 
-For a more comprehensive treatment of decision trees, including detailed mathematical derivations and advanced concepts, we recommend reviewing the Decision Trees Notes available in the reference materials: [Decision Trees Notes](./reference/N-01-2_CS229_Decision-Trees-Notes.pdf). These notes provide deeper insights into the theoretical foundations and practical implementation details of decision tree algorithms.
+For a more comprehensive treatment of decision trees, including detailed mathematical derivations and advanced concepts, we recommend reviewing the Decision Trees Notes available in the reference materials: [Decision Trees Notes](./reference/Decision-Trees-Notes.pdf). These notes provide deeper insights into the theoretical foundations and practical implementation details of decision tree algorithms.
