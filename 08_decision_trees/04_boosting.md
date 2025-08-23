@@ -588,3 +588,4 @@ As AdaBoost iteratively trains weak classifiers and combines them, the ensemble'
 This demonstrates the power of boosting: by combining many simple, weak classifiers, AdaBoost can construct a highly complex and accurate strong classifier capable of learning intricate decision boundaries that would be impossible for any single weak learner to achieve.
 
 ## Boosting Convergence & Overfitting
+
