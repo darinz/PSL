@@ -684,6 +684,8 @@ A line graph plots classification error (y-axis, 0.18 to 0.36) against number of
 
 While boosting is robust to overfitting, it will eventually overfit if too many weak learners are used.
 
+<img src="./img/04_overfitting.png" width="500px">
+
 **Classification Error vs Number of Trees:**
 A line graph plots classification error (y-axis, 0.00 to 0.40) against number of trees (x-axis, 0 to 5000).
 
