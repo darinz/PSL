@@ -661,7 +661,7 @@ A line graph plots classification error (y-axis, 0.05 to 0.40) against tree dept
 **Boosted Decision Stumps on Loan Data:**
 A line graph plots classification error (y-axis, 0.28 to 0.36) against number of iterations (x-axis, 0 to 18).
 
-<img src="./img/04_adaboost_theorem.png" width="550px">
+<img src="./img/04_stumps_on_loan_data.png" width="550px">
 
 - **Training Error (blue line):** Starts high (~0.35) and steadily decreases to moderate values (~0.285) as iterations increase
 - **Test Error (green line):** Starts high (~0.35) and steadily decreases to moderate values (~0.32) as iterations increase
@@ -670,6 +670,8 @@ A line graph plots classification error (y-axis, 0.28 to 0.36) against number of
 ### Boosting Tends to be Robust to Overfitting
 
 Boosting demonstrates remarkable robustness to overfitting compared to other ensemble methods.
+
+<img src="./img/04_robust_to_overfitting.png" width="500px">
 
 **Classification Error vs Number of Trees:**
 A line graph plots classification error (y-axis, 0.18 to 0.36) against number of trees (x-axis, 0 to 200).
