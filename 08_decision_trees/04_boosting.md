@@ -617,6 +617,8 @@ A line graph shows the training error (y-axis, ranging from 0.00 to 0.25) as a f
 
 The AdaBoost algorithm provides theoretical guarantees regarding its ability to reduce training error.
 
+<img src="./img/04_adaboost_theorem.png" width="550px">
+
 **Theorem Statement:**
 Under some technical conditions, the training error of a boosted classifier approaches 0 as the number of iterations ($T$) approaches infinity:
 $$\text{Training error of boosted classifier} \to 0 \quad \text{as} \quad T \to \infty$$
