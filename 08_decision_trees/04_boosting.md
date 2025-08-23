@@ -500,3 +500,80 @@ This complete algorithm demonstrates how AdaBoost transforms a collection of sim
 
 ## AdaBoost Example: A Visualization
 
+### t=1: Learn a Classifier on Original Data
+
+In the first iteration, we train a weak classifier (decision stump) on the original dataset where all data points have equal weights.
+
+
+
+**Original Data:**
+We start with a 2D scatter plot showing two classes of data points: purple dashes (negative class) and black crosses (positive class). The x-axis is $x[1]$ (ranging from -5 to 3) and the y-axis is $x[2]$ (ranging from -3 to 4). The data points are distributed across this space with some overlap between the classes.
+
+**Learned Decision Stump $f_1(x)$:**
+After training, the first decision stump $f_1(x)$ creates a vertical decision boundary at approximately $x[1] = -0.5$. The region to the left of this boundary is classified as purple, and the region to the right is classified as green.
+
+**Classification Results:**
+- **Correctly Classified:** Many purple dashes are correctly classified in the left region, and many black crosses are correctly classified in the right region
+- **Misclassified Purple Dashes:** Several purple dashes are located in the green (right) region
+- **Misclassified Black Crosses:** Several black crosses are located in the purple (left) region
+
+### Updating Weights $\alpha_i$
+
+After learning the first classifier, we update the weights of data points to focus the next classifier on the misclassified examples.
+
+**Learned Decision Stump $f_1(x)$ (revisited):**
+This plot shows the same decision boundary and misclassified points from the previous step.
+
+**New Data Weights $\alpha_i$:**
+This plot shows the original data points with their updated weights. Misclassified points from the previous step are now visually emphasized with larger markers (larger circles around them), indicating that their weights $\alpha_i$ have been increased. This highlights the points that the next classifier should focus on.
+
+### t=2: Learn Classifier on Weighted Data
+
+In the second iteration, we train a new weak classifier on the data with updated weights, attempting to correct the mistakes made by the first classifier.
+
+**Weighted Data using $\alpha_i$ chosen in previous iteration:**
+This plot displays the data points with their new weights. The misclassified points from the previous iteration (purple dashes in the right region, black crosses in the left region) appear larger, reflecting their increased importance.
+
+**Learned Decision Stump $f_2(x)$ on Weighted Data:**
+Based on the weighted data, a new decision stump $f_2(x)$ creates a horizontal decision boundary at approximately $x[2] = 0.5$. The region above this boundary is classified as purple, and the region below is classified as green. This new boundary effectively separates many of the points that were misclassified by $f_1(x)$.
+
+## AdaBoost: Ensemble becomes weighted sum of learned classifiers
+
+The core idea of AdaBoost is to combine multiple weak classifiers, each trained on a re-weighted version of the data, into a strong ensemble classifier.
+
+**Combining Weak Classifiers:**
+Consider two weak classifiers, $f_1(x)$ and $f_2(x)$, each represented by a simple decision stump. These classifiers are combined with learned coefficients (weights) $\hat{W}_1$ and $\hat{W}_2$ to form the ensemble:
+
+$$\text{Ensemble}(x) = \hat{W}_1 f_1(x) + \hat{W}_2 f_2(x)$$
+
+**Example Visualization:**
+
+**First Weak Classifier ($f_1(x)$) with weight $\hat{W}_1 = 0.61$:**
+- This classifier is a decision stump that splits the 2D feature space based on the $x[1]$ feature
+- The decision boundary is a vertical line at approximately $x[1] = -1$
+- Regions to the left of the boundary are classified as negative (purple), and regions to the right are classified as positive (green)
+- The plot shows a scatter of data points, with magenta dashes representing negative examples and black crosses representing positive examples
+
+**Second Weak Classifier ($f_2(x)$) with weight $\hat{W}_2 = 0.53$:**
+- This classifier is another decision stump that splits the 2D feature space based on the $x[2]$ feature
+- The decision boundary is a horizontal line at approximately $x[2] = 0$
+- Regions below the boundary are classified as positive (green), and regions above are classified as negative (purple)
+- The plot also shows the same scatter of data points
+
+**Combined Ensemble Classifier:**
+- The final ensemble combines the predictions of $f_1(x)$ and $f_2(x)$ weighted by their respective coefficients
+- The resulting decision boundary is more complex than either individual stump, showing a combination of the vertical and horizontal splits
+- The output is a score ranging from -1.0 (dark purple) to 1.0 (light green), indicating the confidence of the classification
+
+## Decision boundary of ensemble classifier after 30 iterations
+
+As AdaBoost iteratively trains weak classifiers and combines them, the ensemble's decision boundary becomes increasingly complex and refined. After a sufficient number of iterations (e.g., 30 iterations), the ensemble can achieve a highly accurate separation of classes, even for non-linearly separable data.
+
+**Final Decision Boundary:**
+- The plot displays a 2D feature space with $x[1]$ on the x-axis and $x[2]$ on the y-axis
+- The decision boundary is highly non-linear, forming intricate regions of dark purple (negative class) and dark green (positive class)
+- All magenta dashes (negative examples) are perfectly enclosed within the purple regions, and all black crosses (positive examples) are perfectly enclosed within the green regions
+- This perfect separation indicates that the ensemble classifier has achieved a **training_error = 0**, meaning it correctly classifies all training data points
+
+This demonstrates the power of boosting: by combining many simple, weak classifiers, AdaBoost can construct a highly complex and accurate strong classifier capable of learning intricate decision boundaries that would be impossible for any single weak learner to achieve.
+
