@@ -536,6 +536,8 @@ In the second iteration, we train a new weak classifier on the data with updated
 **Weighted Data using $\alpha_i$ chosen in previous iteration:**
 This plot displays the data points with their new weights. The misclassified points from the previous iteration (purple dashes in the right region, black crosses in the left region) appear larger, reflecting their increased importance.
 
+<img src="./img/04_t-2.png" width="600px">
+
 **Learned Decision Stump $f_2(x)$ on Weighted Data:**
 Based on the weighted data, a new decision stump $f_2(x)$ creates a horizontal decision boundary at approximately $x[2] = 0.5$. The region above this boundary is classified as purple, and the region below is classified as green. This new boundary effectively separates many of the points that were misclassified by $f_1(x)$.
 
