@@ -504,7 +504,7 @@ This complete algorithm demonstrates how AdaBoost transforms a collection of sim
 
 In the first iteration, we train a weak classifier (decision stump) on the original dataset where all data points have equal weights.
 
-
+<img src="./img/04_original_data.png" width="600px">
 
 **Original Data:**
 We start with a 2D scatter plot showing two classes of data points: purple dashes (negative class) and black crosses (positive class). The x-axis is $x[1]$ (ranging from -5 to 3) and the y-axis is $x[2]$ (ranging from -3 to 4). The data points are distributed across this space with some overlap between the classes.
