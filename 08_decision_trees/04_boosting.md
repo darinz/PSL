@@ -606,6 +606,8 @@ Boosting algorithms are highly effective at reducing training error, often drivi
 **Training Error Reduction:**
 A line graph shows the training error (y-axis, ranging from 0.00 to 0.25) as a function of boosting iterations (x-axis, ranging from 0 to 50).
 
+<img src="./img/04_boosting_training_error.png" width="400px">
+
 - **Initial State (1 decision stump):** Training error starts at 22.5%
 - **Iterative Decrease:** As the number of boosting iterations increases, the training error (purple line) generally decreases with some fluctuations
 - **Zero Error (30 decision stumps):** After approximately 30 iterations, the training error drops to 0%
