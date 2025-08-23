@@ -633,6 +633,8 @@ A line graph shows the training error (y-axis, 0.00 to 0.25) against iterations 
 
 The AdaBoost theorem requires a specific condition to hold for the theoretical guarantees to apply.
 
+<img src="./img/04_condition_of_adaboost.png" width="500px">
+
 **Core Condition:**
 At every iteration $t$, we must be able to find a weak learner with weighted error less than 0.5:
 $$\text{weighted\_error}(f_t) < 0.5$$
