@@ -552,6 +552,8 @@ $$\text{Ensemble}(x) = \hat{W}_1 f_1(x) + \hat{W}_2 f_2(x)$$
 
 **Example Visualization:**
 
+<img src="./img/04_weighted_sum.png" width="600px">
+
 **First Weak Classifier ($f_1(x)$) with weight $\hat{W}_1 = 0.61$:**
 - This classifier is a decision stump that splits the 2D feature space based on the $x[1]$ feature
 - The decision boundary is a vertical line at approximately $x[1] = -1$
