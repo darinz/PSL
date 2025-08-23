@@ -521,6 +521,8 @@ After training, the first decision stump $f_1(x)$ creates a vertical decision bo
 
 After learning the first classifier, we update the weights of data points to focus the next classifier on the misclassified examples.
 
+<img src="./img/04_update_weights.png" width="500px">
+
 **Learned Decision Stump $f_1(x)$ (revisited):**
 This plot shows the same decision boundary and misclassified points from the previous step.
 
