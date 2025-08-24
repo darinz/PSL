@@ -134,3 +134,4 @@ One can calculate the overall error rate on out-of-bag samples for all bootstrap
 - **But loses on interpretability to single decision tree:** While ensemble methods improve performance, they often come at the cost of reduced model transparency compared to a single, simpler model
 
 This comprehensive introduction to ensemble methods provides the foundation for understanding more advanced techniques like Random Forests and Boosting.
+
