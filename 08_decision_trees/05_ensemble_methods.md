@@ -135,3 +135,94 @@ One can calculate the overall error rate on out-of-bag samples for all bootstrap
 
 This comprehensive introduction to ensemble methods provides the foundation for understanding more advanced techniques like Random Forests and Boosting.
 
+## Random Forests
+
+### Issues with Bagging
+
+While Bagging is an effective ensemble method, it has some theoretical limitations that Random Forests aim to address.
+
+#### Theoretical Properties of Bagging
+
+**Expectation and Bias:**
+- The expectation (average prediction) of bagged trees is equal to the expectation of individual trees:
+  $$E[f_{agg}(x)] = E[f_b(x)]$$
+  where $f_{agg}(x)$ represents the aggregated prediction and $f_b(x)$ represents the prediction of an individual tree.
+- The bias of bagged trees is the same as that of individual trees.
+
+**Critical Limitation - Correlation:**
+- **Each tree is identically distributed (i.d. not i.i.d). Bagged trees are correlated!**
+- This correlation significantly impacts the variance reduction potential of Bagging.
+
+#### Impact of Correlation on Variance Reduction
+
+**Independent and Identically Distributed (i.i.d.) Variables:**
+- Averaging $B$ independent and identically distributed (i.i.d.) variables scales their variance $\sigma^2$ down to $\sigma^2/B$.
+
+**Correlated Variables:**
+- Averaging $B$ identically distributed (i.d.) variables with pairwise correlations $\rho$ and variance $\sigma^2$ results in:
+  $$\rho\sigma^2 + (1 - \rho)\sigma^2/B$$
+
+**Key Insight:**
+- Only the second term $(1 - \rho)\sigma^2/B$ reduces with bagging
+- The first term $\rho\sigma^2$ remains constant
+- This means correlation prevents full variance reduction
+
+### How Random Forests Address the Issues
+
+#### Core Question and Goal
+
+**Main Question:** "How to decorrelate the trees generated for bagging?"
+
+**Goal:** We want to generate $B$ i.i.d. trees such that their bias is the same, but variance reduces.
+
+#### Ideas for Decorrelation
+
+Several strategies can be employed to reduce correlation between trees:
+
+- **Restrict feature usage:** Limit how many times a feature can be used
+- **Feature subset selection:** Only allow a certain number of features to be considered at each split
+- **Random feature selection:** Choose only a subset of features for each "bag" (bootstrapped sample)
+
+#### The Random Forest Approach
+
+**Key Insight:** Choose only a subset of features for each bootstrapped sample.
+
+**Result:** Decorrelated trees when you randomly select the subset.
+
+### Random Forests: Definition and Implementation
+
+#### Formal Definition
+
+Similar to bagging, Random Forests follow these steps:
+
+1. **Choose $B$ bootstrapped splits (or bags)**
+2. **For each split in the $B$ trees, only consider $k$ features from the full feature set $m$**
+
+#### Parameter Comparison
+
+- **If $k = m$:** Same as Bagging
+- **If $k < m$:** Random Forests
+
+#### Out-of-Bag (OOB) Error Rate
+
+The OOB error rate can be used to fit Random Forests in one sequence with cross-validation done along the way, providing an efficient internal validation mechanism.
+
+### Practical Considerations
+
+#### Performance and Hyperparameters
+
+**Performance:** Random Forests work great in practice.
+
+**Hyperparameter:** $k$ (the number of features considered at each split) is to be treated as a hyperparameter that needs tuning.
+
+#### Potential Issues
+
+**Challenge with High-Dimensional Data:**
+- **Issue:** When you have a large number of features, yet very small number of relevant features
+- **Problem:** The probability of selecting the relevant feature in $k$ is very small
+- **Impact:** This can make it difficult to identify and utilize the most important features when $k$ is small relative to the total number of features
+
+### Summary of Random Forests
+
+Random Forests address the correlation problem in Bagging by introducing randomness in feature selection at each split. This decorrelation strategy allows for better variance reduction while maintaining the same bias as individual trees. The method is highly practical and provides built-in cross-validation through OOB error estimation, making it a powerful and efficient ensemble technique.
+
