@@ -295,3 +295,76 @@ The key innovation of AdaBoost lies in its weight update mechanism:
 
 Boosting represents a fundamentally different approach to ensemble learning compared to Bagging and Random Forests. By training weak learners sequentially and focusing on difficult instances, boosting can achieve remarkable performance improvements. The adaptive nature of the algorithm, particularly in AdaBoost, makes it particularly effective for classification problems where certain instances are inherently more challenging to classify correctly.
 
+## Gradient Boosting
+
+Gradient Boosting is a powerful and widely used ensemble technique that builds upon the principles of boosting by framing the problem as optimizing an arbitrary differentiable loss function.
+
+### Generalization and Three Elements
+
+Gradient Boosting can be seen as a generalization of earlier boosting algorithms like AdaBoost, incorporating concepts of adaptive reweighting and combining. It is characterized by three core elements:
+
+- **A loss function to be optimized:** Unlike AdaBoost which implicitly optimizes an exponential loss, Gradient Boosting allows for the optimization of any differentiable loss function.
+- **A weak learner to make predictions:** Typically, decision trees (specifically regression trees) are used as weak learners.
+- **An additive model to add weak learners:** Weak learners are added sequentially to the model to minimize the chosen loss function.
+
+### Loss Function
+
+A key feature of Gradient Boosting is its flexibility in choosing a loss function.
+
+- **Any differentiable function:** The algorithm can work with any loss function that is differentiable.
+- **Most standard loss functions:** Common choices include:
+  - **L2 loss for regression:** Also known as Mean Squared Error (MSE), it measures the average of the squares of the errors.
+  - **Log loss for classification:** Also known as cross-entropy loss, it is commonly used for binary and multi-class classification problems.
+
+### Weak Learners
+
+The weak learners in Gradient Boosting are typically decision trees, specifically regression trees, which are learned greedily.
+
+- **Decision trees (regression trees) learnt greedily:** Each tree is built to predict the negative gradient of the loss function with respect to the current model's predictions.
+- **Constrain the trees to ensure they remain weak:** To prevent overfitting and ensure that each tree contributes incrementally, the individual trees are typically constrained. These constraints can include:
+  - **Number of layers (depth):** Limiting the maximum depth of the tree.
+  - **Number of leaves:** Limiting the maximum number of terminal nodes.
+  - **Number of nodes:** Limiting the total number of nodes.
+  - **Number of splits:** Limiting the number of times a node can be split.
+
+### Additive Model
+
+The core idea behind Gradient Boosting is to build the model in a stage-wise fashion, adding new trees one at a time.
+
+- **Add trees one at a time:** Existing trees are not changed once they are added to the ensemble.
+- **Functional gradient descent:** It employs functional gradient descent to minimize the loss function when adding new trees. This process involves:
+  - Calculating the loss.
+  - Adding a tree to the model that reduces the loss (i.e., following the gradient).
+  - Parameterizing the tree, then modifying the parameters of the tree and moving in the right direction by reducing the residual loss.
+
+### Iterative Process
+
+Given the current model, Gradient Boosting proceeds as follows:
+
+- **Fit a decision tree to the residuals:** We fit a decision tree to the **residuals** from the current model.
+- **Response variable becomes residuals:** The response variable for this new tree is now the residuals.
+- **Add tree to update residuals:** We then add this new decision tree into the fitted function in order to update the residuals.
+- **Control learning rate:** The learning rate must be controlled to prevent overfitting and ensure stable convergence.
+
+### Tunable Parameters
+
+Several parameters can be tuned to optimize the performance and prevent overfitting in Gradient Boosting:
+
+- **Number of trees ($B$):** Boosting can overfit, unlike Bagging or Random Forests. It is crucial to use cross-validation to determine the optimal number of trees.
+- **Shrinkage parameter ($\lambda$):** This is a small positive number that acts as a learning rate, scaling the contribution of each new tree. A smaller $\lambda$ requires more trees but can lead to better generalization.
+- **Number of splits in each tree ($d$):** This parameter controls the complexity of individual weak learners. Usually, just choose $d = 1$, meaning tree stumps (decision trees with a single split) work well as weak learners.
+
+### Variants of Gradient Boosting
+
+Gradient Boosting offers several variants and enhancements that improve its performance, robustness, and flexibility:
+
+- **Varying the tree constraints:** This involves adjusting parameters like maximum depth, minimum samples per leaf, or minimum impurity decrease to control the complexity of individual trees (weak learners).
+- **Weighting each tree to the additive sum using a learning rate (shrinkage):** A learning rate (often denoted as $\eta$ or $\nu$) is applied to the contribution of each new tree to the ensemble's final prediction. This "shrinkage" helps prevent overfitting and improves generalization by making the learning process more gradual.
+- **Sampling strategies: stochastic gradient boosting:** Instead of using the entire dataset to train each new tree, stochastic gradient boosting uses a random subsample of the training data. This introduces further randomness, which can reduce variance and speed up computation.
+- **Regularization: L1 / L2:** Regularization techniques, such as L1 (Lasso) and L2 (Ridge) regularization, can be applied to the tree's leaf weights to prevent overfitting. L1 regularization encourages sparsity (some weights become zero), while L2 regularization penalizes large weights.
+- **Successful: XGBoost:** Extreme Gradient Boosting (XGBoost) is a highly optimized and popular implementation of gradient boosting that incorporates many of these variants and additional features for performance and accuracy, making it a state-of-the-art algorithm in many machine learning competitions and applications.
+
+### Summary of Gradient Boosting
+
+Gradient Boosting represents a sophisticated evolution of boosting algorithms that offers greater flexibility through customizable loss functions and more sophisticated optimization techniques. Its ability to handle various types of problems (regression and classification) with different loss functions, combined with its strong empirical performance, has made it one of the most popular and effective ensemble methods in modern machine learning.
+
