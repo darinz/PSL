@@ -22,7 +22,7 @@ By the end of this module, you will understand:
 ## Course Materials
 
 ### Core Content
-- **`01_introduction.md`** - Comprehensive introduction to decision trees covering:
+- **`01_decision_trees.md`** - Comprehensive introduction to decision trees covering:
   - Nonlinear classification capabilities
   - Recursive region splitting
   - Loss functions (entropy, Gini impurity, squared error)
@@ -30,21 +30,58 @@ By the end of this module, you will understand:
   - Computational complexity
   - Limitations and ensemble methods
 
-### Reference Materials
-- **`N-01-2_CS229_Decision-Trees-Notes.pdf`** - Stanford CS229 lecture notes on decision trees
-- **`N-02_lecture11-decision-trees.pdf`** - Lecture 11 slides on decision trees
-- **`N-03_lecture11-decision-tree-overfitting.pdf`** - Lecture on overfitting in decision trees
-- **`N-04_lecture11-boosting.pdf`** - Lecture on boosting algorithms
-- **`N-05_cs229-boosting_slides.pdf`** - CS229 boosting slides
-- **`N-06_boosting.pdf`** - Additional boosting reference material
+- **`02_loan_example.md`** - Practical application using loan classification:
+  - Real-world decision tree implementation
+  - Feature engineering and preprocessing
+  - Tree construction and evaluation
+  - Decision path analysis
+  - Model interpretation and visualization
 
-### Visual Aids
-- **`img/nonlinear-classifier.png`** - Illustration of decision trees as nonlinear classifiers
-- **`img/split_1.png`**, **`img/split_2.png`**, **`img/split_3.png`** - Step-by-step visualization of recursive splitting
-- **`img/lack_structure.png`** - Demonstration of decision trees' limitations with diagonal boundaries
+- **`03_overfitting.md`** - Overfitting and regularization techniques:
+  - Overfitting demonstration
+  - Early stopping methods
+  - Pruning techniques (cost complexity pruning)
+  - Regularization parameter tuning
+  - Bias-variance trade-off analysis
+
+- **`04_ensemble_methods.md`** - Ensemble learning techniques:
+  - Single tree limitations
+  - Bagging (Bootstrap Aggregating)
+  - Random Forests implementation
+  - Feature importance analysis
+  - Ensemble method comparison
+
+- **`05_boosting.md`** - AdaBoost and boosting algorithms:
+  - Weak learners and their limitations
+  - AdaBoost algorithm implementation
+  - Estimator weights and progression
+  - Boosting vs single deep trees
+  - Robustness to noise analysis
+
+### Reference Materials
+- **`reference/Decision-Trees-Notes.pdf`** - Stanford CS229 lecture notes on decision trees
+- **`reference/Boosting-Notes.pdf`** - Comprehensive notes on boosting algorithms
+
 
 ### Code Examples
-- **`code/boosting_example.m`** - MATLAB implementation of boosting algorithm
+The `code/` directory contains comprehensive implementations:
+
+#### Python Examples
+- **`decision_trees_introduction.py`** - Fundamental concepts and recursive splitting
+- **`loan_example.py`** - Loan application classification implementation
+- **`overfitting.py`** - Overfitting demonstration and regularization
+- **`boosting.py`** - AdaBoost algorithm implementation
+- **`ensemble_methods.py`** - Bagging and Random Forests
+
+#### R Examples
+- **`decision_trees_introduction.R`** - Fundamental concepts in R
+- **`loan_example.R`** - Loan classification in R
+- **`overfitting.R`** - Overfitting analysis in R
+- **`boosting.R`** - AdaBoost implementation in R
+- **`ensemble_methods.R`** - Ensemble methods in R
+
+#### Original Files
+- **`boosting_example.m`** - Original MATLAB boosting demonstration
 
 ## Key Concepts
 
@@ -81,6 +118,7 @@ $$L(R_p) - \frac{|R_1|L(R_1) + |R_2|L(R_2)}{|R_1| + |R_2|}$$
 - **Minimum leaf size**: Prevent splits on small regions
 - **Maximum depth**: Limit tree complexity
 - **Maximum nodes**: Control total tree size
+- **Cost complexity pruning**: Remove branches that don't improve performance
 
 ## Computational Complexity
 
@@ -145,6 +183,39 @@ Decision trees create rectangular regions and struggle with:
 - **Statistics and Machine Learning Toolbox**: `fitctree`, `fitrtree`
 - **TreeBagger**: Random forests implementation
 
+## Installation Requirements
+
+### Python Dependencies
+```bash
+pip install numpy pandas matplotlib seaborn scikit-learn
+```
+
+### R Dependencies
+```r
+install.packages(c("rpart", "rpart.plot", "ggplot2", "dplyr", "caret", 
+                   "randomForest", "adabag", "gridExtra", "pROC"))
+```
+
+## Usage
+
+### Running Python Examples
+```bash
+python code/decision_trees_introduction.py
+python code/loan_example.py
+python code/overfitting.py
+python code/boosting.py
+python code/ensemble_methods.py
+```
+
+### Running R Examples
+```bash
+Rscript code/decision_trees_introduction.R
+Rscript code/loan_example.R
+Rscript code/overfitting.R
+Rscript code/boosting.R
+Rscript code/ensemble_methods.R
+```
+
 ## Related Course Modules
 
 - **[Regression Trees](../04_regression_trees/)** - Tree-based regression methods
@@ -154,12 +225,14 @@ Decision trees create rectangular regions and struggle with:
 
 ## Learning Path
 
-1. **Start with fundamentals**: Read `01_introduction.md` for core concepts
-2. **Review visual examples**: Study the splitting process through images
-3. **Explore reference materials**: Deepen understanding with CS229 notes
-4. **Practice implementation**: Use the boosting example code
-5. **Apply to real problems**: Experiment with different datasets
-6. **Study ensemble methods**: Understand Random Forests and Boosting
+1. **Start with fundamentals**: Read `01_decision_trees.md` for core concepts
+2. **Practice with real data**: Work through `02_loan_example.md` for practical application
+3. **Understand overfitting**: Study `03_overfitting.md` for regularization techniques
+4. **Master ensembles**: Review `04_ensemble_methods.md` for advanced techniques
+5. **Learn boosting**: Explore `05_boosting.md` for AdaBoost algorithm
+6. **Review visual examples**: Study the splitting process through images in `img/`
+7. **Practice implementation**: Use the comprehensive code examples in `code/`
+8. **Deepen understanding**: Review reference materials in `reference/`
 
 ## Assessment
 
@@ -167,9 +240,37 @@ After completing this module, you should be able to:
 - Explain how decision trees partition input space
 - Describe the greedy splitting algorithm
 - Compare different loss functions for classification and regression
+- Implement regularization techniques to prevent overfitting
+- Understand and implement AdaBoost algorithm
+- Apply ensemble methods like bagging and Random Forests
 - Identify when decision trees are appropriate vs. their limitations
-- Understand the relationship between trees and ensemble methods
-- Implement basic decision tree algorithms
+- Build and evaluate decision tree models on real-world data
+
+## Code Features
+
+### Comprehensive Coverage
+- All major decision tree concepts
+- Both classification and regression
+- Multiple ensemble methods
+- Real-world applications
+
+### Educational Focus
+- Step-by-step demonstrations
+- Clear explanations in comments
+- Visual outputs for understanding
+- Performance comparisons
+
+### Practical Implementation
+- Production-ready code structure
+- Error handling and validation
+- Reproducible results (fixed random seeds)
+- Modular design for easy modification
+
+### Cross-Language Support
+- Identical functionality in Python and R
+- Same output formats and visualizations
+- Consistent naming conventions
+- Parallel structure for easy comparison
 
 ---
 
