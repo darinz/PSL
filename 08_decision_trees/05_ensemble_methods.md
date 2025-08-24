@@ -226,3 +226,72 @@ The OOB error rate can be used to fit Random Forests in one sequence with cross-
 
 Random Forests address the correlation problem in Bagging by introducing randomness in feature selection at each split. This decorrelation strategy allows for better variance reduction while maintaining the same bias as individual trees. The method is highly practical and provides built-in cross-validation through OOB error estimation, making it a powerful and efficient ensemble technique.
 
+## Boosting
+
+Boosting is another powerful ensemble method that differs significantly from Bagging and Random Forests in its approach to combining weak learners. Instead of parallel training, boosting trains models sequentially, with each new model focusing on the errors of the previous ones.
+
+### Core Principles of Boosting
+
+**Key Characteristics:**
+- **No Bootstrap Sampling:** Unlike Bagging, Boosting does not involve bootstrap sampling. Instead, it typically uses the original dataset, but with adjusted weights for observations.
+- **Sequential Tree Growth:** Trees (or weak learners) are grown sequentially. Each new tree is built using information derived from the performance of previously grown trees, specifically focusing on instances that were misclassified or had high error.
+- **Combining Many Decision Trees:** Similar to Bagging, Boosting involves combining predictions from many decision trees, often referred to as weak learners or base learners, denoted as $f_1, \dots, f_B$. The final prediction is a weighted sum of these individual predictions.
+
+### AdaBoost (Adaptive Boosting)
+
+AdaBoost is one of the earliest and most influential boosting algorithms, demonstrating the core concepts of sequential learning and adaptive weighting.
+
+**Key Features:**
+- **Weighted Observations:** AdaBoost operates on weighted observations. Initially, all observations might have equal weights, but these weights are adjusted in subsequent iterations.
+- **Focus on Difficult Instances:** The algorithm adaptively puts more weight on instances that are difficult to classify (i.e., those that were misclassified by previous learners) and less weight on those that have already been handled well. This forces subsequent weak learners to concentrate on the challenging patterns.
+- **Sequential Addition of Weak Learners:** New weak learners are added sequentially. Each new learner is trained specifically to focus its efforts on the more difficult patterns, as identified by the updated observation weights. This iterative process gradually improves the overall model's performance by correcting the mistakes of its predecessors.
+
+### Mathematical Formulation
+
+The final prediction in AdaBoost is a weighted combination of the weak learners:
+
+$$F(x) = \sum_{b=1}^{B} \alpha_b f_b(x)$$
+
+where:
+- $f_b(x)$ is the prediction of the $b$-th weak learner
+- $\alpha_b$ is the weight assigned to the $b$-th learner
+- $B$ is the total number of weak learners
+
+### Weight Update Mechanism
+
+The key innovation of AdaBoost lies in its weight update mechanism:
+
+1. **Initialization:** All observations start with equal weights
+2. **Training:** Train a weak learner on the weighted data
+3. **Error Calculation:** Compute the weighted error rate
+4. **Weight Update:** Increase weights for misclassified instances, decrease weights for correctly classified instances
+5. **Normalization:** Normalize weights to sum to 1
+6. **Iteration:** Repeat until desired number of learners is reached
+
+### Advantages of Boosting
+
+**Performance Benefits:**
+- **Strong Performance:** Often achieves better accuracy than individual weak learners
+- **Adaptive Learning:** Automatically focuses on difficult cases
+- **Theoretical Guarantees:** Provides convergence guarantees under certain conditions
+
+**Practical Advantages:**
+- **No Overfitting for a While:** Resistant to overfitting in early iterations
+- **Feature Selection:** Can work well even with simple base learners
+- **Interpretability:** Can provide insights into which instances are most difficult
+
+### Comparison with Other Ensemble Methods
+
+**vs. Bagging:**
+- **Sequential vs. Parallel:** Boosting trains sequentially, Bagging trains in parallel
+- **Weighting:** Boosting uses adaptive weights, Bagging uses equal weights
+- **Focus:** Boosting focuses on difficult cases, Bagging reduces variance through averaging
+
+**vs. Random Forests:**
+- **Diversity:** Random Forests create diversity through feature randomization, Boosting creates diversity through sequential error correction
+- **Bias vs. Variance:** Random Forests primarily reduce variance, Boosting can reduce both bias and variance
+
+### Summary of Boosting
+
+Boosting represents a fundamentally different approach to ensemble learning compared to Bagging and Random Forests. By training weak learners sequentially and focusing on difficult instances, boosting can achieve remarkable performance improvements. The adaptive nature of the algorithm, particularly in AdaBoost, makes it particularly effective for classification problems where certain instances are inherently more challenging to classify correctly.
+
