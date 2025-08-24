@@ -87,9 +87,9 @@ The process of Bagging involves several key steps:
 
 ### Visualizing Bootstrap Trees
 
-<img src="./img/05_bagging.png" width="350px">
-
 The core idea of Bagging is to train multiple diverse models. Below, we illustrate an "Original Tree" trained on the full dataset and several "Bootstrap Trees" trained on different bootstrap samples.
+
+<img src="./img/05_bagging.png" width="350px">
 
 **Original Tree:**
 A decision tree trained on the original dataset with specific splits and leaf node predictions.
