@@ -103,6 +103,8 @@ Notice how the split points and the class distributions in the leaf nodes vary a
 
 One of the primary benefits of Bagging is its ability to reduce the variance of a model, leading to improved generalization and lower error rates on unseen data.
 
+<img src="./img/05_bagging_error_rate.png" width="650px">
+
 **Single Classifier Performance:**
 - **Error Rate: 0.073**
 - **Visualization:** A 2D scatter plot shows data points belonging to two classes with a blue rectangular decision boundary
