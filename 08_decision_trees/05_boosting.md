@@ -266,7 +266,7 @@ Consider a loan application dataset with the following structure:
 - **Risky Count:** 3 instances (B-$80K, C-$30K, C-$60K)
 - **Prediction:** $\hat{y} = \text{Safe}$ (majority: 4 Safe vs 3 Risky)
 
-The decision stump creates a simple rule: if income is above $100K, predict Safe; if income is $100K or below, also predict Safe (based on majority voting).
+The decision stump creates a simple rule: if income is above \$100K, predict Safe; if income is \$100K or below, also predict Safe (based on majority voting).
 
 ### Boosting = Focus learning on "hard" points
 
