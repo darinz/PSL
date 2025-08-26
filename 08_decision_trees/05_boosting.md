@@ -174,7 +174,7 @@ Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Cre
    - Output: Risky ($f_2(x) = -1$)
 
 3. **Classifier 3 ($f_3(x)$): Savings > \$100K?**
-   - Input: $x$ (Savings=\$50K$)
+   - Input: $x$ (Savings=\$50K)
    - Decision: No
    - Output: Risky ($f_3(x) = -1$)
 
