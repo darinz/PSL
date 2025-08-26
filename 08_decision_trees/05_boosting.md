@@ -20,7 +20,7 @@ These shallow trees make simple, interpretable decisions without the complexity 
 
 **Decision Stumps:**
 The simplest form of decision trees - single-level trees with one split. For example:
-- **Split Question:** "Income > $100K?"
+- **Split Question:** "Income > \$100K?"
 - **Outcomes:** 
   - **Yes:** Predict Safe (green oval)
   - **No:** Predict Risky (orange oval)
@@ -137,7 +137,7 @@ A single classifier, often referred to as a "weak learner" in the context of ens
 The process of a single classifier can be visualized as a simple decision flow:
 
 1. **Input:** An input vector $x$ (e.g., loan application data)
-2. **Decision Node:** A single decision rule is applied (e.g., `Income > $100K?`)
+2. **Decision Node:** A single decision rule is applied (e.g., `Income > \$100K?`)
 3. **Output:** Based on the decision, a classification $\hat{y} = f(x)$ is produced. This output is typically binary, such as:
    - `+1` (e.g., "Safe" loan)
    - `-1` (e.g., "Risky" loan)
@@ -148,7 +148,7 @@ Consider a simple classifier for loan applications:
 <img src="./img/04_single_classifier.png" width="400px">
 
 - **Input:** A loan application $x$
-- **Decision:** Is the applicant's `Income > $100K`?
+- **Decision:** Is the applicant's `Income > \$100K`?
   - If `Yes`, the loan is classified as **Safe**
   - If `No`, the loan is classified as **Risky**
 
@@ -163,8 +163,8 @@ Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Cre
 
 <img src="./img/04_ensemble_methods.png" width="600px">
 
-1. **Classifier 1 ($f_1(x)$): Income > $100K?**
-   - Input: $x$ (Income=$120K$)
+1. **Classifier 1 ($f_1(x)$): Income > \$100K?**
+   - Input: $x$ (Income=\$120K$)
    - Decision: Yes
    - Output: Safe ($f_1(x) = +1$)
 
@@ -173,8 +173,8 @@ Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Cre
    - Decision: Bad
    - Output: Risky ($f_2(x) = -1$)
 
-3. **Classifier 3 ($f_3(x)$): Savings > $100K?**
-   - Input: $x$ (Savings=$50K$)
+3. **Classifier 3 ($f_3(x)$): Savings > \$100K?**
+   - Input: $x$ (Savings=\$50K$)
    - Decision: No
    - Output: Risky ($f_3(x) = -1$)
 
@@ -238,32 +238,32 @@ Consider a loan application dataset with the following structure:
 
 | Credit | Income | y     |
 |--------|--------|-------|
-| A      | $130K  | Safe  |
-| B      | $80K   | Risky |
-| C      | $110K  | Risky |
-| A      | $110K  | Safe  |
-| A      | $90K   | Safe  |
-| B      | $120K  | Safe  |
-| C      | $30K   | Risky |
-| C      | $60K   | Risky |
-| B      | $95K   | Safe  |
-| A      | $60K   | Safe  |
-| A      | $98K   | Safe  |
+| A      | \$130K  | Safe  |
+| B      | \$80K   | Risky |
+| C      | \$110K  | Risky |
+| A      | \$110K  | Safe  |
+| A      | \$90K   | Safe  |
+| B      | \$120K  | Safe  |
+| C      | \$30K   | Risky |
+| C      | \$60K   | Risky |
+| B      | \$95K   | Safe  |
+| A      | \$60K   | Safe  |
+| A      | \$98K   | Safe  |
 
 **Learning a Decision Stump on Income:**
 
 <img src="./img/04_decision_stump.png" width="500px">
 
-**Split Question:** Is `Income` > $100K?
+**Split Question:** Is `Income` > \$100K?
 
-**Branch 1: Income > $100K**
-- **Safe Count:** 3 instances (A-$130K, A-$110K, B-$120K)
-- **Risky Count:** 1 instance (C-$110K)
+**Branch 1: Income > \$100K**
+- **Safe Count:** 3 instances (A-\$130K, A-\$110K, B-\$120K)
+- **Risky Count:** 1 instance (C-\$110K)
 - **Prediction:** $\hat{y} = \text{Safe}$ (majority: 3 Safe vs 1 Risky)
 
-**Branch 2: Income ≤ $100K**
-- **Safe Count:** 4 instances (A-$90K, B-$95K, A-$60K, A-$98K)
-- **Risky Count:** 3 instances (B-$80K, C-$30K, C-$60K)
+**Branch 2: Income ≤ \$100K**
+- **Safe Count:** 4 instances (A-\$90K, B-\$95K, A-\$60K, A-\$98K)
+- **Risky Count:** 3 instances (B-\$80K, C-\$30K, C-\$60K)
 - **Prediction:** $\hat{y} = \text{Safe}$ (majority: 4 Safe vs 3 Risky)
 
 The decision stump creates a simple rule: if income is above \$100K, predict Safe; if income is \$100K or below, also predict Safe (based on majority voting).
@@ -323,32 +323,32 @@ The key insight is to increase the weights of points that are harder to classify
 
 | Credit | Income | y (Target) | Weight $\alpha$ |
 |--------|--------|------------|-----------------|
-| A      | $130K  | Safe       | 0.5             |
-| B      | $80K   | Risky      | 1.5             |
-| C      | $110K  | Risky      | 1.2             |
-| A      | $110K  | Safe       | 0.8             |
-| A      | $90K   | Safe       | 0.6             |
-| B      | $120K  | Safe       | 0.7             |
-| C      | $30K   | Risky      | 3               |
-| C      | $60K   | Risky      | 2               |
-| B      | $95K   | Safe       | 0.8             |
-| A      | $60K   | Safe       | 0.7             |
-| A      | $98K   | Safe       | 0.9             |
+| A      | \$130K  | Safe       | 0.5             |
+| B      | \$80K   | Risky      | 1.5             |
+| C      | \$110K  | Risky      | 1.2             |
+| A      | \$110K  | Safe       | 0.8             |
+| A      | \$90K   | Safe       | 0.6             |
+| B      | \$120K  | Safe       | 0.7             |
+| C      | \$30K   | Risky      | 3               |
+| C      | \$60K   | Risky      | 2               |
+| B      | \$95K   | Safe       | 0.8             |
+| A      | \$60K   | Safe       | 0.7             |
+| A      | \$98K   | Safe       | 0.9             |
 
 **Decision Stump based on Income:**
 
 <img src="./img/04_weighted_data.png" width="500px">
 
-Consider a split at Income = $100K:
+Consider a split at Income = \$100K:
 
-**If Income > $100K:**
-- Safe points: (0.5 from $130K) + (0.8 from $110K) + (0.7 from $120K) = 2.0
-- Risky points: (1.2 from $110K) = 1.2
+**If Income > \$100K:**
+- Safe points: (0.5 from \$130K) + (0.8 from \$110K) + (0.7 from \$120K) = 2.0
+- Risky points: (1.2 from \$110K) = 1.2
 - **Prediction:** $\hat{y} = \text{Safe}$ (since 2.0 > 1.2)
 
-**If Income ≤ $100K:**
-- Safe points: (0.6 from $90K) + (0.8 from $95K) + (0.7 from $60K) + (0.9 from $98K) = 3.0
-- Risky points: (1.5 from $80K) + (3 from $30K) + (2 from $60K) = 6.5
+**If Income ≤ \$100K:**
+- Safe points: (0.6 from \$90K) + (0.8 from \$95K) + (0.7 from \$60K) + (0.9 from \$98K) = 3.0
+- Risky points: (1.5 from \$80K) + (3 from \$30K) + (2 from \$60K) = 6.5
 - **Prediction:** $\hat{y} = \text{Risky}$ (since 6.5 > 3.0)
 
 This demonstrates how weights influence the majority class decision in each branch of the decision stump.
