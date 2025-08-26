@@ -9,31 +9,31 @@ Regression trees represent a fundamental approach to non-parametric regression t
 ### Mathematical Framework
 
 Consider a regression problem with:
-- **Input features**: $`X = (X_1, X_2, \ldots, X_p) \in \mathbb{R}^p`$ - like the characteristics of a house (size, location, age, etc.)
-- **Response variable**: $`Y \in \mathbb{R}`$ - like the house price we want to predict
-- **Training data**: $`\{(x_i, y_i)\}_{i=1}^n`$ where $`x_i = (x_{i1}, x_{i2}, \ldots, x_{ip})`$ - like a collection of houses with their known prices
+- **Input features**: $X = (X_1, X_2, \ldots, X_p) \in \mathbb{R}^p$ - like the characteristics of a house (size, location, age, etc.)
+- **Response variable**: $Y \in \mathbb{R}$ - like the house price we want to predict
+- **Training data**: $\{(x_i, y_i)\}_{i=1}^n$ where $x_i = (x_{i1}, x_{i2}, \ldots, x_{ip})$ - like a collection of houses with their known prices
 
 A regression tree model can be expressed as:
 
 $$ f(x) = \sum_{m=1}^M c_m \cdot I(x \in R_m) $$
 
 where:
-- $`R_m`$ represents the $`m`$-th rectangular region (leaf node) - like a specific category of houses
-- $`c_m`$ is the constant prediction for region $`R_m`$ - like the average price for that category
-- $`I(\cdot)`$ is the indicator function - like checking if a house belongs to that category
-- $`M`$ is the number of leaf nodes - like the number of final categories
+- $R_m$ represents the $m$-th rectangular region (leaf node) - like a specific category of houses
+- $c_m$ is the constant prediction for region $R_m$ - like the average price for that category
+- $I(\cdot)$ is the indicator function - like checking if a house belongs to that category
+- $M$ is the number of leaf nodes - like the number of final categories
 
 **Intuition**: This formula says that the prediction for any house is the average price of houses in the same category. It's like saying "houses like this one typically cost this much."
 
 ### Tree Structure and Terminology
 
-Regression trees are constructed by recursively partitioning the feature space $`\mathbb{R}^p`$ into two sub-regions, beginning with the entire space. Each partition is defined by a **split rule** of the form:
+Regression trees are constructed by recursively partitioning the feature space $\mathbb{R}^p$ into two sub-regions, beginning with the entire space. Each partition is defined by a **split rule** of the form:
 
 $$ \text{Split Rule: } X_j \leq s $$
 
 where:
-- $`X_j`$ is the $`j`$-th feature variable - like "house size" or "distance to city center"
-- $`s`$ is the split threshold - like "1500 square feet" or "5 miles"
+- $X_j$ is the $j$-th feature variable - like "house size" or "distance to city center"
+- $s$ is the split threshold - like "1500 square feet" or "5 miles"
 
 **Intuition**: Each split is like asking a yes/no question: "Is the house size less than 1500 square feet?" This divides all houses into two groups: small houses and large houses.
 
@@ -82,7 +82,7 @@ Root: All houses
 6. **Robustness to Outliers**: Less sensitive to outliers compared to linear models - like not being thrown off by a few extremely expensive houses
 
 **Mathematical Invariance Property:**
-If $`g(\cdot)`$ is a strictly monotonic function, then splitting on $`X_j \leq s`$ is equivalent to splitting on $`g(X_j) \leq g(s)`$.
+If $g(\cdot)$ is a strictly monotonic function, then splitting on $X_j \leq s$ is equivalent to splitting on $g(X_j) \leq g(s)$.
 
 **Intuition**: This means that whether you measure house size in square feet or square meters, the tree will make the same decisions. It's like saying "whether you use Fahrenheit or Celsius, you'll still know when it's hot or cold."
 
@@ -106,7 +106,7 @@ $$ \text{RSS} = \sum_{i=1}^n (y_i - f(x_i))^2 $$
 
 ### Assigning Predictions to Leaf Nodes
 
-For a leaf node $`R_m`$ containing observations $`\{i: x_i \in R_m\}`$, the optimal constant prediction is the mean of the response values:
+For a leaf node $R_m$ containing observations $\{i: x_i \in R_m\}$, the optimal constant prediction is the mean of the response values:
 
 $$ c_m = \frac{1}{|R_m|} \sum_{i: x_i \in R_m} y_i $$
 
@@ -121,8 +121,8 @@ For each potential split $(j, s)$, we calculate the reduction in RSS:
 $$\Delta \text{RSS}(j, s) = \text{RSS}_{\text{before}} - \text{RSS}_{\text{after}}$$
 
 where:
-- $`\text{RSS}_{\text{before}} = \sum_{i=1}^n (y_i - \bar{y})^2`$ (using overall mean) - like the prediction error if we predict the same price for all houses
-- $`\text{RSS}_{\text{after}} = \text{RSS}_{\text{left}} + \text{RSS}_{\text{right}}`$ - like the prediction error after we split houses into two groups
+- $\text{RSS}_{\text{before}} = \sum_{i=1}^n (y_i - \bar{y})^2$ (using overall mean) - like the prediction error if we predict the same price for all houses
+- $\text{RSS}_{\text{after}} = \text{RSS}_{\text{left}} + \text{RSS}_{\text{right}}$ - like the prediction error after we split houses into two groups
 
 The left and right RSS are calculated as:
 
@@ -130,7 +130,7 @@ $$ \text{RSS}_{\text{left}} = \sum_{i: x_{ij} \leq s} (y_i - \bar{y}_{\text{left
 
 $$ \text{RSS}_{\text{right}} = \sum_{i: x_{ij} > s} (y_i - \bar{y}_{\text{right}})^2 $$
 
-where $`\bar{y}_{\text{left}}`$ and $`\bar{y}_{\text{right}}`$ are the means of the left and right child nodes.
+where $\bar{y}_{\text{left}}$ and $\bar{y}_{\text{right}}$ are the means of the left and right child nodes.
 
 **Intuition**: We want to find the split that reduces prediction error the most. It's like finding the question that best separates expensive houses from cheap houses. The split that creates the biggest difference between the two groups is the most useful.
 
@@ -150,10 +150,10 @@ The algorithm includes:
 
 ### Handling Categorical Variables
 
-For categorical variables with $`m`$ levels, the optimal split can be found efficiently by:
+For categorical variables with $m$ levels, the optimal split can be found efficiently by:
 
-1. **Sorting levels by response mean**: Calculate $`\bar{y}_k`$ for each level $`k`$ - like finding the average price for each neighborhood type
-2. **Considering only adjacent splits**: Only $`m-1`$ splits need to be evaluated - like only considering splits between similar neighborhood types
+1. **Sorting levels by response mean**: Calculate $\bar{y}_k$ for each level $k$ - like finding the average price for each neighborhood type
+2. **Considering only adjacent splits**: Only $m-1$ splits need to be evaluated - like only considering splits between similar neighborhood types
 
 **Mathematical Justification:**
 The optimal split minimizes within-group variance. By sorting levels by their response means, adjacent levels have similar means, making them natural candidates for grouping.
@@ -190,10 +190,10 @@ The surrogate split implementation:
 
 Common stopping criteria include:
 
-1. **Minimum samples per leaf**: $`|R_m| \geq \text{min\_samples\_leaf}`$ - like ensuring each category has enough houses to make a reliable prediction
-2. **Maximum tree depth**: $`\text{depth} \leq \text{max\_depth}`$ - like limiting the number of questions we ask to avoid overcomplicating things
-3. **Minimum RSS reduction**: $`\Delta \text{RSS} \geq \text{min\_improvement}`$ - like only asking questions that provide meaningful improvements
-4. **Maximum leaf nodes**: $`M \leq \text{max\_leaves}`$ - like limiting the number of final categories
+1. **Minimum samples per leaf**: $|R_m| \geq \text{min\_samples\_leaf}$ - like ensuring each category has enough houses to make a reliable prediction
+2. **Maximum tree depth**: $\text{depth} \leq \text{max\_depth}$ - like limiting the number of questions we ask to avoid overcomplicating things
+3. **Minimum RSS reduction**: $\Delta \text{RSS} \geq \text{min\_improvement}$ - like only asking questions that provide meaningful improvements
+4. **Maximum leaf nodes**: $M \leq \text{max\_leaves}$ - like limiting the number of final categories
 
 **Intuition**: These criteria prevent the tree from becoming too complex. It's like knowing when to stop asking questions - too few questions might miss important details, but too many questions might lead to unreliable predictions.
 
@@ -212,24 +212,24 @@ The cost-complexity measure balances fit and complexity:
 $$ R_\alpha(T) = \text{RSS}(T) + \alpha |T| $$
 
 where:
-- $`\text{RSS}(T) = \sum_{m=1}^{|T|} \sum_{i: x_i \in R_m} (y_i - \bar{y}_m)^2`$ - like how well the tree fits the training data
-- $`|T|`$ is the number of leaf nodes - like how complex the tree is
-- $`\alpha \geq 0`$ is the complexity parameter - like how much we penalize complexity
+- $\text{RSS}(T) = \sum_{m=1}^{|T|} \sum_{i: x_i \in R_m} (y_i - \bar{y}_m)^2$ - like how well the tree fits the training data
+- $|T|$ is the number of leaf nodes - like how complex the tree is
+- $\alpha \geq 0$ is the complexity parameter - like how much we penalize complexity
 
 **Interpretation:**
-- $`\alpha = 0`$: No penalty for complexity (full tree) - like not caring how many questions we ask
-- $`\alpha \to \infty`$: Infinite penalty (single node tree) - like wanting the simplest possible model
-- Larger $`\alpha`$ produces simpler trees - like being more willing to sacrifice accuracy for simplicity
+- $\alpha = 0$: No penalty for complexity (full tree) - like not caring how many questions we ask
+- $\alpha \to \infty$: Infinite penalty (single node tree) - like wanting the simplest possible model
+- Larger $\alpha$ produces simpler trees - like being more willing to sacrifice accuracy for simplicity
 
 **Intuition**: This formula balances two competing goals: making accurate predictions (low RSS) and keeping the model simple (few leaf nodes). The parameter α controls this trade-off.
 
 ### Mathematical Properties
 
-For a given $`\alpha`$, the optimal subtree $`T_\alpha`$ minimizes $`R_\alpha(T)`$:
+For a given $\alpha$, the optimal subtree $T_\alpha$ minimizes $R_\alpha(T)$:
 
 $$ T_\alpha = \arg\min_{T \subseteq T_0} R_\alpha(T) $$
 
-where $`T_0`$ is the full tree.
+where $T_0$ is the full tree.
 
 **Uniqueness Property:**
 If multiple subtrees achieve the same minimum cost, there exists a unique smallest optimal subtree (the intersection of all optimal subtrees).
@@ -240,27 +240,27 @@ If multiple subtrees achieve the same minimum cost, there exists a unique smalle
 
 ### Alpha Calculation
 
-For each internal node $`t`$, we calculate the threshold $`\alpha_t`$ at which the split becomes unprofitable:
+For each internal node $t$, we calculate the threshold $\alpha_t$ at which the split becomes unprofitable:
 
 $$ \alpha_t = \frac{\text{RSS}(t) - \text{RSS}(T_t)}{|T_t| - 1} $$
 
 where:
-- $`\text{RSS}(t)`$ is the RSS when node $`t`$ is a leaf - like the prediction error if we stop asking questions at this point
-- $`\text{RSS}(T_t)`$ is the RSS of the subtree rooted at $`t`$ - like the prediction error if we continue asking questions
-- $`|T_t|`$ is the number of leaf nodes in the subtree - like how many additional categories we create by continuing
+- $\text{RSS}(t)$ is the RSS when node $t$ is a leaf - like the prediction error if we stop asking questions at this point
+- $\text{RSS}(T_t)$ is the RSS of the subtree rooted at $t$ - like the prediction error if we continue asking questions
+- $|T_t|$ is the number of leaf nodes in the subtree - like how many additional categories we create by continuing
 
 **Interpretation:**
-$`\alpha_t`$ represents the "price" we pay per additional leaf node for the improvement in RSS.
+$\alpha_t$ represents the "price" we pay per additional leaf node for the improvement in RSS.
 
 **Intuition**: This is like calculating the "cost-effectiveness" of each split. If a split creates a big improvement in accuracy with only a small increase in complexity, it has a low α value and is worth keeping. If it creates only a small improvement with a big increase in complexity, it has a high α value and might be worth removing.
 
 ### Algorithm Steps
 
-1. **Initialize**: Start with full tree $`T_0`$, set $`\alpha = 0`$ - like starting with the most complex tree possible
-2. **Calculate alphas**: For each internal node $`t`$, compute $`\alpha_t`$ - like calculating the cost-effectiveness of each split
-3. **Find weakest link**: Identify node $`t^*`$ with smallest $`\alpha_t``$ - like finding the least cost-effective split
-4. **Prune**: Remove the subtree rooted at $`t^*`$, making $`t^*`$ a leaf - like removing the least useful questions
-5. **Update**: Recalculate $`\alpha_t`$ for affected nodes - like recalculating cost-effectiveness after the change
+1. **Initialize**: Start with full tree $T_0$, set $\alpha = 0$ - like starting with the most complex tree possible
+2. **Calculate alphas**: For each internal node $t$, compute $\alpha_t$ - like calculating the cost-effectiveness of each split
+3. **Find weakest link**: Identify node $t^*$ with smallest $\alpha_t`$ - like finding the least cost-effective split
+4. **Prune**: Remove the subtree rooted at $t^*$, making $t^*$ a leaf - like removing the least useful questions
+5. **Update**: Recalculate $\alpha_t$ for affected nodes - like recalculating cost-effectiveness after the change
 6. **Repeat**: Continue until only root remains - like gradually simplifying the tree
 
 **Intuition**: This algorithm is like editing a questionnaire by removing the least useful questions first. It starts with a complex questionnaire and gradually simplifies it, always removing the question that provides the least benefit relative to its complexity.
@@ -275,11 +275,11 @@ The weakest link pruning algorithm includes:
 
 ### Solution Path
 
-The algorithm generates a sequence of trees $`T_0, T_1, \ldots, T_k`$ corresponding to increasing $`\alpha`$ values:
+The algorithm generates a sequence of trees $T_0, T_1, \ldots, T_k$ corresponding to increasing $\alpha$ values:
 
 $$ 0 = \alpha_0 < \alpha_1 < \alpha_2 < \cdots < \alpha_k $$
 
-Each tree $`T_i`$ is optimal for $`\alpha \in [\alpha_i, \alpha_{i+1})`$.
+Each tree $T_i$ is optimal for $\alpha \in [\alpha_i, \alpha_{i+1})$.
 
 **Intuition**: This creates a "menu" of trees with different levels of complexity. You can choose the tree that best balances accuracy and simplicity for your needs. It's like having a series of questionnaires ranging from very detailed to very simple.
 
@@ -287,20 +287,20 @@ Each tree $`T_i`$ is optimal for $`\alpha \in [\alpha_i, \alpha_{i+1})`$.
 
 ### Problem Statement
 
-Given the sequence of pruned trees, we need to select the optimal $`\alpha`$ value that minimizes prediction error.
+Given the sequence of pruned trees, we need to select the optimal $\alpha$ value that minimizes prediction error.
 
 **Intuition**: We have a menu of trees with different complexity levels, but we need to choose the one that will work best on new data. Cross-validation helps us test each tree on data it hasn't seen before.
 
 ### Cross-Validation Procedure
 
-1. **Generate beta values**: For each interval $`[\alpha_i, \alpha_{i+1})`$, compute $`\beta_i = \sqrt{\alpha_i \cdot \alpha_{i+1}}`$ - like choosing a representative complexity level for each interval
+1. **Generate beta values**: For each interval $[\alpha_i, \alpha_{i+1})$, compute $\beta_i = \sqrt{\alpha_i \cdot \alpha_{i+1}}$ - like choosing a representative complexity level for each interval
 
-2. **K-fold cross-validation**: For each fold $`k = 1, 2, \ldots, K`$:
-   - Train tree on $`K-1`$ folds - like building the tree using most of the data
+2. **K-fold cross-validation**: For each fold $k = 1, 2, \ldots, K$:
+   - Train tree on $K-1$ folds - like building the tree using most of the data
    - Generate pruned tree sequence - like creating the menu of trees
    - Evaluate each tree on the held-out fold - like testing each tree on the remaining data
 
-3. **Select optimal alpha**: Choose $`\alpha`$ that minimizes cross-validation error - like choosing the tree that performs best on unseen data
+3. **Select optimal alpha**: Choose $\alpha$ that minimizes cross-validation error - like choosing the tree that performs best on unseen data
 
 **Intuition**: This is like testing each questionnaire on a different group of people to see which one works best. We want the questionnaire that gives the most accurate predictions when used on new people.
 
