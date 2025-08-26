@@ -137,7 +137,7 @@ A single classifier, often referred to as a "weak learner" in the context of ens
 The process of a single classifier can be visualized as a simple decision flow:
 
 1. **Input:** An input vector $x$ (e.g., loan application data)
-2. **Decision Node:** A single decision rule is applied (e.g., `Income > \$100K?`)
+2. **Decision Node:** A single decision rule is applied (e.g., `Income > $100K?`)
 3. **Output:** Based on the decision, a classification $\hat{y} = f(x)$ is produced. This output is typically binary, such as:
    - `+1` (e.g., "Safe" loan)
    - `-1` (e.g., "Risky" loan)
@@ -148,7 +148,7 @@ Consider a simple classifier for loan applications:
 <img src="./img/04_single_classifier.png" width="400px">
 
 - **Input:** A loan application $x$
-- **Decision:** Is the applicant's `Income > \$100K`?
+- **Decision:** Is the applicant's `Income > $100K`?
   - If `Yes`, the loan is classified as **Safe**
   - If `No`, the loan is classified as **Risky**
 
