@@ -749,3 +749,11 @@ This comprehensive understanding of boosting provides a solid foundation for app
 ## Additional Resources
 
 For a more comprehensive treatment of boosting, we recommend reviewing the Boosting Notes available in the reference materials: [Boosting Notes](./reference/Boosting-Notes.pdf). These notes provide deeper insights into the theoretical foundations and practical implementation details of boosting algorithms.
+
+## Code Implementation
+
+The boosting concepts and algorithms discussed in this section are implemented in the following code files:
+
+- **Python Implementation**: [boosting.py](./code/boosting.py) - Comprehensive implementation of AdaBoost algorithm with decision stumps and detailed performance analysis
+- **R Implementation**: [boosting.R](./code/boosting.R) - R-based implementation of boosting algorithms including AdaBoost with examples and visualizations
+- **MATLAB Implementation**: [boosting_example.m](./code/boosting_example.m) - MATLAB implementation of boosting concepts for educational purposes
