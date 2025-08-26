@@ -372,3 +372,9 @@ Gradient Boosting offers several variants and enhancements that improve its perf
 
 Gradient Boosting represents a sophisticated evolution of boosting algorithms that offers greater flexibility through customizable loss functions and more sophisticated optimization techniques. Its ability to handle various types of problems (regression and classification) with different loss functions, combined with its strong empirical performance, has made it one of the most popular and effective ensemble methods in modern machine learning.
 
+## Code Implementation
+
+The ensemble methods concepts discussed in this section are implemented in the following code files:
+
+- **Python Implementation**: [ensemble_methods.py](./code/ensemble_methods.py) - Comprehensive implementation of bagging, random forests, and ensemble techniques with detailed examples and performance analysis
+- **R Implementation**: [ensemble_methods.R](./code/ensemble_methods.R) - R-based implementation of ensemble methods including bagging, random forests, and performance evaluation
