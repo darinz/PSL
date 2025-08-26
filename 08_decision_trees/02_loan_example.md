@@ -920,3 +920,9 @@ After studying decision trees, you should be able to:
 
 This comprehensive understanding of decision trees provides a solid foundation for applying them to real-world classification problems and comparing their performance with other machine learning algorithms.
 
+## Code Implementation
+
+The loan example and decision tree concepts discussed in this section are implemented in the following code files:
+
+- **Python Implementation**: [loan_example.py](./code/loan_example.py) - Complete implementation of the loan decision tree example with data generation, tree construction, and performance evaluation
+- **R Implementation**: [loan_example.R](./code/loan_example.R) - R-based implementation of the loan classification problem with detailed analysis and visualization
