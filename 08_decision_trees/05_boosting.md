@@ -478,7 +478,7 @@ This ensures that:
    
    b. **Compute coefficient $\hat{w}_t$:**
       - Calculate weighted error of $f_t(x)$
-      - Apply formula: $\hat{w}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted\_error}(f_t)}{\text{weighted\_error}(f_t)} \right)$
+      - Apply formula: $\hat{w}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted_error}(f_t)}{\text{weighted_error}(f_t)} \right)$
    
    c. **Recompute weights $\alpha_i$:**
       - For correct classifications: $\alpha_i \leftarrow \alpha_i e^{-\hat{w}_t}$
