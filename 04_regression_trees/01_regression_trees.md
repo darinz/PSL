@@ -118,7 +118,7 @@ This minimizes the RSS within the leaf node.
 
 For each potential split $(j, s)$, we calculate the reduction in RSS:
 
-$$\Delta \text{RSS}(j, s) = \text{RSS}_{\text{before}} - \text{RSS}_{\text{after}}$$
+$$\Delta \text{RSS}(j, s) = \text{RSS} _\text{before} - \text{RSS}_\text{after}$$
 
 where:
 - $`\text{RSS}_{\text{before}} = \sum_{i=1}^n (y_i - \bar{y})^2`$ (using overall mean) - like the prediction error if we predict the same price for all houses
