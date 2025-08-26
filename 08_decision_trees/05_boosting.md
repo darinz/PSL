@@ -164,7 +164,7 @@ Let's consider a specific loan application $x = (\text{Income}=\$120K, \text{Cre
 <img src="./img/04_ensemble_methods.png" width="600px">
 
 1. **Classifier 1 ($f_1(x)$): Income > \$100K?**
-   - Input: $x$ (Income=\$120K$)
+   - Input: $x$ (Income=\$120K)
    - Decision: Yes
    - Output: Safe ($f_1(x) = +1$)
 
