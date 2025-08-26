@@ -637,7 +637,7 @@ The AdaBoost theorem requires a specific condition to hold for the theoretical g
 
 **Core Condition:**
 At every iteration $t$, we must be able to find a weak learner with weighted error less than 0.5:
-$$\text{weighted\_error}(f_t) < 0.5$$
+$$\text{weighted_error}(f_t) < 0.5$$
 
 **When the Condition Fails:**
 This condition is not always possible to satisfy. An extreme example is when no classifier can separate the data, such as having a +1 point directly on top of a -1 point.
