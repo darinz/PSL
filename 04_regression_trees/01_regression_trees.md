@@ -51,6 +51,10 @@ Consider the Boston Housing dataset with two features: longitude and latitude. T
 
 **Intuition**: This is like dividing a city map into neighborhoods, where each neighborhood has a typical house price. Houses in the same neighborhood are predicted to have similar prices.
 
+![Boston Housing: Tree Partitioning of Feature Space](../_images/w4_plot_housing_lon_alt.png)
+
+*Figure: Partitioning of the Boston Housing data by longitude and latitude. Each region corresponds to a leaf node in the regression tree.*
+
 **Visualization Description:**
 - **Right plot**: Scatter plot of houses by longitude and latitude, with grayscale indicating price (darker = more expensive) - like a heat map of house prices across the city
 - **Left plot**: Tree structure showing recursive splits on longitude and latitude features - like the decision process that creates the neighborhoods
@@ -67,10 +71,6 @@ Root: All houses
 ```
 
 **Intuition**: This tree is like a real estate agent who first asks "Is the house in the western or eastern part of the city?" Then, depending on the answer, asks about the north-south location. Each combination of answers leads to a typical price for that area.
-
-![Boston Housing: Tree Partitioning of Feature Space](../_images/w4_plot_housing_lon_alt.png)
-
-*Figure: Partitioning of the Boston Housing data by longitude and latitude. Each region corresponds to a leaf node in the regression tree.*
 
 ### Advantages of Tree-Based Models
 
