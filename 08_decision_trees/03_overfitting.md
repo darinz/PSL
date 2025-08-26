@@ -304,3 +304,10 @@ After studying overfitting in decision trees, you should be able to:
 - **Monitor validation performance** to ensure pruning improves generalization
 
 This comprehensive understanding of overfitting prevention techniques enables you to build decision trees that generalize well to unseen data while maintaining interpretability and avoiding the pitfalls of overfitting.
+
+## Code Implementation
+
+The overfitting concepts and techniques discussed in this section are implemented in the following code files:
+
+- **Python Implementation**: [overfitting.py](./code/overfitting.py) - Comprehensive implementation of overfitting analysis, early stopping techniques, and pruning algorithms for decision trees
+- **R Implementation**: [overfitting.R](./code/overfitting.R) - R-based implementation of overfitting prevention methods with detailed examples and visualizations
