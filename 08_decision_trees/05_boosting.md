@@ -427,7 +427,7 @@ $f_t(x)$ is good $\rightarrow f_t$ has low training error
 
 The coefficient $\hat{W}_t$ is calculated using the following formula:
 
-$$\hat{W}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted\_error}(f_t)}{\text{weighted\_error}(f_t)} \right)$$
+$$\hat{W}_t = \frac{1}{2} \ln \left( \frac{1 - \text{weighted_error}(f_t)}{\text{weighted_error}(f_t)} \right)$$
 
 **Interpretation:**
 - **Low weighted error:** Results in large positive $\hat{W}_t$ (strong classifier)
